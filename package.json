@@ -1,0 +1,29 @@
+{
+  "name": "markeaze-js-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/mkz.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development --open"
+  },
+  "author": "markeaze",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "babel-loader": "^8.0.4",
+    "node-sass": "^4.12.0",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^7.1.0",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.14",
+    "phoenix": "^1.4.11"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0"
+  }
+}
