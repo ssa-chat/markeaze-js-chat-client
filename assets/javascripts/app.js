@@ -119,17 +119,17 @@ module.exports = {
     </div>
 
     <div class="mkz-c__chat">
-      <div class="mkz-c__chat-cart">
-        <div class="mkz-c__chat-head">
-          <div class="mkz-c__chat-head-state">
-            <div class="mkz-c__chat__state mkz-c__chat__state_type_online"></div>
+      <div class="mkz-c__cart">
+        <div class="mkz-c__head">
+          <div class="mkz-c__head-state">
+            <div class="mkz-c__state mkz-c__state_type_online"></div>
           </div>
-          <div class="mkz-c__chat-head-m">
-           <div class="mkz-c__chat__m-name">Harrison Grant</div>
-           <div class="mkz-c__chat__m-text">MY LITTLE BIG STORE</div>
+          <div class="mkz-c__head-m">
+           <div class="mkz-c__m-name">Harrison Grant</div>
+           <div class="mkz-c__m-text">MY LITTLE BIG STORE</div>
           </div>
-          <div class="mkz-c__chat-head-action">
-            <div class="mkz-c__chat__close mkz-c-js-close">
+          <div class="mkz-c__head-action">
+            <div class="mkz-c__close mkz-c-js-close">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M11.4287 4.57129L4.57153 11.4284" stroke="#787878" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M4.57153 4.57129L11.4287 11.4284" stroke="#787878" stroke-linecap="round" stroke-linejoin="round"/>
@@ -137,9 +137,29 @@ module.exports = {
             </div>
           </div>
         </div>
-        <div class="mkz-c__chat__content">
+        <div class="mkz-c__content">
+          <div class="mkz-c__list">
+
+            <div class="mkz-c__i mkz-c__i_type_agent">
+              <img src="/assets/images/tooltip.png" alt="" class="mkz-c__i-avatar" />
+              <div class="mkz-c__i-content">
+                <div class="mkz-c__i-msg">
+                  Your new auto message will be here.
+                </div>
+              </div>
+            </div>
+
+            <div class="mkz-c__i mkz-c__i_type_user">
+              <div class="mkz-c__i-content">
+                <div class="mkz-c__i-msg">
+                  Your new auto message will be here.
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
-        <a class="mkz-c__chat__copy" href="https://markeaze.com" target="_blank">
+        <a class="mkz-c__copy" href="https://markeaze.com" target="_blank">
           <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1.94727 2.8471C2.12716 2.49158 2.57173 2.38949 2.87918 2.63311C3.12176 2.82531 3.19515 3.17138 3.05276 3.45164L1.17079 7.15577C0.991709 7.50824 0.550808 7.60949 0.24532 7.3683C0.0037509 7.17757 -0.0698014 6.83352 0.0713545 6.55454L1.94727 2.8471Z" fill="#FC4566"/>
             <path d="M5.35667 1.9023C5.54038 1.55555 5.9926 1.45484 6.30746 1.69056C6.55814 1.87824 6.63496 2.21903 6.48885 2.49519L4.02121 7.15912C3.83664 7.50797 3.38122 7.60839 3.06569 7.36982C2.81616 7.18115 2.74036 6.8407 2.88648 6.5649L5.35667 1.9023Z" fill="#0EC52C"/>
@@ -147,12 +167,12 @@ module.exports = {
           </svg>
           Powered by Markeaze
         </a>
-        <div class="mkz-c__chat__footer">
-          <div class="mkz-c__chat__footer-msg">
-            <textarea class="mkz-c__chat__input mkz-c-js-input" rows="1" placeholder="Type your message here..."></textarea>
+        <div class="mkz-c__footer">
+          <div class="mkz-c__footer-msg">
+            <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="Type your message here..."></textarea>
           </div>
-          <div class="mkz-c__chat__footer-btn">
-            <div class="mkz-c__chat__btn mkz-c-js-btn">
+          <div class="mkz-c__footer-btn">
+            <div class="mkz-c__btn mkz-c-js-btn">
               <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18.9675 0.949039L12.9784 17.6706C12.9069 17.8682 12.7194 17.9999 12.5092 18H12.3495C12.1535 18 11.9749 17.8874 11.8903 17.7105L9.53462 12.719C9.18774 11.9831 9.322 11.1103 9.874 10.5128L12.8686 7.23833C13.0524 7.04551 13.0524 6.74232 12.8686 6.5495L12.4893 6.17015C12.2965 5.98633 11.9933 5.98633 11.8005 6.17015L8.52644 9.16505C7.92893 9.71711 7.05625 9.85139 6.32044 9.50447L1.32949 7.14848C1.13702 7.076 1.00706 6.89483 1.00009 6.68926V6.52953C0.982409 6.30492 1.11738 6.09631 1.32949 6.0204L18.0492 0.0306031C18.2289 -0.0354106 18.4306 0.00725579 18.5682 0.140416L18.8278 0.399974C18.9838 0.536262 19.0394 0.754748 18.9675 0.949039Z" fill="currentColor"/>
               </svg>
