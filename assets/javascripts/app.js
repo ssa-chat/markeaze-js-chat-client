@@ -1,12 +1,18 @@
 const Socket = require('phoenix/assets/js/phoenix').Socket
 const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
+const msgStory = require('./msgStory')
 
 module.exports = {
   store: null, // Store from the main app
   libs: null, // Libraries from the main app
   collapsed: true,
+  currentAgentId: null,
+  currentAgent: null,
+  agents: [],
+  sessionsCount: 0,
+  msgs: [],
   ready (nameVariable) {
-    // abort if object is undefined
+    // Abort if object is undefined
     if (!window[nameVariable]) return false
 
     const self = this
@@ -21,24 +27,42 @@ module.exports = {
   createConnection () {
     this.socket = new Socket(`//${this.store.endpoint}/event`)
     this.socket.connect()
-    this.channel = this.socket.channel(`rooms:${this.store.appKey}:${this.store.uid}`)
-    this.channel.join().receive('ok', this.render)
-    this.channel.on('user:entered', this.handlerUserEntered)
-    this.channel.on('user:exited', this.handlerUserExited)
-    this.channel.on('new:msg', this.handlerNewMsg)
-    this.channel.on('phx_reply', this.handlerReply)
+    this.channel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
+    this.channel.join().receive('ok', this.handlerReady)
+    this.channel.on('client:entered', this.handlerClientEntered)
+    this.channel.on('message:new', this.handlerMsg)
+    this.channel.on('message:resend', this.handlerMsgResend)
   },
-  handlerUserEntered (msg) {
-    console.log('Got UserEntered', msg)
+  handlerReady () {
+    this.msgs = msgStory.getData()
+    this.render()
   },
-  handlerUserExited (msg) {
-    console.log('Got UserExited', msg)
+  handlerClientEntered (msg) {
+    console.log('Got ClientEntered', msg)
+    this.setAgents(msg.agents)
+    this.sessionsCount = msg.sessionsCount
+    this.currentAgentId = msg.current_agent_id
+    this.currentAgent = this.getAgent(msg.current_agent_id)
   },
-  handlerNewMsg (msg) {
-    console.log('Got NewMsg', msg)
+  handlerMsg (msg) {
+    console.log('Got Msg', msg)
+    this.parseMsg(msg)
   },
-  handlerReply (msg) {
-    console.log('Got reply', msg)
+  handlerMsgResend () {
+    console.log('Got Resend', msg)
+    this.parseMsg(msg)
+  },
+  parseMsg (msg) {
+    this.msgs = msgStory.addData(msg)
+  },
+  setAgents (agents) {
+    this.agents = agents.reduce((obj, item) => {
+      obj[item.id] = item
+      return obj
+    }, {})
+  },
+  getAgent (id) {
+    return this.agents[id] || null
   },
   bind () {
     this.libs.domEvent.add(this.elBtn, 'click', this.sendMsg.bind(this))
@@ -79,7 +103,7 @@ module.exports = {
   sendMsg () {
     const text = this.elInput.value.trim()
     if (!text) return
-    console.log('Send message:', text)
+    this.channel.push('new:msg', body: text)
     this.elInput.value = null
   },
   setMsgHeight () {
@@ -149,7 +173,7 @@ module.exports = {
               </div>
             </div>
 
-            <div class="mkz-c__i mkz-c__i_type_user">
+            <div class="mkz-c__i mkz-c__i_type_Client">
               <div class="mkz-c__i-content">
                 <div class="mkz-c__i-msg">
                   Your new auto message will be here.
