@@ -30,5 +30,8 @@ module.exports = {
   optimization: {
     minimize: true,
     sideEffects: false
+  },
+  devServer: {
+    port: 8085
   }
 }
