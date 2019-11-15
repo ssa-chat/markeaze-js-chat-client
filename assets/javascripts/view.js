@@ -40,7 +40,7 @@ export default class View {
   }
   sendTyping () {
     const text = this.elInput.value
-    console.log('Send typing:', text)
+    this.channel.push('client:activity', {type: 'typing', text: text})
   }
   sendMsg () {
     const text = this.elInput.value.trim()
