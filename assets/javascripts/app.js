@@ -10,6 +10,9 @@ module.exports = {
   agents: [],
   sessionsCount: 0,
   msgs: [],
+  config: {
+    endpoint: 'localhost:4000'
+  },
   ready (nameVariable) {
     // Abort if object is undefined
     if (!window[nameVariable]) return false
@@ -19,12 +22,10 @@ module.exports = {
       self.store = this.store
       self.libs = this.libs
       self.createConnection.apply(self)
-
-      self.handlerReady() // TODO: Only for development process
     })
   },
   createConnection () {
-    this.socket = new Socket(`//${this.store.endpoint}/event`)
+    this.socket = new Socket(`//${this.config.endpoint}/socket`)
     this.socket.connect()
     this.channel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
     this.channel.join().receive('ok', this.handlerReady)
@@ -37,6 +38,7 @@ module.exports = {
 
     this.view = new View(this.libs, this.channel)
     this.view.render()
+    this.channel.push('message:new', {body: text})
   },
   handlerClientEntered (msg) {
     console.log('Got ClientEntered', msg)

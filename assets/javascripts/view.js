@@ -11,6 +11,7 @@ export default class View {
     this.libs.domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
     this.libs.domEvent.add(this.elInput, 'keypress', (e) => {
       if (e.keyCode == 13 && !e.shiftKey) {
+        e.preventDefault()
         this.sendMsg()
       } else {
         if (!this.disableTyping) {
@@ -45,7 +46,7 @@ export default class View {
   sendMsg () {
     const text = this.elInput.value.trim()
     if (!text) return
-    this.channel.push('new:msg', {body: text})
+    this.channel.push('message:new', {body: text})
     this.elInput.value = null
     this.setMsgHeight()
   }
