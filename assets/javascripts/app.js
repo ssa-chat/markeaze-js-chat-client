@@ -10,9 +10,6 @@ module.exports = {
   agents: [],
   sessionsCount: 0,
   msgs: [],
-  config: {
-    endpoint: 'localhost:4000'
-  },
   ready (nameVariable) {
     // Abort if object is undefined
     if (!window[nameVariable]) return false
@@ -22,41 +19,43 @@ module.exports = {
       self.store = this.store
       self.libs = this.libs
       self.createConnection.apply(self)
+      self.libs.log.push('chat', 'init')
     })
   },
   createConnection () {
-    this.socket = new Socket(`//${this.config.endpoint}/socket`)
+    this.socket = new Socket(`//${this.store.chatEndpoint}/socket`)
     this.socket.connect()
     this.channel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
-    this.channel.join().receive('ok', this.handlerReady)
-    this.channel.on('client:entered', this.handlerClientEntered)
-    this.channel.on('message:new', this.handlerMsg)
-    this.channel.on('message:resend', this.handlerMsgResend)
-  },
-  handlerReady () {
-    this.msgs = msgStory.getData()
 
     this.view = new View(this.libs, this.channel)
+
+    this.channel.join().receive('ok', this.handlerReady.bind(this))
+    this.channel.on('client:entered', this.handlerClientEntered.bind(this))
+    this.channel.on('message:new', this.handlerMsg.bind(this))
+    this.channel.on('message:resend', this.handlerMsgResend.bind(this))
+  },
+  handlerReady () {
+    this.history = msgStory.getData()
     this.view.render()
-    this.channel.push('message:new', {body: text})
+    this.libs.log.push('chat', 'joined')
   },
   handlerClientEntered (msg) {
-    console.log('Got ClientEntered', msg)
     this.setAgents(msg.agents)
     this.sessionsCount = msg.sessionsCount
     this.currentAgentId = msg.current_agent_id
     this.currentAgent = this.getAgent(msg.current_agent_id)
+    this.libs.log.push('chat', 'Got ClientEntered', msg)
   },
   handlerMsg (msg) {
-    console.log('Got Msg', msg)
     this.parseMsg(msg)
+    this.libs.log.push('chat', 'Got Msg', msg)
   },
   handlerMsgResend () {
-    console.log('Got Resend', msg)
     this.parseMsg(msg)
+    this.libs.log.push('chat', 'Got Resend', msg)
   },
   parseMsg (msg) {
-    this.msgs = msgStory.addData(msg)
+    this.history = msgStory.addData(this.history, msg)
   },
   setAgents (agents) {
     this.agents = agents.reduce((obj, item) => {

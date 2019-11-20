@@ -7,12 +7,16 @@
 // (function(w,d,c,h){w[c]=w[c]||function(){(w[c].q=w[c].q||[]).push(arguments)};var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','https://cdn.jsdelivr.net/gh/markeaze/markeaze-js-tracker@latest/dist/mkz.js');
 (function(w,d,c,h){w[c]=w[c]||function(){(w[c].q=w[c].q||[]).push(arguments)};var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','http://localhost:8084/mkz.js');
 
-// TODO: Remove manual upload
-(function(w,d,c,h){var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','mkz-chat-client.js');
-
 mkz('debug', true);
 
-mkz('appKey', '2840ad505de48551');
+mkz('updateStore', {
+  trackerEndpoint: 'localhost:5000',
+  chatEndpoint: 'localhost:4000',
+  plugins: {
+    chat: '/mkz-chat-client.js'
+  }
+});
+mkz('appKey', '2840ad505de48551@test');
 
 mkz('trackPageView', {
   page: {

@@ -56,14 +56,16 @@ export default class View {
     this.elInput.style.height = newH + 'px'
   }
   render () {
-    this.el = this.libs.helpers.appendHTML(document.body, this.template())
-    this.elContainer = this.el.querySelector('.mkz-c-js')
-    this.elInput = this.el.querySelector('.mkz-c-js-input')
-    this.elBtn = this.el.querySelector('.mkz-c-js-btn')
-    this.elClose = this.el.querySelector('.mkz-c-js-close')
-    this.elToggle = this.el.querySelector('.mkz-c-js-toggle')
-
-    this.bind()
+    // can be called multiple times on one page
+    if (!this.el) {
+      this.el = this.libs.helpers.appendHTML(document.body, this.template())
+      this.elContainer = this.el.querySelector('.mkz-c-js')
+      this.elInput = this.el.querySelector('.mkz-c-js-input')
+      this.elBtn = this.el.querySelector('.mkz-c-js-btn')
+      this.elClose = this.el.querySelector('.mkz-c-js-close')
+      this.elToggle = this.el.querySelector('.mkz-c-js-toggle')
+      this.bind()
+    }
   }
   template () {
     return `
