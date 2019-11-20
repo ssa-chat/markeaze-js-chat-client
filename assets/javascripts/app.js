@@ -79,8 +79,18 @@ module.exports = {
     if (msg.agent_id) {
       const agent = this.getAgent(msg.agent_id)
       msg.avatar_url = agent ? agent.avatar_url : null
+      // Status changes only for agent messages
+      this.changeMsgState(msg.uid)
     }
     this.history = msgStory.addData(this.history, msg)
+  },
+  changeMsgState (uid) {
+    if (!uid) return
+
+    this.channel.push('message:status:change', {
+      uid: uid,
+      new_status: 'read'
+    })
   },
   setCurrentAgent (currentAgentId) {
     if (!currentAgentId && !this.currentAgent) return
