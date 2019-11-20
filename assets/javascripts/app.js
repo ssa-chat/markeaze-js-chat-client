@@ -10,6 +10,20 @@ module.exports = {
   agents: [],
   sessionsCount: 0,
   history: [],
+  settings: {
+    whitelabel: false,
+    copyright: 'Powered by Markeaze',
+    offline: 'Leave message',
+    placeholder: 'Type your message here...',
+    noticeIcon: '/assets/images/tooltip.png',
+    noticeText: 'Looking for<br />halloween gifts?',
+    margin: '20px',
+    iconColor: '#000',
+    iconBg: '#F28E24',
+    iconText: 'We’re here. Let’s chat!',
+    iconPosition: 'r-b', // l-t / r-t / l-b / r-b
+    iconType: 'bubble' // bar / bubble
+  },
   ready (nameVariable) {
     // Abort if tracker app is undefined
     if (!window[nameVariable]) return false

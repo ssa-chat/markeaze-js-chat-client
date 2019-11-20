@@ -33,6 +33,19 @@ $color_hint: #787878
         opacity: 1
         visibility: visible
 
+  .mkz-c_agent_assign
+
+    .mkz-c__m-unassign-text
+      display: none
+
+    .mkz-c__m-assign-text
+      display: block
+
+  .mkz-c_agent_online
+
+    .mkz-c__state
+      background-color: #0EC52C
+
   .mkz-c__handler
     transition: opacity 0.2s linear, visibility 0.4s 0s linear
     opacity: 0
@@ -275,17 +288,13 @@ $color_hint: #787878
     &:hover
       text-decoration: none
 
-  .mkz-c__m-name
+  .mkz-c__m-assign-text, .mkz-c__m-unassign-text
     font-weight: 600
     font-size: 13px
     line-height: 1.2em
-    margin-bottom: 5px
 
-  .mkz-c__m-text
-    font-weight: 600
-    font-size: 8px
-    line-height: 1.2em
-    color: $color_hint
+  .mkz-c__m-assign-text
+    display: none
 
   .mkz-c__close
     cursor: pointer
@@ -301,9 +310,6 @@ $color_hint: #787878
     border-radius: 50%
     background-color: red
     transition: background 0.5s linear
-
-  .mkz-c__state_type_online
-    background-color: #0EC52C
 
   .mkz-c__footer
     display: flex
