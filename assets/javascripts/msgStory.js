@@ -13,7 +13,8 @@ module.exports = {
       uid: msg.uid,
       body: msg.body,
       agent_id: msg.agent_id,
-      sent_at: msg.sent_at
+      sent_at: msg.sent_at,
+      avatar_url: msg.avatar_url
     })
     this.setData(history)
     return history

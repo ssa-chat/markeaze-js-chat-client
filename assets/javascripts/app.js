@@ -9,15 +9,16 @@ module.exports = {
   currentAgent: null,
   agents: [],
   sessionsCount: 0,
-  msgs: [],
+  history: [],
   ready (nameVariable) {
-    // Abort if object is undefined
+    // Abort if tracker app is undefined
     if (!window[nameVariable]) return false
 
     const self = this
     window[nameVariable](function() {
       self.store = this.store
       self.libs = this.libs
+      self.libs.sanitise = self.sanitise
       self.createConnection.apply(self)
       self.libs.log.push('chat', 'init')
     })
@@ -27,7 +28,7 @@ module.exports = {
     this.socket.connect()
     this.channel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
 
-    this.view = new View(this.libs, this.channel)
+    this.view = new View(this)
 
     this.channel.join().receive('ok', this.handlerReady.bind(this))
     this.channel.on('client:entered', this.handlerClientEntered.bind(this))
@@ -37,6 +38,7 @@ module.exports = {
   handlerReady () {
     this.history = msgStory.getData()
     this.view.render()
+    this.view.scrollBottom()
     this.libs.log.push('chat', 'joined')
   },
   handlerClientEntered (msg) {
@@ -49,12 +51,18 @@ module.exports = {
   handlerMsg (msg) {
     this.parseMsg(msg)
     this.libs.log.push('chat', 'Got Msg', msg)
+    this.view.scrollBottom()
   },
   handlerMsgResend () {
     this.parseMsg(msg)
     this.libs.log.push('chat', 'Got Resend', msg)
+    this.view.scrollBottom()
   },
   parseMsg (msg) {
+    if (msg.agent_id) {
+      const agent = this.getAgent(msg.agent_id)
+      msg.avatar_url = agent ? agent.avatar_url : null
+    }
     this.history = msgStory.addData(this.history, msg)
   },
   setAgents (agents) {
@@ -65,5 +73,18 @@ module.exports = {
   },
   getAgent (id) {
     return this.agents[id] || null
+  },
+  sanitise (str) {
+    if (!str) return
+    const map = {
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      "/": '&#x2F;',
+      '&': '&'
+    }
+    const reg = /[&<>"'/]/ig
+    return str.replace(reg, (match) => (map[match]))
   }
 }

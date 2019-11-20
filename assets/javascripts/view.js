@@ -1,10 +1,11 @@
 const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
 
 export default class View {
-  constructor (libs, channel) {
+  constructor (app) {
     this.collapsed = true
-    this.libs = libs
-    this.channel = channel
+    this.app = app
+    this.libs = app.libs
+    this.channel = app.channel
   }
   bind () {
     this.libs.domEvent.add(this.elBtn, 'click', this.sendMsg.bind(this))
@@ -44,7 +45,7 @@ export default class View {
     this.channel.push('client:activity', {type: 'typing', text: text})
   }
   sendMsg () {
-    const text = this.elInput.value.trim()
+    const text = this.libs.sanitise(this.elInput.value.trim())
     if (!text) return
     this.channel.push('message:new', {body: text})
     this.elInput.value = null
@@ -58,16 +59,41 @@ export default class View {
   render () {
     // can be called multiple times on one page
     if (!this.el) {
-      this.el = this.libs.helpers.appendHTML(document.body, this.template())
+      this.el = this.libs.helpers.appendHTML(document.body, this.htmlTemplate())
       this.elContainer = this.el.querySelector('.mkz-c-js')
       this.elInput = this.el.querySelector('.mkz-c-js-input')
       this.elBtn = this.el.querySelector('.mkz-c-js-btn')
       this.elClose = this.el.querySelector('.mkz-c-js-close')
       this.elToggle = this.el.querySelector('.mkz-c-js-toggle')
+      this.elHistory = this.el.querySelector('.mkz-c-js-history')
+      this.elScroll = this.el.querySelector('.mkz-c-js-scroll')
       this.bind()
     }
+    this.renderMessages()
   }
-  template () {
+  renderMessages () {
+    const html = this.app.history.map((msg) => this.htmlMessage(msg)).join('')
+    this.elHistory.innerHTML = html
+  }
+  scrollBottom () {
+    setTimeout(() => {
+      this.elScroll.scrollTop = this.elScroll.scrollHeight
+    }, 0)
+  }
+  htmlMessage (msg) {
+    const htmlAvatar = msg.avatar_url ? `<img src="${msg.avatar_url}" class="mkz-c__i-avatar" alt="" />` : ''
+    const body = this.libs.sanitise(msg.body)
+    return `
+            <div class="mkz-c__i mkz-c__i_type_${msg.agent_id ? 'agent' : 'client'}">
+              ${htmlAvatar}
+              <div class="mkz-c__i-content">
+                <div class="mkz-c__i-msg">
+                  ${body}
+                </div>
+              </div>
+            </div>`
+  }
+  htmlTemplate () {
     return `
 <div mkz-c>
   <div class="mkz-c mkz-c_tooltip_yes mkz-c_collapse_yes mkz-c-js">
@@ -107,27 +133,8 @@ export default class View {
             </div>
           </div>
         </div>
-        <div class="mkz-c__content">
-          <div class="mkz-c__list">
-
-            <div class="mkz-c__i mkz-c__i_type_agent">
-              <img src="/assets/images/tooltip.png" alt="" class="mkz-c__i-avatar" />
-              <div class="mkz-c__i-content">
-                <div class="mkz-c__i-msg">
-                  Your new auto message will be here.
-                </div>
-              </div>
-            </div>
-
-            <div class="mkz-c__i mkz-c__i_type_client">
-              <div class="mkz-c__i-content">
-                <div class="mkz-c__i-msg">
-                  Your new auto message will be here.
-                </div>
-              </div>
-            </div>
-
-          </div>
+        <div class="mkz-c__content mkz-c-js-scroll">
+          <div class="mkz-c__list mkz-c-js-history"></div>
         </div>
         <a class="mkz-c__copy" href="https://markeaze.com" target="_blank">
           <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
