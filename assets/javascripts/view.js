@@ -6,9 +6,10 @@ export default class View {
     this.app = app
     this.libs = app.libs
     this.channel = app.channel
+    this.allowSending = true
   }
   bind () {
-    this.libs.domEvent.add(this.elBtn, 'click', this.sendMsg.bind(this))
+    this.libs.domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
     this.libs.domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
     this.libs.domEvent.add(this.elInput, 'keypress', (e) => {
       if (e.keyCode == 13 && !e.shiftKey) {
@@ -45,16 +46,32 @@ export default class View {
     this.channel.push('client:activity', {type: 'typing', text: text})
   }
   sendMsg () {
+    if (!this.allowSending) return
     const text = this.libs.sanitise(this.elInput.value.trim())
     if (!text) return
-    this.channel.push('message:new', {body: text})
-    this.elInput.value = null
-    this.setMsgHeight()
+    this.channel
+      .push('message:new', {body: text})
+      .receive('ok', () => {
+        this.elInput.value = null
+        this.setMsgHeight()
+        this.enableSending.bind(this)
+      })
+      .receive('error', () => this.enableSending.bind(this))
+      .receive('timeout', () => this.enableSending.bind(this))
+    this.disableSending()
   }
   setMsgHeight () {
     this.elInput.style.height = 'auto'
     const newH = this.elInput.scrollHeight
     this.elInput.style.height = newH + 'px'
+  }
+  disableSending () {
+    this.allowSending = false
+    this.libs.helpers.addClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
+  }
+  enableSending () {
+    this.allowSending = true
+    this.libs.helpers.removeClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
   }
   render () {
     // can be called multiple times on one page
@@ -62,7 +79,7 @@ export default class View {
       this.el = this.libs.helpers.appendHTML(document.body, this.htmlTemplate())
       this.elContainer = this.el.querySelector('.mkz-c-js')
       this.elInput = this.el.querySelector('.mkz-c-js-input')
-      this.elBtn = this.el.querySelector('.mkz-c-js-btn')
+      this.elSubmit = this.el.querySelector('.mkz-c-js-submit')
       this.elClose = this.el.querySelector('.mkz-c-js-close')
       this.elToggle = this.el.querySelector('.mkz-c-js-toggle')
       this.elHistory = this.el.querySelector('.mkz-c-js-history')
@@ -149,7 +166,7 @@ export default class View {
             <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="Type your message here..."></textarea>
           </div>
           <div class="mkz-c__footer-btn">
-            <div class="mkz-c__btn mkz-c-js-btn">
+            <div class="mkz-c__submit mkz-c-js-submit">
               <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18.9675 0.949039L12.9784 17.6706C12.9069 17.8682 12.7194 17.9999 12.5092 18H12.3495C12.1535 18 11.9749 17.8874 11.8903 17.7105L9.53462 12.719C9.18774 11.9831 9.322 11.1103 9.874 10.5128L12.8686 7.23833C13.0524 7.04551 13.0524 6.74232 12.8686 6.5495L12.4893 6.17015C12.2965 5.98633 11.9933 5.98633 11.8005 6.17015L8.52644 9.16505C7.92893 9.71711 7.05625 9.85139 6.32044 9.50447L1.32949 7.14848C1.13702 7.076 1.00706 6.89483 1.00009 6.68926V6.52953C0.982409 6.30492 1.11738 6.09631 1.32949 6.0204L18.0492 0.0306031C18.2289 -0.0354106 18.4306 0.00725579 18.5682 0.140416L18.8278 0.399974C18.9838 0.536262 19.0394 0.754748 18.9675 0.949039Z" fill="currentColor"/>
               </svg>

@@ -194,8 +194,15 @@ $color_hint: #787878
     visibility: hidden
     transition: opacity 0.2s linear, visibility 0.4s 0s linear
 
-  .mkz-c__btn
+  .mkz-c__submit
     cursor: pointer
+    transition: all linear 0.2s
+    opacity: 1
+    color: $color_link
+
+  .mkz-c__submit_disabled_yes
+    cursor: default
+    opacity: 0.5
 
   .mkz-c__chat
     transition: opacity 0.2s linear, visibility 0.4s 0s linear
