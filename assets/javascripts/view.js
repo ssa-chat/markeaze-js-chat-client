@@ -53,7 +53,7 @@ export default class View {
       .receive('ok', () => {
         this.elInput.value = null
         this.setMsgHeight()
-        this.enableSending.bind(this)
+        this.enableSending()
       })
       .receive('error', () => this.enableSending.bind(this))
       .receive('timeout', () => this.enableSending.bind(this))

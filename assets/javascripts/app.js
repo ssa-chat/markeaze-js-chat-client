@@ -129,6 +129,7 @@ module.exports = {
       }
     }
     this.history = msgStory.addData(this.history, msg)
+    this.view.render()
   },
   setCurrentAgent (currentAgentId) {
     if (!currentAgentId && !this.currentAgent) return
