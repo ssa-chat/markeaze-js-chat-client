@@ -1,5 +1,6 @@
 const Socket = require('phoenix/assets/js/phoenix').Socket
 const msgStory = require('./msgStory')
+const msgDelivered = require('./msgDelivered')
 const View = require('./view').default
 
 module.exports = {
@@ -78,6 +79,13 @@ module.exports = {
   handlerAgentAssign () {
     this.setCurrentAgent(msg.agent_id)
   },
+  handlerCollapse (collapsed) {
+    if (collapsed === true) return
+
+    const muids = msgDelivered.getList()
+    for (const muid of muids) this.pusherMsgState(msg.muid, 'delivered')
+    msgDelivered.resetList()
+  },
   pusherTyping (text) {
     if (!text) return
 
@@ -97,12 +105,12 @@ module.exports = {
       sent_at: this.getDateTime()
     })
   },
-  purhserMsgState (uid) {
+  pusherMsgState (muid, state) {
     if (!muid) return
 
     this.channel.push('message:status:change', {
       muid: muid,
-      new_status: 'read',
+      new_status: state,
       performed_at: this.getDateTime()
     })
   },
@@ -114,7 +122,11 @@ module.exports = {
       const agent = this.getAgent(msg.agent_id)
       msg.avatar_url = agent ? agent.avatar_url : null
       // Status changes only for agent messages
-      this.purhserMsgState(msg.muid)
+      if (this.view.collapsed === false) this.pusherMsgState(msg.muid, 'read')
+      else {
+        this.pusherMsgState(msg.muid, 'delivered')
+        msgDelivered.addItem(msg.muid)
+      }
     }
     this.history = msgStory.addData(this.history, msg)
   },

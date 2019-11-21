@@ -19,7 +19,7 @@ module.exports = {
     this.setData(history)
     return history
   },
-  setData (history, msg) {
+  setData (history) {
     localStorage.setItem(this.name, JSON.stringify(history))
     return history
   }

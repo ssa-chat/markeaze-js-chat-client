@@ -39,6 +39,7 @@ export default class View {
       this.libs.helpers.addClass(document.body, bodyClassName)
       this.libs.helpers.removeClass(this.elContainer, containerClassName)
     }
+    this.app.handlerCollapse(this.collapsed)
   }
   sendTyping () {
     const text = this.elInput.value
