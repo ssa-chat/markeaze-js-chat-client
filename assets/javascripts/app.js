@@ -10,6 +10,7 @@ module.exports = {
   sessionsCount: 0,
   history: [],
   settings: {
+    typingTimeout: 1000,
     whitelabel: false,
     copyright: 'Powered by Markeaze',
     offline: 'Leave message',
@@ -77,22 +78,45 @@ module.exports = {
   handlerAgentAssign () {
     this.setCurrentAgent(msg.agent_id)
   },
+  pusherTyping (text) {
+    if (!text) return
+
+    return this.channel.push('client:activity', {
+      type: 'typing',
+      text: text
+    })
+  },
+  pusherNewMsg (text) {
+    if (!text) return
+
+    const timestamp = +(new Date)
+    const uid = this.store.uid
+    return this.channel.push('message:new', {
+      muid: `${uid}:c:${timestamp}`,
+      body: text,
+      sent_at: this.getDateTime()
+    })
+  },
+  purhserMsgState (uid) {
+    if (!muid) return
+
+    this.channel.push('message:status:change', {
+      muid: muid,
+      new_status: 'read',
+      performed_at: this.getDateTime()
+    })
+  },
+  getDateTime () {
+    return (new Date).toISOString()
+  },
   parseMsg (msg) {
     if (msg.agent_id) {
       const agent = this.getAgent(msg.agent_id)
       msg.avatar_url = agent ? agent.avatar_url : null
       // Status changes only for agent messages
-      this.changeMsgState(msg.uid)
+      this.purhserMsgState(msg.muid)
     }
     this.history = msgStory.addData(this.history, msg)
-  },
-  changeMsgState (uid) {
-    if (!uid) return
-
-    this.channel.push('message:status:change', {
-      uid: uid,
-      new_status: 'read'
-    })
   },
   setCurrentAgent (currentAgentId) {
     if (!currentAgentId && !this.currentAgent) return

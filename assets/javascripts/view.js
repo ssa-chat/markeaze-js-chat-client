@@ -5,7 +5,6 @@ export default class View {
     this.collapsed = true
     this.app = app
     this.libs = app.libs
-    this.channel = app.channel
     this.allowSending = true
   }
   bind () {
@@ -22,7 +21,7 @@ export default class View {
           this.timeoutTyping = setTimeout((() => {
             this.disableTyping = false
             this.sendTyping()
-          }), 500)
+          }), this.app.settings.typingTimeout)
         }
       }
     })
@@ -43,14 +42,13 @@ export default class View {
   }
   sendTyping () {
     const text = this.elInput.value
-    this.channel.push('client:activity', {type: 'typing', text: text})
+    this.app.pusherTyping(text)
   }
   sendMsg () {
     if (!this.allowSending) return
     const text = this.libs.sanitise(this.elInput.value.trim())
     if (!text) return
-    this.channel
-      .push('message:new', {body: text})
+    this.app.pusherNewMsg(text)
       .receive('ok', () => {
         this.elInput.value = null
         this.setMsgHeight()
@@ -137,7 +135,9 @@ export default class View {
               ${htmlAvatar}
               <div class="mkz-c__i-content">
                 <div class="mkz-c__i-msg">
-                  ${body}
+                  <div class="mkz-c__i-msg-overflow">
+                    ${body}
+                  </div>
                 </div>
               </div>
             </div>`

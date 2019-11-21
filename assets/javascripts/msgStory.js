@@ -10,7 +10,7 @@ module.exports = {
   },
   addData (history, msg) {
     history.push({
-      uid: msg.uid,
+      muid: msg.muid,
       body: msg.body,
       agent_id: msg.agent_id,
       sent_at: msg.sent_at,
