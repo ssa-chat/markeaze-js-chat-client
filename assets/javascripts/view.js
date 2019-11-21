@@ -86,6 +86,23 @@ export default class View {
   offlineAgents () {
     this.libs.helpers.removeClass(this.elContainer, 'mkz-c_agent_online')
   }
+  toggleNotice () {
+    const storeName = 'mkz_c_tooltip_hidden'
+    if (sessionStorage.getItem(storeName)) return
+    sessionStorage.setItem(storeName, true)
+    setTimeout(() => {
+      this.showNotice()
+    }, this.app.settings.noticeShowTimeout)
+    setTimeout(() => {
+      this.hideNotice()
+    }, this.app.settings.noticeShowTimeout + this.app.settings.noticeHideTimeout)
+  }
+  showNotice () {
+    this.libs.helpers.addClass(this.elContainer, 'mkz-c_tooltip_yes')
+  }
+  hideNotice () {
+    this.libs.helpers.removeClass(this.elContainer, 'mkz-c_tooltip_yes')
+  }
   render () {
     // can be called multiple times on one page
     if (!this.el) {
@@ -99,6 +116,7 @@ export default class View {
       this.elScroll = this.el.querySelector('.mkz-c-js-scroll')
       this.elAgentName = this.el.querySelector('.mkz-c-js-agent-name')
       this.bind()
+      this.toggleNotice()
     }
     this.renderMessages()
   }
@@ -136,7 +154,7 @@ export default class View {
         </a>`
     return `
 <div mkz-c>
-  <div class="mkz-c mkz-c_tooltip_yes mkz-c_collapse_yes mkz-c-js">
+  <div class="mkz-c mkz-c_collapse_yes mkz-c-js">
 
     <div class="mkz-c__handler mkz-c__handler_type_${this.app.settings.iconType} mkz-c__handler_position_${this.app.settings.iconPosition}" style="margin: ${this.app.settings.margin}">
       <div class="mkz-c__tooltip mkz-c__tooltip_picture_yes">

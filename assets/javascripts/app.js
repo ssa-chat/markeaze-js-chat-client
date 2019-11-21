@@ -16,6 +16,8 @@ module.exports = {
     placeholder: 'Type your message here...',
     noticeIcon: '/assets/images/tooltip.png',
     noticeText: 'Looking for<br />halloween gifts?',
+    noticeShowTimeout: 1000,
+    noticeHideTimeout: 10000,
     margin: '20px',
     iconColor: '#000',
     iconBg: '#F28E24',
