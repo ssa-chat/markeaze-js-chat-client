@@ -11,7 +11,7 @@ module.exports = {
   addData (history, msg) {
     history.push({
       muid: msg.muid,
-      body: msg.body,
+      text: msg.text,
       agent_id: msg.agent_id,
       sent_at: msg.sent_at,
       avatar_url: msg.avatar_url

@@ -130,14 +130,14 @@ export default class View {
   }
   htmlMessage (msg) {
     const htmlAvatar = msg.avatar_url ? `<img src="${msg.avatar_url}" class="mkz-c__i-avatar" alt="" />` : ''
-    const body = this.libs.sanitise(msg.body).split("\n").join('<br />')
+    const text = this.libs.sanitise(msg.text).split("\n").join('<br />')
     return `
             <div class="mkz-c__i mkz-c__i_type_${msg.agent_id ? 'agent' : 'client'}">
               ${htmlAvatar}
               <div class="mkz-c__i-content">
                 <div class="mkz-c__i-msg">
                   <div class="mkz-c__i-msg-overflow">
-                    ${body}
+                    ${text}
                   </div>
                 </div>
               </div>

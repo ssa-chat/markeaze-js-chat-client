@@ -101,7 +101,7 @@ module.exports = {
     const uid = this.store.uid
     return this.channel.push('message:new', {
       muid: `${uid}:c:${timestamp}`,
-      body: text,
+      text: text,
       sent_at: this.getDateTime()
     })
   },
