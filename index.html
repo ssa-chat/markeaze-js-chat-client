@@ -13,7 +13,7 @@ mkz('updateStore', {
   trackerEndpoint: 'localhost:5000',
   chatEndpoint: 'localhost:4000',
   plugins: {
-    chat: '/mkz-chat-client.js'
+    chat: {url: '/mkz-chat-client.js'}
   }
 });
 
