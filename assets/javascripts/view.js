@@ -5,7 +5,7 @@ export default class View {
     this.collapsed = true
     this.app = app
     this.libs = app.libs
-    this.allowSending = true
+    this.allowSending = false
   }
   bind () {
     this.libs.domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
@@ -41,6 +41,12 @@ export default class View {
     }
     this.app.handlerCollapse(this.collapsed)
   }
+  connected () {
+    this.enableSending()
+  }
+  disconnected () {
+    this.disableSending()
+  }
   sendTyping () {
     const text = this.elInput.value
     this.app.pusherTyping(text)
@@ -66,11 +72,11 @@ export default class View {
   }
   disableSending () {
     this.allowSending = false
-    this.libs.helpers.addClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
+    if (this.elSubmit) this.libs.helpers.addClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
   }
   enableSending () {
     this.allowSending = true
-    this.libs.helpers.removeClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
+    if (this.elSubmit) this.libs.helpers.removeClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
   }
   assignAgent () {
     this.elAgentName.innerHTML = this.app.currentAgent.name

@@ -42,16 +42,25 @@ module.exports = {
   },
   createConnection () {
     this.socket = new Socket(`//${this.store.chatEndpoint}/socket`)
-    this.socket.connect()
-    this.channel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
-
+    
     this.view = new View(this)
 
+    this.socket.onOpen(this.handlerConnected.bind(this))
+    this.socket.onClose(this.handlerDisconnected.bind(this))
+    this.socket.connect()
+
+    this.channel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
     this.channel.join().receive('ok', this.handlerReady.bind(this))
     this.channel.on('client:entered', this.handlerClientEntered.bind(this))
     this.channel.on('message:new', this.handlerMsg.bind(this))
     this.channel.on('message:resend', this.handlerMsgResend.bind(this))
     this.channel.on('agent:assign', this.handlerAgentAssign.bind(this))
+  },
+  handlerConnected () {
+    this.view.connected()
+  },
+  handlerDisconnected () {
+    this.view.disconnected()
   },
   handlerReady () {
     this.history = msgStory.getData()
@@ -111,7 +120,7 @@ module.exports = {
     this.channel.push('message:status:change', {
       muid: muid,
       new_status: state,
-      performed_at: this.getDateTime()
+      sent_at: this.getDateTime()
     })
   },
   getDateTime () {
