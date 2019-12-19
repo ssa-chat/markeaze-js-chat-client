@@ -3,7 +3,7 @@ module.exports = {
   addItem (muid) {
     let list = this.getList()
     list.push(muid)
-    this.setData(list)
+    this.setList(list)
     return list
   },
   getList () {

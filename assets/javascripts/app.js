@@ -92,7 +92,7 @@ module.exports = {
     if (collapsed === true) return
 
     const muids = msgDelivered.getList()
-    for (const muid of muids) this.pusherMsgState(msg.muid, 'delivered')
+    for (const muid of muids) this.pusherMsgState(muid, 'delivered')
     msgDelivered.resetList()
   },
   pusherTyping (text) {
@@ -129,7 +129,7 @@ module.exports = {
   parseMsg (msg) {
     if (msg.agent_id) {
       const agent = this.getAgent(msg.agent_id)
-      msg.avatar_url = agent ? agent.avatar_url : null
+      msg.sender_avatar_url = agent ? agent.sender_avatar_url : null
       // Status changes only for agent messages
       if (this.view.collapsed === false) this.pusherMsgState(msg.muid, 'read')
       else {

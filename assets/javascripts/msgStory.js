@@ -14,7 +14,8 @@ module.exports = {
       text: msg.text,
       agent_id: msg.agent_id,
       sent_at: msg.sent_at,
-      avatar_url: msg.avatar_url
+      sender_avatar_url: msg.sender_avatar_url,
+      sender_name: msg.sender_name
     })
     this.setData(history)
     return history

@@ -135,7 +135,7 @@ export default class View {
     }, 0)
   }
   htmlMessage (msg) {
-    const htmlAvatar = msg.avatar_url ? `<img src="${msg.avatar_url}" class="mkz-c__i-avatar" alt="" />` : ''
+    const htmlAvatar = msg.sender_avatar_url ? `<img src="${msg.sender_avatar_url}" class="mkz-c__i-avatar" alt="" title="${msg.sender_name}" />` : ''
     const text = this.libs.sanitise(msg.text).split("\n").join('<br />')
     return `
             <div class="mkz-c__i mkz-c__i_type_${msg.agent_id ? 'agent' : 'client'}">
