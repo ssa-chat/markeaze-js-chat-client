@@ -78,7 +78,7 @@ module.exports = {
     this.libs.log.push('chat', 'Msg', msg)
     this.view.scrollBottom()
   },
-  handlerMsgResend () {
+  handlerMsgResend (msg) {
     this.parseMsg(msg)
     this.view.scrollBottom()
     this.setCurrentAgent(msg.current_agent_id)
