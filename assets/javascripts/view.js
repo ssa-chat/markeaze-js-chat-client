@@ -53,7 +53,7 @@ export default class View {
   }
   sendMsg () {
     if (!this.allowSending) return
-    const text = this.libs.sanitise(this.elInput.value.trim())
+    const text = this.elInput.value.trim()
     if (!text) return
     this.app.pusherNewMsg(text)
       .receive('ok', () => {
@@ -136,7 +136,7 @@ export default class View {
   }
   htmlMessage (msg) {
     const htmlAvatar = msg.sender_avatar_url ? `<img src="${msg.sender_avatar_url}" class="mkz-c__i-avatar" alt="" title="${msg.sender_name}" />` : ''
-    const text = this.libs.sanitise(msg.text).split("\n").join('<br />')
+    const text = msg.text.split("\n").join('<br />')
     return `
             <div class="mkz-c__i mkz-c__i_type_${msg.agent_id ? 'agent' : 'client'}">
               ${htmlAvatar}

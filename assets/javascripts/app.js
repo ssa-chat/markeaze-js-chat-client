@@ -35,7 +35,6 @@ module.exports = {
     window[nameVariable](function() {
       self.store = this.store
       self.libs = this.libs
-      self.libs.sanitise = self.sanitise
       self.createConnection.apply(self)
       self.libs.log.push('chat', 'init')
     })
@@ -155,18 +154,5 @@ module.exports = {
   },
   getAgent (id) {
     return this.agents[id] || null
-  },
-  sanitise (str) {
-    if (!str) return
-    const map = {
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#x27;',
-      "/": '&#x2F;',
-      '&': '&'
-    }
-    const reg = /[&<>"'/]/ig
-    return str.replace(reg, (match) => (map[match]))
   }
 }
