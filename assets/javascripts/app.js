@@ -2,6 +2,7 @@ const Socket = require('phoenix/assets/js/phoenix').Socket
 const msgStory = require('./msgStory')
 const msgDelivered = require('./msgDelivered')
 const View = require('./view').default
+const Sound = require('./sound').default
 
 module.exports = {
   store: null, // Store from the main app
@@ -25,7 +26,9 @@ module.exports = {
     iconBg: '#F28E24',
     iconText: 'We’re here. Let’s chat!',
     iconPosition: 'r-b', // l-t / r-t / l-b / r-b
-    iconType: 'bubble' // bar / bubble
+    iconType: 'bubble', // bar / bubble
+    soundUrl: 'https://dmyqxi5zjm55y.cloudfront.net/public/chat/sounds',
+    soundName: 'vk_1'
   },
   ready (nameVariable) {
     // Abort if tracker app is undefined
@@ -38,6 +41,8 @@ module.exports = {
       self.createConnection.apply(self)
       self.libs.log.push('chat', 'init')
     })
+
+    this.sound = new Sound(this.settings.soundUrl, this.settings.soundName)
   },
   createConnection () {
     this.socket = new Socket(`//${this.store.chatEndpoint}/socket`)
@@ -93,6 +98,7 @@ module.exports = {
     const muids = msgDelivered.getList()
     for (const muid of muids) this.pusherMsgState(muid, 'delivered')
     msgDelivered.resetList()
+    this.view.renderUnread()
   },
   pusherTyping (text) {
     if (!text) return
@@ -134,7 +140,9 @@ module.exports = {
       else {
         this.pusherMsgState(msg.muid, 'delivered')
         msgDelivered.addItem(msg.muid)
+        this.view.renderUnread()
       }
+      this.sound.play()
     }
     this.history = msgStory.addData(this.history, msg)
     this.view.render()
