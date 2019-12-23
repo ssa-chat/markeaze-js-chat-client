@@ -53,8 +53,12 @@ module.exports = {
     this.socket.onClose(this.handlerDisconnected.bind(this))
     this.socket.connect()
 
-    this.channel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
-    this.channel.join().receive('ok', this.handlerReady.bind(this))
+    this.channelName = `room:${this.store.appKey}:${this.store.uid}`
+
+    this.channel = this.socket.channel(this.channelName)
+    this.channel.join()
+      .receive('ok', this.handlerJoined.bind(this))
+      .receive('error', this.handlerJoinError.bind(this))
     this.channel.on('client:entered', this.handlerClientEntered.bind(this))
     this.channel.on('message:new', this.handlerMsg.bind(this))
     this.channel.on('message:resend', this.handlerMsgResend.bind(this))
@@ -66,7 +70,7 @@ module.exports = {
   handlerDisconnected () {
     this.view.disconnected()
   },
-  handlerReady () {
+  handlerJoined () {
     this.history = msgStory.getData()
     this.view.render()
     this.view.scrollBottom()
@@ -77,6 +81,9 @@ module.exports = {
     this.sessionsCount = msg.sessionsCount
     this.setCurrentAgent(msg.current_agent_id)
     this.libs.log.push('chat', 'ClientEntered', msg)
+  },
+  handlerJoinError () {
+    console.error(`Cannot join channel ${this.channelName}`)
   },
   handlerMsg (msg) {
     this.parseMsg(msg)
