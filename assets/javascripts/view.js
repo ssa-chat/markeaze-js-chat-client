@@ -138,6 +138,10 @@ export default class View {
     this.elUnread.innerHTML = unreadCount
     this.elUnread.style.display = unreadCount === 0 ? 'none' : 'block'
   }
+  renderAgentState () {
+    if (this.app.agentIsOnline) this.onlineAgents()
+    else this.offlineAgents()
+  }
   scrollBottom () {
     setTimeout(() => {
       this.elScroll.scrollTop = this.elScroll.scrollHeight

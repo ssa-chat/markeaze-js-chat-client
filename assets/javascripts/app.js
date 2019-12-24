@@ -9,6 +9,7 @@ module.exports = {
   libs: null, // Libraries from the main app
   currentAgent: null,
   agents: [],
+  agentIsOnline: false,
   sessionsCount: 0,
   history: [],
   settings: {
@@ -53,16 +54,15 @@ module.exports = {
     this.socket.onClose(this.handlerDisconnected.bind(this))
     this.socket.connect()
 
-    this.channelName = `room:${this.store.appKey}:${this.store.uid}`
-
-    this.channel = this.socket.channel(this.channelName)
-    this.channel.join()
+    const clientChannelName = `room:${this.store.appKey}:${this.store.uid}`
+    this.clientChannel = this.socket.channel(clientChannelName)
+    this.clientChannel.join()
       .receive('ok', this.handlerJoined.bind(this))
-      .receive('error', this.handlerJoinError.bind(this))
-    this.channel.on('client:entered', this.handlerClientEntered.bind(this))
-    this.channel.on('message:new', this.handlerMsg.bind(this))
-    this.channel.on('message:resend', this.handlerMsgResend.bind(this))
-    this.channel.on('agent:assign', this.handlerAgentAssign.bind(this))
+      .receive('error', () => console.error(`Cannot join channel ${clientChannelName}`))
+    this.clientChannel.on('client:entered', this.handlerClientEntered.bind(this))
+    this.clientChannel.on('message:new', this.handlerMsg.bind(this))
+    this.clientChannel.on('message:resend', this.handlerMsgResend.bind(this))
+    this.clientChannel.on('agent:assign', this.handlerAgentAssign.bind(this))
   },
   handlerConnected () {
     this.view.connected()
@@ -80,10 +80,8 @@ module.exports = {
     this.setAgents(msg.agents)
     this.sessionsCount = msg.sessionsCount
     this.setCurrentAgent(msg.current_agent_id)
+    this.updateAgentState()
     this.libs.log.push('chat', 'ClientEntered', msg)
-  },
-  handlerJoinError () {
-    console.error(`Cannot join channel ${this.channelName}`)
   },
   handlerMsg (msg) {
     this.parseMsg(msg)
@@ -110,7 +108,7 @@ module.exports = {
   pusherTyping (text) {
     if (!text) return
 
-    return this.channel.push('client:activity', {
+    return this.clientChannel.push('client:activity', {
       type: 'typing',
       text: text
     })
@@ -120,7 +118,7 @@ module.exports = {
 
     const timestamp = +(new Date)
     const uid = this.store.uid
-    return this.channel.push('message:new', {
+    return this.clientChannel.push('message:new', {
       muid: `${uid}:c:${timestamp}`,
       text: text,
       sent_at: this.getDateTime()
@@ -129,7 +127,7 @@ module.exports = {
   pusherMsgState (muid, state) {
     if (!muid) return
 
-    this.channel.push('message:status:change', {
+    this.clientChannel.push('message:status:change', {
       muid: muid,
       new_status: state,
       sent_at: this.getDateTime()
@@ -162,12 +160,20 @@ module.exports = {
     else this.view.unassignAgent()
   },
   setAgents (agents) {
-    this.agents = agents.reduce((obj, item) => {
-      obj[item.id] = item
+    this.agents = agents.reduce((obj, agent) => {
+      obj[agent.id] = agent
       return obj
     }, {})
   },
   getAgent (id) {
     return this.agents[id] || null
+  },
+  updateAgentState () {
+    if (this.currentAgent) {
+      this.agentIsOnline = this.currentAgent.isOnline
+    } else {
+      this.agentIsOnline = Object.values(this.agents).find((agent) => agent.isOnline) && true
+    }
+    this.view.renderAgentState()
   }
 }
