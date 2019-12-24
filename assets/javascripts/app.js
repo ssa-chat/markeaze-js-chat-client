@@ -54,11 +54,16 @@ module.exports = {
     this.socket.onClose(this.handlerDisconnected.bind(this))
     this.socket.connect()
 
-    const clientChannelName = `room:${this.store.appKey}:${this.store.uid}`
-    this.clientChannel = this.socket.channel(clientChannelName)
+    this.servicChannel = this.socket.channel(`chat-client:${this.store.appKey}`)
+    this.servicChannel.join()
+      .receive('error', () => console.error(`Cannot join channel ${this.servicChannel.topic}`))
+    this.servicChannel.on('agent:entered', this.handlerAgentStatus.bind(this, true))
+    this.servicChannel.on('agent:exited', this.handlerAgentStatus.bind(this, false))
+
+    this.clientChannel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
     this.clientChannel.join()
       .receive('ok', this.handlerJoined.bind(this))
-      .receive('error', () => console.error(`Cannot join channel ${clientChannelName}`))
+      .receive('error', (e, d) => console.error(`Cannot join channel ${this.clientChannel.topic}`))
     this.clientChannel.on('client:entered', this.handlerClientEntered.bind(this))
     this.clientChannel.on('message:new', this.handlerMsg.bind(this))
     this.clientChannel.on('message:resend', this.handlerMsgResend.bind(this))
@@ -75,6 +80,12 @@ module.exports = {
     this.view.render()
     this.view.scrollBottom()
     this.libs.log.push('chat', 'joined')
+  },
+  handlerAgentStatus (isOnline, {agent_id}) {
+    const agent = this.getAgent(agent_id)
+    if (!agent) return
+    agent.isOnline = isOnline
+    this.updateAgentState()
   },
   handlerClientEntered (msg) {
     this.setAgents(msg.agents)
