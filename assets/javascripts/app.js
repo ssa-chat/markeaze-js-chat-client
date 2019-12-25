@@ -112,7 +112,7 @@ module.exports = {
     if (collapsed === true) return
 
     const muids = msgDelivered.getList()
-    for (const muid of muids) this.pusherMsgState(muid, 'delivered')
+    for (const muid of muids) this.pusherMsgState(muid, 'read')
     msgDelivered.resetList()
     this.view.renderUnread()
   },
