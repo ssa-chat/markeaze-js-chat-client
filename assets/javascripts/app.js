@@ -132,6 +132,7 @@ module.exports = {
     return this.clientChannel.push('message:new', {
       muid: `${uid}:c:${timestamp}`,
       text: text,
+      status: 'sent',
       sent_at: this.getDateTime()
     })
   },
