@@ -11,7 +11,7 @@ export default class View {
   bind () {
     this.libs.domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
     this.libs.domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
-    this.libs.domEvent.add(this.elInput, 'keypress', (e) => {
+    this.libs.domEvent.add(this.elInput, 'keydown', (e) => {
       if (e.keyCode == 13 && !e.shiftKey) {
         e.preventDefault()
         this.sendMsg()
