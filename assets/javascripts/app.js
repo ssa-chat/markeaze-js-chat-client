@@ -105,8 +105,8 @@ module.exports = {
     this.setCurrentAgent(msg.current_agent_id)
     this.libs.log.push('chat', 'Resend', msg)
   },
-  handlerAgentAssign () {
-    this.setCurrentAgent(msg.agent_id)
+  handlerAgentAssign (msg) {
+    this.setCurrentAgent(msg.target_agent_id)
   },
   handlerCollapse (collapsed) {
     if (collapsed === true) return
