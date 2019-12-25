@@ -18,7 +18,7 @@ module.exports = {
     copyright: 'Powered by Markeaze',
     offline: 'Leave message',
     placeholder: 'Type your message here...',
-    noticeIcon: '/assets/images/tooltip.png',
+    noticeIcon: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/4bf59ea648831ee3f1bd7f894501065b.png',
     noticeText: 'Looking for<br />halloween gifts?',
     noticeShowTimeout: 1000,
     noticeHideTimeout: 10000,
