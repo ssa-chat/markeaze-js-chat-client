@@ -12,6 +12,7 @@
   "author": "markeaze",
   "license": "ISC",
   "dependencies": {
+    "@airbrake/browser": "^1.0.6",
     "@babel/core": "^7.1.6",
     "@babel/preset-env": "^7.1.6",
     "babel-loader": "^8.0.4",

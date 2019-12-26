@@ -1,3 +1,4 @@
+require('./notifier')
 const Socket = require('phoenix/assets/js/phoenix').Socket
 const msgStory = require('./msgStory')
 const msgDelivered = require('./msgDelivered')
@@ -47,7 +48,7 @@ module.exports = {
   },
   createConnection () {
     this.socket = new Socket(`//${this.store.chatEndpoint}/socket`)
-    
+
     this.view = new View(this)
 
     this.socket.onOpen(this.handlerConnected.bind(this))
