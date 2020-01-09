@@ -6,23 +6,46 @@ const View = require('./view').default
 const Sound = require('./sound').default
 
 module.exports = {
-  store: null, // Store from the main app
-  libs: null, // Libraries from the main app
+
+  // plugin methods
+
+  version: '0.0.1',
+  store: {}, // Store from the main app
+  libs: {}, // Libraries from the main app
+  create (options) {
+    this.options = options
+    this.log('chat', 'created')
+    this.createConnection()
+
+    this.sound = new Sound(this.options.soundUrl, this.options.soundName)
+  },
+  destroy () {
+    if (this.view) this.view.destroy()
+    if (this.socket) this.socket.disconnect()
+  },
+  preview (options, settings = {}) {
+    this.options = options
+    this.view = new View(this)
+    this.view.render()
+
+    if (settings.collapsed) this.view.showNotice()
+    else this.view.collapse()
+  },
+
+  // app
+
   currentAgent: null,
   agents: [],
   agentIsOnline: false,
   sessionsCount: 0,
   history: [],
-  settings: {
-    typingTimeout: 1000,
+  options: {
     whitelabel: false,
     copyright: 'Powered by Markeaze',
     offline: 'Leave message',
     placeholder: 'Type your message here...',
     noticeIcon: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/4bf59ea648831ee3f1bd7f894501065b.png',
     noticeText: 'Ask us any<br />question',
-    noticeShowTimeout: 1000,
-    noticeHideTimeout: 10000,
     margin: '20px',
     iconColor: '#000',
     iconBg: '#F28E24',
@@ -32,19 +55,8 @@ module.exports = {
     soundUrl: 'https://dmyqxi5zjm55y.cloudfront.net/public/chat/sounds',
     soundName: 'vk_1'
   },
-  ready (nameVariable) {
-    // Abort if tracker app is undefined
-    if (!window[nameVariable]) return false
-
-    const self = this
-    window[nameVariable](function() {
-      self.store = this.store
-      self.libs = this.libs
-      self.createConnection.apply(self)
-      self.libs.log.push('chat', 'init')
-    })
-
-    this.sound = new Sound(this.settings.soundUrl, this.settings.soundName)
+  log () {
+    if (this.libs.log) this.libs.log.push('chat', ...arguments)
   },
   createConnection () {
     this.socket = new Socket(`//${this.store.chatEndpoint}/socket`)
@@ -80,7 +92,7 @@ module.exports = {
     this.history = msgStory.getData()
     this.view.render()
     this.view.scrollBottom()
-    this.libs.log.push('chat', 'joined')
+    this.log('chat', 'joined')
   },
   handlerAgentStatus (isOnline, {agent_id}) {
     const agent = this.getAgent(agent_id)
@@ -93,18 +105,18 @@ module.exports = {
     this.sessionsCount = msg.sessionsCount
     this.setCurrentAgent(msg.current_agent_id)
     this.updateAgentState()
-    this.libs.log.push('chat', 'ClientEntered', msg)
+    this.log('chat', 'ClientEntered', msg)
   },
   handlerMsg (msg) {
     this.parseMsg(msg)
-    this.libs.log.push('chat', 'Msg', msg)
+    this.log('chat', 'Msg', msg)
     this.view.scrollBottom()
   },
   handlerMsgResend (msg) {
     this.parseMsg(msg)
     this.view.scrollBottom()
     this.setCurrentAgent(msg.current_agent_id)
-    this.libs.log.push('chat', 'Resend', msg)
+    this.log('chat', 'Resend', msg)
   },
   handlerAgentAssign (msg) {
     this.setCurrentAgent(msg.target_agent_id)
@@ -189,4 +201,5 @@ module.exports = {
     }
     this.view.renderAgentState()
   }
+
 }

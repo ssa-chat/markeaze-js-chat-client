@@ -1,2 +1,2 @@
 import app from './assets/javascripts/app'
-app.ready('mkz')
+mkz('initPlugin', 'chat',  app)

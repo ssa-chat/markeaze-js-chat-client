@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Markeaze js chat client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <h1>Markeaze js chat client</h1>
+    <h2>Preview mode</h2>
+    <a href="/">Go to common mode</a>
+    <hr />
+    <script type="text/javascript">
+var app = {};
+window.mkz = function (method, pluginName, plugin) {
+  app = plugin
+  render();
+}
+var render = function(settings) {
+  const options = {
+    whitelabel: false,
+    copyright: 'Powered by Markeaze',
+    offline: 'Leave message',
+    placeholder: 'Type your message here...',
+    noticeIcon: '/assets/images/tooltip.png',
+    noticeText: 'Looking for<br />halloween gifts?',
+    margin: '20px',
+    iconColor: '#000',
+    iconBg: '#F28E24',
+    iconText: 'We’re here. Let’s chat!',
+    iconPosition: 'r-b', // l-t / r-t / l-b / r-b
+    iconType: 'bubble', // bar / bubble
+    soundUrl: 'https://dmyqxi5zjm55y.cloudfront.net/public/chat/sounds',
+    soundName: 'vk_1'
+  }
+  app.destroy()
+  app.preview(options, settings)
+}
+    </script>
+    <script src="/mkz-chat-client.js" type="text/javascript"></script>
+    <button onclick="render({collapsed: false})">Show</button>
+    <button onclick="render({collapsed: true})">Hide</button>
+  </body>
+</html>

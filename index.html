@@ -1,12 +1,13 @@
 <html>
   <head>
-      <title>Markeaze js chat client</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <!-- Markeaze -->
-      <script>
+    <title>Markeaze js chat client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Markeaze -->
+    <script type="text/javascript">
 
-(function(w,d,c,h){w[c]=w[c]||function(){(w[c].q=w[c].q||[]).push(arguments)};var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','https://cdn.jsdelivr.net/gh/markeaze/markeaze-js-tracker@latest/dist/mkz.js');
-// (function(w,d,c,h){w[c]=w[c]||function(){(w[c].q=w[c].q||[]).push(arguments)};var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','http://localhost:8084/mkz.js');
+// (function(w,d,c,h){w[c]=w[c]||function(){(w[c].q=w[c].q||[]).push(arguments)};var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','https://cdn.jsdelivr.net/gh/markeaze/markeaze-js-tracker@latest/dist/mkz.js');
+
+(function(w,d,c,h){w[c]=w[c]||function(){(w[c].q=w[c].q||[]).push(arguments)};var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','http://localhost:8084/mkz.js');
 
 mkz('debug', true);
 mkz('updateStore', {
@@ -18,18 +19,13 @@ mkz('updateStore', {
 });
 
 mkz('appKey', '2840ad505de48551@dev');
-      </script>
+
+    </script>
       <!-- /Markeaze -->
   </head>
   <body>
     <h1>Markeaze js chat client</h1>
-    <style type="text/css">
-body {
-  padding: 20px;
-  margin: 0;
-  font-size: 14px;
-  font-family: Arial;
-}
-    </style>
+    <h2>Common mode</h2>
+    <a href="/preview.html">Go to preview mode</a>
   </body>
 </html>
