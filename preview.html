@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <title>Markeaze js chat client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <h1>Markeaze js chat client</h1>
+    <h2>Preview mode</h2>
+    <a href="/">Go to common mode</a>
+    <hr />
+    <script type="text/javascript">
+var app = {};
+window.mkz = function (method, pluginName, plugin) {
+  app = plugin
+  render({collapsed: true});
+}
+var render = function(settings) {
+  settings.history = [
+    {"muid":"zzz:c:1576752483292","text":"Questin","agent_id":null,"sent_at":"2019-12-19T10:48:03.314923Z","sender_avatar_url":null,"sender_name":null},
+    {"muid":"86:a:1576750209103","text":"Answer","agent_id":3,"sent_at":"2019-12-19T10:10:09.107155Z","sender_name":"Tester"}
+  ]
+  settings.currentAgent = {
+    isOnline: true,
+    name: 'Buffalo Bill',
+    post: 'Real killer',
+    avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png'
+  }
+  const options = {
+    bar_type: 'bubble', // bar / bubble
+    bar_position: 'r-b', // l-t / r-t / l-b / r-b
+    bar_padding_x: '20px',
+    bar_padding_y: '20px',
+    bar_color: '#000',
+    bar_bg: '#F28E24',
+    bar_text_online: 'We’re here. Let’s chat!',
+    bar_text_offline: 'Leave message',
+    // bar_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/some.svg',
+    notice_icon_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png',
+    notice_text: 'Looking for halloween gifts?',
+    notice_color: '#fff',
+    notice_bg: '#333',
+
+    title_color: '#fff',
+    title_bg: '#F28E24',
+    agent_msg_bg: '#E7FEEA',
+    client_msg_bg: '#FFFFFF',
+    list_bg: '#fff',
+    agent_avatar: true,
+    agent_post: true,
+    markeaze_link: true,   
+    client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/sounds/new_message'
+  }
+  app.destroy()
+  app.preview('en', options, settings)
+}
+    </script>
+    <script src="/mkz-chat-client.js" type="text/javascript"></script>
+    <button onclick="render({collapsed: false})">Show</button>
+    <button onclick="render({collapsed: true})">Hide</button>
+  </body>
+</html>
