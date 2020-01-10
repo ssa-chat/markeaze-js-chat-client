@@ -1,5 +1,5 @@
 $font: Geneva, Arial, Helvetica, sans-serif
-$color_border: #CBCBCB
+$color_border: #E0E0E0
 $color_link: #7261FF
 $color_text: #000
 $color_bg: #FAFAFA
@@ -38,7 +38,7 @@ $color_hint: #787878
     .mkz-c__m-unassign-text
       display: none
 
-    .mkz-c__m-assign-text
+    .mkz-c__m-assign-text, .mkz-c__m-assign-post, .mkz-c__m-assign-avatar
       display: block
 
   .mkz-c_agent_online
@@ -90,8 +90,8 @@ $color_hint: #787878
   .mkz-c__handler_type_bubble
 
     .mkz-c__btn
-      width: 50px
-      height: 50px
+      width: 60px
+      height: 60px
       border-radius: 50%
       background-color: #eee
       color: #000
@@ -167,11 +167,11 @@ $color_hint: #787878
 
     .mkz-c__btn-text
       flex: 1
-      font-size: 13px
+      font-size: 14px
       line-height: 18px
       font-weight: 600
       white-space: nowrap
-      max-width: 160px
+      max-width: 230px
       overflow: hidden
       text-overflow: ellipsis
 
@@ -194,8 +194,9 @@ $color_hint: #787878
       max-width: 160px
       box-sizing: border-box
       font-weight: 600
-      font-size: 13px
+      font-size: 16px
       line-height: 18px
+      max-width: 100px
 
       &:after
         content: ''
@@ -223,7 +224,7 @@ $color_hint: #787878
     cursor: pointer
     transition: all linear 0.2s
     opacity: 1
-    color: $color_link
+    color: $color_hint
 
   .mkz-c__submit_disabled_yes
     cursor: default
@@ -237,12 +238,12 @@ $color_hint: #787878
     right: 0
     bottom: 0
     width: 100%
-    max-width: 400px
+    max-width: 348px
     max-height: 800px
     height: 100vh
     z-index: 10000
 
-  .mkz-c__cart
+  .mkz-c__cart, .mkz-c__cart-shadow
     position: absolute
     left: 0
     top: 20px
@@ -252,16 +253,19 @@ $color_hint: #787878
     justify-content: stretch
     flex-direction: column
     background-color: #fff
-    border: 1px solid $color_border
     border-radius: 3px
+    z-index: 5
+
+  .mkz-c__cart-shadow
+    z-index: 0
     box-shadow: 0 0 10px rgba(25, 25, 29, 0.25)
+    opacity: 0.75
 
   .mkz-c__head, .mkz-c__content, .mkz-c__copy, .mkz-c__footer
-    padding: 0 20px
+    padding: 0 15px
 
   .mkz-c__head, .mkz-c__copy, .mkz-c__footer
     flex: 0
-    padding: 0 20px
 
   .mkz-c__content, .mkz-c__copy
     background-color: $color_bg
@@ -277,6 +281,9 @@ $color_hint: #787878
     border-bottom: 1px solid $color_border
     padding-top: 5px
     padding-bottom: 5px
+    border-radius: 6px 6px 0 0
+    min-height: 60px
+    box-sizing: border-box
 
   .mkz-c__head-state
     flex: 0
@@ -291,10 +298,10 @@ $color_hint: #787878
 
   .mkz-c__copy
     text-align: center
-    font-size: 8px
+    font-size: 11px
     line-height: 24px
     display: block
-    color: $color_text
+    color: $color_hint
     text-decoration: none
 
     &:hover
@@ -302,45 +309,67 @@ $color_hint: #787878
 
   .mkz-c__m-assign-text, .mkz-c__m-unassign-text
     font-weight: 600
-    font-size: 13px
+    font-size: 14px
     line-height: 1.2em
 
-  .mkz-c__m-assign-text
+  .mkz-c__m-assign-post
+    font-size: 11px
+    line-height: 1.2em
+
+  .mkz-c__m-assign-text, .mkz-c__m-assign-post, .mkz-c__m-assign-avatar
     display: none
+
+  .mkz-c__m-assign-avatar
+    width: 30px
+    height: 30px
+    border-radius: 50%
 
   .mkz-c__close
     cursor: pointer
     padding: 10px
     margin: 0 -10px
+    opacity: 0.7
+    transition: all linear 0.2s
 
-  .mkz-c__footer
-    border-top: 1px solid $color_border
+    &:hover
+      opacity: 1
+
+  .mkz-c__state-wrap
+    position: relative
+    min-width: 10px
+    min-height: 10px
 
   .mkz-c__state
+    position: absolute
+    right: 0
+    bottom: 0
     width: 10px
     height: 10px
     border-radius: 50%
     background-color: red
     transition: background 0.5s linear
+    box-shadow: 0 0 1px 1px #fff
 
   .mkz-c__footer
+    border-top: 1px solid $color_border
     display: flex
     align-items: center
-    padding-top: 10px
-    padding-bottom: 10px
+    padding-top: 20px
+    padding-bottom: 20px
 
   .mkz-c__footer-msg
     flex: 1
 
   .mkz-c__footer-btn
     flex: 0
+    display: none
 
   .mkz-c__input
     display: block
     width: 100%
     resize: none
     padding: 0
-    font-size: 10px
+    font-size: 13px
     line-height: 1.2em
     font-family: $font
     color: $color_text
@@ -385,6 +414,7 @@ $color_hint: #787878
 
     .mkz-c__i-msg
       background-color: #fff
+      border-radius: 6px 6px 0 6px
 
   .mkz-c__i-content
     max-width: 100%
@@ -398,10 +428,10 @@ $color_hint: #787878
   .mkz-c__i-msg
     text-align: left
     background-color: #E7FEEA
-    border-radius: 6px
-    padding: 5px 10px
+    border-radius: 6px 6px 6px 0
+    padding: 8px 15px
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.12), 0px 0px 1px rgba(0, 0, 0, 0.48)
-    font-size: 10px
+    font-size: 13px
     line-height: 1.5em
 
   .mkz-c__i-msg-overflow
@@ -426,3 +456,6 @@ $color_hint: #787878
       top: 0
       bottom: 0
       border-style: none
+
+    .mkz-c__footer-btn
+      display: block

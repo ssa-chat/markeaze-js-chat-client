@@ -25,11 +25,18 @@ module.exports = {
   },
   preview (options, settings = {}) {
     this.options = options
+    this.history = settings.history || []
+    this.currentAgent = settings.currentAgent || null
     this.view = new View(this)
     this.view.render()
 
     if (settings.collapsed) this.view.showNotice()
     else this.view.collapse()
+
+    if (this.currentAgent) {
+      this.view.assignAgent()
+      this.updateAgentState()
+    }
   },
 
   // app

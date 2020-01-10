@@ -12,11 +12,21 @@
 var app = {};
 window.mkz = function (method, pluginName, plugin) {
   app = plugin
-  render();
+  render({collapsed: true});
 }
 var render = function(settings) {
+  settings.history = [
+    {"muid":"zzz:c:1576752483292","text":"Questin","agent_id":null,"sent_at":"2019-12-19T10:48:03.314923Z","sender_avatar_url":null,"sender_name":null},
+    {"muid":"86:a:1576750209103","text":"Answer","agent_id":3,"sent_at":"2019-12-19T10:10:09.107155Z","sender_name":"Tester"}
+  ]
+  settings.currentAgent = {
+    isOnline: true,
+    name: 'Buffalo Bill',
+    post: 'Real killer',
+    avatar_url: 'https://www.gravatar.com/avatar/f6e537be0731c15258bfd842f2e77a30?size=240&default=https%3A%2F%2Fs3-alpha.figma.com%2Fstatic%2Fuser_a_v2.png'
+  }
   const options = {
-    bar_type: 'bar', // bar / bubble
+    bar_type: 'bubble', // bar / bubble
     bar_position: 'r-b', // l-t / r-t / l-b / r-b
     bar_padding_x: '20px',
     bar_padding_y: '20px',
@@ -34,7 +44,7 @@ var render = function(settings) {
     title_bg: '#F28E24',
     agent_msg_bg: '#E7FEEA',
     client_msg_bg: '#FFFFFF',
-    list_bg: '#FAFAFA',
+    list_bg: '#fff',
     agent_avatar: true,
     agent_post: true,
     markeaze_link: true,   
