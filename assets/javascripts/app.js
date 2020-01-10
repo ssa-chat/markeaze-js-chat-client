@@ -17,7 +17,7 @@ module.exports = {
     this.log('chat', 'created')
     this.createConnection()
 
-    this.sound = new Sound(this.options.soundUrl, this.options.soundName)
+    this.sound = new Sound(this.options.client_sound_path)
   },
   destroy () {
     if (this.view) this.view.destroy()
@@ -39,22 +39,7 @@ module.exports = {
   agentIsOnline: false,
   sessionsCount: 0,
   history: [],
-  options: {
-    whitelabel: false,
-    copyright: 'Powered by Markeaze',
-    offline: 'Leave message',
-    placeholder: 'Type your message here...',
-    noticeIcon: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/4bf59ea648831ee3f1bd7f894501065b.png',
-    noticeText: 'Ask us any<br />question',
-    margin: '20px',
-    iconColor: '#000',
-    iconBg: '#F28E24',
-    iconText: 'We’re here. Let’s chat!',
-    iconPosition: 'r-b', // l-t / r-t / l-b / r-b
-    iconType: 'bubble', // bar / bubble
-    soundUrl: 'https://dmyqxi5zjm55y.cloudfront.net/public/chat/sounds',
-    soundName: 'vk_1'
-  },
+  options: {},
   log () {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)
   },

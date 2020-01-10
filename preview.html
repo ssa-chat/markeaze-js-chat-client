@@ -16,20 +16,31 @@ window.mkz = function (method, pluginName, plugin) {
 }
 var render = function(settings) {
   const options = {
-    whitelabel: false,
+    bar_type: 'bar', // bar / bubble
+    bar_position: 'r-b', // l-t / r-t / l-b / r-b
+    bar_padding_x: '20px',
+    bar_padding_y: '20px',
+    bar_color: '#000',
+    bar_bg: '#F28E24',
+    bar_text_online: 'We’re here. Let’s chat!',
+    bar_text_offline: 'Leave message',
+    // bar_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/some.svg',
+    notice_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/4bf59ea648831ee3f1bd7f894501065b.png',
+    notice_text: 'Looking for halloween gifts?',
+    notice_color: '#fff',
+    notice_bg: '#333',
+
+    title_color: '#fff',
+    title_bg: '#F28E24',
+    agent_msg_bg: '#E7FEEA',
+    client_msg_bg: '#FFFFFF',
+    list_bg: '#FAFAFA',
+    agent_avatar: true,
+    agent_post: true,
+    markeaze_link: true,   
+    client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/sounds/dating_chat',
     copyright: 'Powered by Markeaze',
-    offline: 'Leave message',
-    placeholder: 'Type your message here...',
-    noticeIcon: '/assets/images/tooltip.png',
-    noticeText: 'Looking for<br />halloween gifts?',
-    margin: '20px',
-    iconColor: '#000',
-    iconBg: '#F28E24',
-    iconText: 'We’re here. Let’s chat!',
-    iconPosition: 'r-b', // l-t / r-t / l-b / r-b
-    iconType: 'bubble', // bar / bubble
-    soundUrl: 'https://dmyqxi5zjm55y.cloudfront.net/public/chat/sounds',
-    soundName: 'vk_1'
+    placeholder: 'Type your message here...'
   }
   app.destroy()
   app.preview(options, settings)
