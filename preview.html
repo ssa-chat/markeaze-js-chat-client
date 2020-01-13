@@ -12,7 +12,7 @@
 var app = {};
 window.mkz = function (method, pluginName, plugin) {
   app = plugin
-  render({collapsed: false});
+  render({collapsed: true});
 }
 var render = function(settings) {
   settings.history = [
@@ -23,7 +23,7 @@ var render = function(settings) {
     isOnline: true,
     name: 'Buffalo Bill',
     post: 'Real killer',
-    avatar_url: 'https://www.gravatar.com/avatar/f6e537be0731c15258bfd842f2e77a30?size=240&default=https%3A%2F%2Fs3-alpha.figma.com%2Fstatic%2Fuser_a_v2.png'
+    avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png'
   }
   const options = {
     bar_type: 'bubble', // bar / bubble
@@ -35,7 +35,7 @@ var render = function(settings) {
     bar_text_online: 'We’re here. Let’s chat!',
     bar_text_offline: 'Leave message',
     // bar_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/some.svg',
-    notice_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/4bf59ea648831ee3f1bd7f894501065b.png',
+    notice_icon_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png',
     notice_text: 'Looking for halloween gifts?',
     notice_color: '#fff',
     notice_bg: '#333',
@@ -48,12 +48,10 @@ var render = function(settings) {
     agent_avatar: true,
     agent_post: true,
     markeaze_link: true,   
-    client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/sounds/dating_chat',
-    copyright: 'Powered by Markeaze',
-    placeholder: 'Type your message here...'
+    client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/sounds/new_message'
   }
   app.destroy()
-  app.preview(options, settings)
+  app.preview('en', options, settings)
 }
     </script>
     <script src="/mkz-chat-client.js" type="text/javascript"></script>

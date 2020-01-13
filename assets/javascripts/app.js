@@ -12,8 +12,9 @@ module.exports = {
   version: '0.0.1',
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
-  create (options) {
+  create (locale, options) {
     this.options = options
+    this.locale = locale
     this.log('chat', 'created')
     this.createConnection()
 
@@ -23,9 +24,10 @@ module.exports = {
     if (this.view) this.view.destroy()
     if (this.socket) this.socket.disconnect()
   },
-  preview (options, settings = {}) {
+  preview (locale, options, settings = {}) {
     this.options = options
     this.history = settings.history || []
+    this.locale = locale
     this.view = new View(this)
     this.view.render()
 
@@ -47,6 +49,7 @@ module.exports = {
   sessionsCount: 0,
   history: [],
   options: {},
+  locale: null,
   log () {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)
   },

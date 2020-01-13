@@ -152,6 +152,31 @@ $color_hint: #787878
 
   .mkz-c__handler_type_bar
 
+    &.mkz-c__handler_position_l-t, &.mkz-c__handler_position_r-t
+
+      .mkz-c__btn
+        border-radius: 0 0 15px 15px
+
+        &:hover
+          padding-top: 20px
+          padding-bottom: 8px
+
+      .mkz-c__tooltip
+        bottom: auto
+        top: 100%
+        margin-top: 25px
+        margin-bottom: 0
+        border-radius: 0 0 6px 6px
+
+        &:after
+          content: ''
+          position: absolute
+          left: 0
+          right: 0
+          bottom: 100%
+          top: auto
+          transform: rotate(180deg)
+
     .mkz-c__tooltip-picture
       display: none
 
@@ -160,7 +185,7 @@ $color_hint: #787878
       align-items: center
       padding: 8px 20px
       border-radius: 15px 15px 0 0
-      transition: padding 0.2s linear
+      transition: padding 0.2s ease-out
 
       &:hover
         padding-bottom: 20px
@@ -170,8 +195,10 @@ $color_hint: #787878
       font-size: 14px
       line-height: 18px
       font-weight: 600
-      white-space: nowrap
       max-width: 230px
+
+    .mkz-c__btn-text-online, .mkz-c__btn-text-offline
+      white-space: nowrap
       overflow: hidden
       text-overflow: ellipsis
 
@@ -191,12 +218,12 @@ $color_hint: #787878
       padding: 30px 5px
       border-radius: 6px 6px 0 0
       min-width: 47px
-      max-width: 160px
+      max-width: 80px
       box-sizing: border-box
       font-weight: 600
       font-size: 16px
       line-height: 18px
-      max-width: 100px
+      text-align: center
 
       &:after
         content: ''
@@ -208,6 +235,11 @@ $color_hint: #787878
         clip-path: polygon(0 0, 50% 100%, 100% 0, 0 0)
         background: inherit
         box-shadow: 0 0 10px rgba(25, 25, 29, 0.25)
+        margin: -1px 0
+
+      .mkz-c__tooltip-text
+        overflow: hidden
+        text-overflow: ellipsis
 
   .mkz-c__btn-text-online
     display: none

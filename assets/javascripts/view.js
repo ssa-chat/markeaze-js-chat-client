@@ -1,6 +1,7 @@
 const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
 const msgDelivered = require('./msgDelivered')
 const helpers = require('./helpers')
+const translations = require('./translations')
 
 export default class View {
   constructor (app) {
@@ -164,6 +165,9 @@ export default class View {
       this.elScroll.scrollTop = this.elScroll.scrollHeight
     }, 0)
   }
+  t (key) {
+    return translations[this.app.locale][key]
+  }
   htmlMessage (msg) {
     const htmlAvatar = msg.sender_avatar_url ? `<img src="${msg.sender_avatar_url}" class="mkz-c__i-avatar" alt="" title="${msg.sender_name}" />` : ''
     const text = msg.text.split("\n").join('<br />')
@@ -188,7 +192,7 @@ export default class View {
             <path d="M5.35667 1.9023C5.54038 1.55555 5.9926 1.45484 6.30746 1.69056C6.55814 1.87824 6.63496 2.21903 6.48885 2.49519L4.02121 7.15912C3.83664 7.50797 3.38122 7.60839 3.06569 7.36982C2.81616 7.18115 2.74036 6.8407 2.88648 6.5649L5.35667 1.9023Z" fill="#0EC52C"/>
             <path d="M8.81247 0.351483C8.99329 -0.00816918 9.44199 -0.111851 9.75226 0.134322C9.99632 0.327953 10.0705 0.67639 9.92784 0.959046L6.80213 7.15236C6.62323 7.50684 6.18144 7.61011 5.87387 7.36934C5.62976 7.17824 5.55453 6.83147 5.6961 6.54989L8.81247 0.351483Z" fill="#7261FF"/>
           </svg>
-          ${this.app.options.copyright}
+          ${this.t('copyright')}
         </a>`
     return `
 <div mkz-c>
@@ -243,7 +247,7 @@ export default class View {
         ${htmlCopy}
         <div class="mkz-c__footer">
           <div class="mkz-c__footer-msg">
-            <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="${this.app.options.placeholder}"></textarea>
+            <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="${this.t('placeholder')}"></textarea>
           </div>
           <div class="mkz-c__footer-btn">
             <div class="mkz-c__submit mkz-c-js-submit">

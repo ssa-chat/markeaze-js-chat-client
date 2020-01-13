@@ -15,10 +15,18 @@ mkz('updateStore', {
   chatEndpoint: 'localhost:4000',
   plugins: {
     chat: {url: '/mkz-chat-client.js'}
-  }
+  },
+  trackerCustomUrl: 'http://localhost:8084/demo_data.html'
 });
 
 mkz('appKey', '2840ad505de48551@dev');
+
+mkz('trackPageView', {
+  page: {
+    url: 'http://eqsol.ru/',
+    title: 'Test page'
+  }
+});
 
     </script>
       <!-- /Markeaze -->
