@@ -171,12 +171,13 @@ export default class View {
   htmlMessage (msg) {
     const htmlAvatar = msg.sender_avatar_url ? `<img src="${msg.sender_avatar_url}" class="mkz-c__i-avatar" alt="" title="${msg.sender_name}" />` : ''
     const text = msg.text.split("\n").join('<br />')
-    const color = msg.agent_id ? this.app.options.agent_msg_bg : this.app.options.client_msg_bg
+    const bg = msg.agent_id ? this.app.options.agent_msg_bg : this.app.options.client_msg_bg
+    const color = msg.agent_id ? this.app.options.agent_msg_color : this.app.options.client_msg_color
     return `
             <div class="mkz-c__i mkz-c__i_type_${msg.agent_id ? 'agent' : 'client'}">
               ${htmlAvatar}
               <div class="mkz-c__i-content">
-                <div class="mkz-c__i-msg" style="background-color: ${color}">
+                <div class="mkz-c__i-msg" style="background-color: ${bg}; color: ${color}">
                   <div class="mkz-c__i-msg-overflow">
                     ${text}
                   </div>
