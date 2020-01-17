@@ -203,13 +203,13 @@ export default class View {
       <div class="mkz-c__tooltip mkz-c__tooltip_picture_yes" style="color: ${this.app.options.notice_color}; background-color: ${this.app.options.notice_bg}">
         <img src="${this.app.options.notice_icon_url}" class="mkz-c__tooltip-picture" alt="" />
         <div class="mkz-c__tooltip-text">
-          ${this.app.options.notice_text}
+          ${this.app.options.notice_text || ''}
         </div>
       </div>
       <div class="mkz-c__btn mkz-c-js-toggle" style="background-color: ${this.app.options.bar_bg}; color: ${this.app.options.bar_color};">
         <div class="mkz-c__btn-text">
-          <span class="mkz-c__btn-text-online">${this.app.options.bar_text_online}</span>
-          <span class="mkz-c__btn-text-offline">${this.app.options.bar_text_offline}</span>
+          <span class="mkz-c__btn-text-online">${this.app.options.bar_text_online || ''}</span>
+          <span class="mkz-c__btn-text-offline">${this.app.options.bar_text_offline || ''}</span>
         </div>
         <svg width="27" height="27" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__btn-picture">
           <path d="M20.6429 10.4641C20.6466 11.8783 20.3162 13.2733 19.6786 14.5355C18.9226 16.0481 17.7605 17.3204 16.3223 18.2098C14.8841 19.0992 13.2267 19.5706 11.5357 19.5713C10.1216 19.5749 8.72659 19.2445 7.46432 18.607L1.35718 20.6427L3.39289 14.5355C2.75532 13.2733 2.42492 11.8783 2.42861 10.4641C2.42926 8.77313 2.90069 7.11573 3.79009 5.67755C4.67949 4.23937 5.95174 3.07721 7.46432 2.32125C8.72659 1.68368 10.1216 1.35328 11.5357 1.35696H12.0715C14.3047 1.48017 16.414 2.42278 17.9955 4.00431C19.5771 5.58585 20.5197 7.69516 20.6429 9.92839V10.4641Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -231,7 +231,7 @@ export default class View {
           <div class="mkz-c__head-m">
             <div class="mkz-c__m-assign-text mkz-c-js-agent-name"></div>
             <div class="mkz-c__m-assign-post mkz-c-js-agent-post"></div>
-            <div class="mkz-c__m-unassign-text">${this.app.options.bar_text_offline}</div>
+            <div class="mkz-c__m-unassign-text">${this.app.options.bar_text_offline || ''}</div>
           </div>
           <div class="mkz-c__head-action">
             <div class="mkz-c__close mkz-c-js-close">
@@ -242,7 +242,7 @@ export default class View {
             </div>
           </div>
         </div>
-        <div class="mkz-c__content mkz-c-js-scroll" style="background-color: ${this.app.options.list_bg};">
+        <div class="mkz-c__content mkz-c-js-scroll">
           <div class="mkz-c__list mkz-c-js-history"></div>
         </div>
         ${htmlCopy}
