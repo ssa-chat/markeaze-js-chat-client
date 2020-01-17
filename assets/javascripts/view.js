@@ -223,7 +223,7 @@ export default class View {
       </div>
     </div>
 
-    <div class="mkz-c__chat">
+    <div class="mkz-c__chat mkz-c__chat_position_${this.safe(this.app.options.chat_position)}">
       <div class="mkz-c__cart-shadow" style="box-shadow: 0 0 10px ${this.safe(this.app.options.title_bg)};"></div>
       <div class="mkz-c__cart">
         <div class="mkz-c__head" style="color: ${this.safe(this.app.options.title_color)}; background-color: ${this.safe(this.app.options.title_bg)};">

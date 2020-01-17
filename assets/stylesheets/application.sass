@@ -312,6 +312,14 @@ $color_hint: #787878
     height: 100vh
     z-index: 10000
 
+  .mkz-c__chat_position_left
+    left: 0
+    right: auto
+
+    .mkz-c__cart, .mkz-c__cart-shadow
+      right: 0
+      left: 20px
+
   .mkz-c__cart, .mkz-c__cart-shadow
     position: absolute
     left: 0
@@ -520,8 +528,9 @@ $color_hint: #787878
     .mkz-c__chat
       max-width: none
 
-    .mkz-c__cart
+    .mkz-c__cart, .mkz-c__chat_position_left .mkz-c__cart
       right: 0
+      left: 0
       top: 0
       bottom: 0
       border-style: none
