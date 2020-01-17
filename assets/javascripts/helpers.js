@@ -20,5 +20,10 @@ module.exports = {
     let firstChild = el.firstChild
     while(firstChild != null && firstChild.nodeType == 3) firstChild = firstChild.nextSibling
     return firstChild
+  },
+  htmlToText (str) {
+    const temp = document.createElement('div')
+    temp.textContent = str || ''
+    return temp.innerHTML
   }
 }
