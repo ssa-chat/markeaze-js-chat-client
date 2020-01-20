@@ -50,13 +50,13 @@ export default class View {
   }
   collapse () {
     const containerClassName = 'mkz-c_collapse_yes'
-    const bodyClassName = 'mkz-c-fixed'
+    const htmlClassName = 'mkz-c-fixed'
     this.collapsed = !this.collapsed
     if (this.collapsed) {
-      helpers.removeClass(document.body, bodyClassName)
+      helpers.removeClass(document.documentElement, htmlClassName)
       helpers.addClass(this.elContainer, containerClassName)
     } else {
-      helpers.addClass(document.body, bodyClassName)
+      helpers.addClass(document.documentElement, htmlClassName)
       helpers.removeClass(this.elContainer, containerClassName)
     }
     this.app.handlerCollapse(this.collapsed)

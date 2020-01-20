@@ -519,7 +519,14 @@ $color_hint: #787878
   @media (max-width: 600px)
 
     .mkz-c__chat
+      max-height: none
       max-width: none
+      width: auto
+      height: auto
+      right: 0
+      left: 0
+      top: 0
+      bottom: 0
 
     .mkz-c__cart, .mkz-c__chat_position_left .mkz-c__cart
       right: 0
@@ -537,9 +544,14 @@ $color_hint: #787878
 @media (max-width: 600px)
 
   .mkz-c-fixed
-    overflow: hidden !important
     position: fixed !important
-    left: 0 !important
-    top: 0 !important
-    right: 0 !important
-    bottom: 0 !important
+    height: 100% !important
+    width: 100% !important
+    max-width: 100% !important
+    overflow-x: hidden !important
+
+    body
+      z-index: auto !important
+      zoom: 1 !important
+      max-width: 100% !important
+      overflow-x: hidden !important
