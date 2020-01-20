@@ -134,7 +134,7 @@ export default class View {
     helpers.removeClass(this.elContainer, 'mkz-c_tooltip_yes')
   }
   render () {
-    // can be called multiple times on one page
+    // Can be called multiple times on one page
     if (!this.el) {
       this.el = helpers.appendHTML(document.body, this.htmlTemplate())
       this.elContainer = this.el.querySelector('.mkz-c-js')
@@ -148,7 +148,7 @@ export default class View {
       this.elAgentName = this.el.querySelector('.mkz-c-js-agent-name')
       this.elAgentPost = this.el.querySelector('.mkz-c-js-agent-post')
       this.elAgentAvatar = this.el.querySelector('.mkz-c-js-agent-avatar')
-      // no libraries in preview mode
+      // No libraries in preview mode
       if (this.libs.domEvent) this.bind()
       this.toggleNotice()
     }

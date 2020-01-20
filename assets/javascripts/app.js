@@ -7,7 +7,7 @@ const Sound = require('./sound').default
 
 module.exports = {
 
-  // plugin methods
+  // Plugin methods
 
   version: '1.0.7',
   store: {}, // Store from the main app
@@ -41,7 +41,7 @@ module.exports = {
     }
   },
 
-  // app
+  // / Plugin methods
 
   currentAgent: null,
   agents: [],
