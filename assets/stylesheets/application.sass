@@ -329,8 +329,7 @@ $color_hint: #787878
     display: flex
     justify-content: stretch
     flex-direction: column
-    background-color: #fff
-    border-radius: 3px
+    border-radius: 6px
     z-index: 5
 
   .mkz-c__cart-shadow
@@ -433,6 +432,8 @@ $color_hint: #787878
     align-items: center
     padding-top: 20px
     padding-bottom: 20px
+    background-color: #fff
+    border-radius: 0 0 6px 6px
 
   .mkz-c__footer-msg
     flex: 1
@@ -517,14 +518,6 @@ $color_hint: #787878
 
   @media (max-width: 600px)
 
-    .mkz-c-fixed
-      overflow: hidden !important
-      position: fixed !important
-      left: 0 !important
-      top: 0 !important
-      right: 0 !important
-      bottom: 0 !important
-
     .mkz-c__chat
       max-width: none
 
@@ -540,3 +533,13 @@ $color_hint: #787878
 
     .mkz-c__footer-btn
       display: block
+
+@media (max-width: 600px)
+
+  .mkz-c-fixed
+    overflow: hidden !important
+    position: fixed !important
+    left: 0 !important
+    top: 0 !important
+    right: 0 !important
+    bottom: 0 !important

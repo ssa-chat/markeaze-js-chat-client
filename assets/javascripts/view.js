@@ -6,6 +6,7 @@ const translations = require('./translations')
 export default class View {
   constructor (app) {
     this.collapsed = true
+    this.windowFocus = true
     this.app = app
     this.libs = app.libs
     this.allowSending = false
@@ -19,6 +20,8 @@ export default class View {
     el.parentNode.removeChild(el)
   }
   bind () {
+    this.libs.domEvent.add(window, 'focus', this.focus.bind(this))
+    this.libs.domEvent.add(window, 'blur', this.blur.bind(this))
     this.libs.domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
     this.libs.domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
     this.libs.domEvent.add(this.elInput, 'keydown', (e) => {
@@ -38,6 +41,12 @@ export default class View {
     })
     this.libs.domEvent.add(this.elToggle, 'click', this.collapse.bind(this))
     this.libs.domEvent.add(this.elClose, 'click', this.collapse.bind(this))
+  }
+  focus () {
+    this.windowFocus = true
+  }
+  blur () {
+    this.windowFocus = false
   }
   collapse () {
     const containerClassName = 'mkz-c_collapse_yes'
@@ -90,8 +99,8 @@ export default class View {
     if (this.elSubmit) helpers.removeClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
   }
   assignAgent () {
-    this.elAgentName.innerText = this.app.currentAgent.name
-    if (this.app.options.agent_post) this.elAgentPost.innerText = this.app.currentAgent.post
+    this.elAgentName.innerText = this.app.currentAgent.name || ''
+    if (this.app.options.agent_post) this.elAgentPost.innerText = this.app.currentAgent.post || ''
     if (this.app.options.agent_avatar && this.app.currentAgent.avatar_url) {
       this.elAgentAvatar.src = this.app.currentAgent.avatar_url
       this.elAgentAvatar.style.display = 'block'

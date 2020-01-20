@@ -9,7 +9,7 @@ module.exports = {
 
   // plugin methods
 
-  version: '1.0.5',
+  version: '1.0.6',
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   create (locale, options) {
@@ -167,7 +167,7 @@ module.exports = {
         msgDelivered.addItem(msg.muid)
         this.view.renderUnread()
       }
-      this.sound.play()
+      if (!this.view.windowFocus || this.view.collapsed) this.sound.play()
     }
     this.history = msgStory.addData(this.history, msg)
     this.view.render()
