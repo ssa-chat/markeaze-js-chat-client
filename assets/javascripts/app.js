@@ -9,7 +9,7 @@ module.exports = {
 
   // Plugin methods
 
-  version: '1.0.8',
+  version: '1.0.9',
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   create (locale, options) {
@@ -154,7 +154,7 @@ module.exports = {
     })
   },
   getDateTime () {
-    return (new Date).toISOString()
+    return (new Date).toISOString() + '000'
   },
   parseMsg (msg) {
     if (msg.agent_id) {
