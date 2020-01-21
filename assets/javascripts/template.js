@@ -117,13 +117,13 @@ export default class Template {
       </a>`
   }
   notice () {
-    return !this.app.options.notice_text ? '' : `
+    return this.app.options.notice_text && this.app.options.notice_text.trim() ? `
       <div class="mkz-c__tooltip mkz-c__tooltip_picture_yes" style="color: ${this.safe(this.app.options.notice_color)}; background-color: ${this.safe(this.app.options.notice_bg)}">
         <img src="${this.safe(this.app.options.notice_icon_url)}" class="mkz-c__tooltip-picture" alt="" />
         <div class="mkz-c__tooltip-text">
           ${this.safe(this.app.options.notice_text)}
         </div>
-      </div>`
+      </div>` : ''
   }
   content () {
     const chatPosition = ['l-t', 'l-b'].indexOf(this.app.options.bar_position) > -1 ? 'left' : 'right'

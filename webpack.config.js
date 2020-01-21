@@ -1,8 +1,18 @@
+const WebpackAutoInject = require('webpack-auto-inject-version')
+
 module.exports = {
   entry: './app.js',
   output: {
     filename: 'mkz-chat-client.js'
   },
+  plugins: [
+    new WebpackAutoInject({
+      components: {
+        AutoIncreaseVersion: false,
+        InjectAsComment: false
+      }
+    })
+  ],
   module: {
     rules: [{
       test: /\.scss$/,
