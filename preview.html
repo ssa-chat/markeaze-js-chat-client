@@ -12,12 +12,56 @@
 var app = {};
 window.mkz = function (method, pluginName, plugin) {
   app = plugin
-  render({collapsed: true});
+  render({collapsed: false});
 }
 var render = function(settings) {
   settings.history = [
-    {"muid":"zzz:c:1576752483292","text":"Questin","agent_id":null,"sent_at":"2019-12-19T10:48:03.314923Z","sender_avatar_url":null,"sender_name":null},
-    {"muid":"86:a:1576750209103","text":"Answer","agent_id":3,"sent_at":"2019-12-19T10:10:09.107155Z","sender_name":"Tester"}
+    {
+      muid: 'zzz:c:1576752483292',
+      text: 'Questin',
+      agent_id: null,
+      sent_at: '2019-12-19T10:48:03.314923Z',
+      sender_avatar_url: null,
+      sender_name: null,
+      attachments: []
+    },
+    {
+      muid: '86:a:1576750209103',
+      text: 'Answer',
+      agent_id: 1,
+      sent_at: '2019-12-19T10:50:09.107155Z',
+      sender_name: 'Tester',
+      attachments: []
+    },
+    {
+      muid: '86:a:1576750209103',
+      text: null,
+      agent_id: 1,
+      sent_at: '2019-12-19T10:51:01.110155Z',
+      sender_name: 'Tester',
+      attachments: [
+        {
+          type: 'product',
+          variant_id: 1,
+          name: 'Piderson Bros. Typewriter vintage Fine condition',
+          url: '#',
+          price: 36.99,
+          display_price: 'US $36.99',
+          available: true,
+          main_image_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/product.png'
+        },
+        {
+          type: 'product',
+          variant_id: 1,
+          name: 'Piderson Bros. Typewriter vintage Fine condition',
+          url: '#',
+          price: 36.99,
+          display_price: 'US $36.99',
+          available: true,
+          main_image_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/product.png'
+        }
+      ]
+    }
   ]
   settings.currentAgent = {
     isOnline: true,
@@ -46,7 +90,6 @@ var render = function(settings) {
     client_msg_bg: '#FFFFFF',
     agent_msg_color: '#000000',
     client_msg_color: '#000000',
-    list_bg: '#fff',
     agent_avatar: true,
     agent_post: true,
     markeaze_link: true,

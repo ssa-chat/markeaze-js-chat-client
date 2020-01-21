@@ -9,7 +9,7 @@ module.exports = {
 
   // Plugin methods
 
-  version: '1.0.9',
+  version: '1.0.10',
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   create (locale, options) {
@@ -29,6 +29,7 @@ module.exports = {
     this.history = settings.history || []
     this.locale = locale
     this.view = new View(this)
+    this.view.width = settings.width || null
     this.view.render()
 
     if (settings.collapsed) this.view.showNotice()
