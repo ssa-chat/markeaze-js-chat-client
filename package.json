@@ -13,16 +13,16 @@
   "license": "ISC",
   "dependencies": {
     "@airbrake/browser": "^1.0.6",
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.1.6",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
     "babel-loader": "^8.0.4",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
+    "phoenix": "^1.4.11",
     "raw-loader": "^0.5.1",
     "sass-loader": "^7.1.0",
-    "webpack": "^4.25.1",
+    "webpack": "^4.41.5",
     "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.14",
-    "phoenix": "^1.4.11"
+    "webpack-dev-server": "^3.10.1"
   },
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0"
