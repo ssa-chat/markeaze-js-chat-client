@@ -14,16 +14,14 @@ export default class Template {
     return translations[this.app.locale][key]
   }
   offer (offer, index, offers) {
-    const htmlPicture = offer.main_image_url ? `
-          <img src="${this.safe(offer.main_image_url)}" alt="" class="mkz-c-o__preview-img" />
+    const htmlPicture = offer.icon ? `
+          <img src="${this.safe(offer.icon)}" alt="" class="mkz-c-o__preview-img" />
     ` : `
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="480" height="448" viewBox="0 0 480 448" class="mkz-c-o__preview-img">
-            <g>
-            </g>
-            <path d="M160 144c0 26.5-21.5 48-48 48s-48-21.5-48-48 21.5-48 48-48 48 21.5 48 48zM416 240v112h-352v-48l80-80 40 40 128-128zM440 64h-400c-4.25 0-8 3.75-8 8v304c0 4.25 3.75 8 8 8h400c4.25 0 8-3.75 8-8v-304c0-4.25-3.75-8-8-8zM480 72v304c0 22-18 40-40 40h-400c-22 0-40-18-40-40v-304c0-22 18-40 40-40h400c22 0 40 18 40 40z"></path>
+            <path fill="currentColor" d="M160 144c0 26.5-21.5 48-48 48s-48-21.5-48-48 21.5-48 48-48 48 21.5 48 48zM416 240v112h-352v-48l80-80 40 40 128-128zM440 64h-400c-4.25 0-8 3.75-8 8v304c0 4.25 3.75 8 8 8h400c4.25 0 8-3.75 8-8v-304c0-4.25-3.75-8-8-8zM480 72v304c0 22-18 40-40 40h-400c-22 0-40-18-40-40v-304c0-22 18-40 40-40h400c22 0 40 18 40 40z"></path>
           </svg>
     `
-    const counterHtml = offers.length < 1 ? '' : `
+    const counterHtml = offers.length < 2 ? '' : `
         <div class="mkz-c-o__counter">
           ${index+1}/${offers.length}
         </dvi>

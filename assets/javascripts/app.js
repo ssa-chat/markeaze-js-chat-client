@@ -9,7 +9,7 @@ module.exports = {
 
   // Plugin methods
 
-  version: '1.0.12',
+  version: '1.1.0',
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   create (locale, options) {
