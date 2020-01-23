@@ -60,6 +60,10 @@ export default class View {
     } else {
       helpers.addClass(document.documentElement, htmlClassName)
       helpers.removeClass(this.elContainer, containerClassName)
+
+      setTimeout(() => {
+        this.elInput.focus()
+      }, 100)
     }
     this.app.handlerCollapse(this.collapsed)
   }

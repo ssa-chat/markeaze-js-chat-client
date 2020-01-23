@@ -173,7 +173,7 @@ export default class Template {
           <div class="mkz-c__list mkz-c-js-history"></div>
         </div>
         ${this.docs()}
-        <div class="mkz-c__footer">
+        <label class="mkz-c__footer">
           <div class="mkz-c__footer-msg">
             <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="${this.t('placeholder')}"></textarea>
           </div>
@@ -184,7 +184,7 @@ export default class Template {
               </svg>
             </div>
           </div>
-        </div>
+        </label>
       </div>
       ${this.copy()}
     </div>
