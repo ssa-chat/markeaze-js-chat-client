@@ -106,7 +106,7 @@ export default class View {
   }
   assignAgent () {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
-    if (this.app.options.agent_post) this.elAgentPost.innerText = this.app.currentAgent.post || ''
+    if (this.app.options.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
     if (this.app.options.agent_avatar && this.app.currentAgent.avatar_url) {
       this.elAgentAvatar.src = this.app.currentAgent.avatar_url
       this.elAgentAvatar.style.display = 'block'
