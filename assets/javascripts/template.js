@@ -1,5 +1,5 @@
 const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
-const helpers = require('./helpers')
+const helpers = require('./libs/helpers')
 const translations = require('./translations')
 
 export default class Template {

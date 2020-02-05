@@ -12,6 +12,7 @@ module.exports = {
   version: '[AIV]{version}[/AIV]',
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
+  previewMode: false,
   create (locale, options) {
     this.options = options
     this.locale = locale
@@ -25,6 +26,8 @@ module.exports = {
     if (this.socket) this.socket.disconnect()
   },
   preview (locale, options, settings = {}) {
+    this.previewMode = true
+
     this.options = options
     this.history = settings.history || []
     this.locale = locale

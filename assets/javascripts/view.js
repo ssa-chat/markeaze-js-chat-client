@@ -1,6 +1,7 @@
 const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
 const msgDelivered = require('./msgDelivered')
-const helpers = require('./helpers')
+const helpers = require('./libs/helpers')
+const domEvent = require('./libs/domEvent')
 const Template = require('./template').default
 
 export default class View {
@@ -8,6 +9,7 @@ export default class View {
     this.collapsed = true
     this.windowFocus = true
     this.app = app
+    this.previewMode = app.previewMode
     this.libs = app.libs
     this.allowSending = false
     this.typingTimeout = 1000
@@ -22,11 +24,19 @@ export default class View {
     el.parentNode.removeChild(el)
   }
   bind () {
-    this.libs.domEvent.add(window, 'focus', this.focus.bind(this))
-    this.libs.domEvent.add(window, 'blur', this.blur.bind(this))
-    this.libs.domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
-    this.libs.domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
-    this.libs.domEvent.add(this.elInput, 'keydown', (e) => {
+    domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
+
+    domEvent.add(this.elToggle, 'click', this.collapse.bind(this))
+    domEvent.add(this.elClose, 'click', this.collapse.bind(this))
+
+    if (this.previewMode) return
+
+    domEvent.add(window, 'focus', this.focus.bind(this))
+    domEvent.add(window, 'blur', this.blur.bind(this))
+
+    domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
+
+    domEvent.add(this.elInput, 'keydown', (e) => {
       if (e.keyCode == 13 && !e.shiftKey) {
         e.preventDefault()
         this.sendMsg()
@@ -41,8 +51,6 @@ export default class View {
         }
       }
     })
-    this.libs.domEvent.add(this.elToggle, 'click', this.collapse.bind(this))
-    this.libs.domEvent.add(this.elClose, 'click', this.collapse.bind(this))
   }
   focus () {
     this.windowFocus = true
@@ -123,6 +131,8 @@ export default class View {
     helpers.removeClass(this.elContainer, 'mkz-c_agent_online')
   }
   toggleNotice () {
+    if (this.previewMode) return
+
     const storeName = 'mkz_c_tooltip_hidden'
     if (sessionStorage.getItem(storeName)) return
     sessionStorage.setItem(storeName, true)
@@ -154,8 +164,7 @@ export default class View {
       this.elAgentName = this.el.querySelector('.mkz-c-js-agent-name')
       this.elAgentPost = this.el.querySelector('.mkz-c-js-agent-post')
       this.elAgentAvatar = this.el.querySelector('.mkz-c-js-agent-avatar')
-      // No libraries in preview mode
-      if (this.libs.domEvent) this.bind()
+      this.bind()
       this.toggleNotice()
     }
     this.renderMessages()
