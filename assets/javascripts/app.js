@@ -13,33 +13,33 @@ module.exports = {
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   previewMode: false,
-  create (locale, options) {
-    this.options = options
+  create (locale, settings) {
+    this.settings = settings
     this.locale = locale
     this.log('chat', 'created')
     this.createConnection()
 
-    this.sound = new Sound(this.options.client_sound_path)
+    this.sound = new Sound(this.settings.appearance.client_sound_path)
   },
   destroy () {
     if (this.view) this.view.destroy()
     if (this.socket) this.socket.disconnect()
   },
-  preview (locale, options, settings = {}) {
+  preview (locale, settings, options = {}) {
     this.previewMode = true
 
-    this.options = options
-    this.history = settings.history || []
+    this.settings = settings
+    this.history = options.history || []
     this.locale = locale
     this.view = new View(this)
-    this.view.width = settings.width || null
+    this.view.width = options.width || null
     this.view.render()
 
-    if (settings.collapsed) this.view.showNotice()
+    if (options.collapsed) this.view.showNotice()
     else this.view.collapse()
 
-    if (settings.currentAgent) {
-      this.currentAgent = settings.currentAgent
+    if (options.currentAgent) {
+      this.currentAgent = options.currentAgent
       this.view.assignAgent()
       this.updateAgentState()
     }
@@ -52,7 +52,7 @@ module.exports = {
   agentIsOnline: false,
   sessionsCount: 0,
   history: [],
-  options: {},
+  settings: {},
   locale: null,
   log () {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)

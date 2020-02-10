@@ -12,10 +12,10 @@
 var app = {};
 window.mkz = function (method, pluginName, plugin) {
   app = plugin
-  render({collapsed: true});
+  render({collapsed: false});
 }
-var render = function(settings) {
-  settings.history = [
+var render = function(options) {
+  options.history = [
     {
       muid: 'zzz:c:1576752483292',
       text: 'Questin',
@@ -63,40 +63,52 @@ var render = function(settings) {
       ]
     }
   ]
-  settings.currentAgent = {
+  options.currentAgent = {
     isOnline: true,
     name: 'Buffalo Bill',
     job_title: 'Real killer',
     avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png'
   }
-  const options = {
-    bar_type: 'bubble', // bar / bubble
-    bar_position: 'r-b', // l-t / r-t / l-b / r-b
-    bar_padding_x: '20px',
-    bar_padding_y: '20px',
-    bar_color: '#000',
-    bar_bg: '#F28E24',
-    bar_text_online: 'We’re here. Let’s chat!',
-    bar_text_offline: 'Leave message',
-    // bar_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/some.svg',
-    notice_icon_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png',
-    notice_text: 'Looking for halloween gifts?',
-    notice_color: '#fff',
-    notice_bg: '#333',
+  const settings = {
+    appearance: {
+      bar_type: 'bubble', // bar / bubble
+      bar_position: 'r-b', // l-t / r-t / l-b / r-b
+      bar_padding_x: '20px',
+      bar_padding_y: '20px',
+      bar_color: '#000',
+      bar_bg: '#F28E24',
+      bar_text_online: 'We’re here. Let’s chat!',
+      bar_text_offline: 'Leave message',
+      // bar_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/some.svg',
+      notice_icon_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png',
+      notice_text: 'Looking for halloween gifts?',
+      notice_color: '#fff',
+      notice_bg: '#333',
 
-    title_color: '#fff',
-    title_bg: '#F28E24',
-    agent_msg_bg: '#E7FEEA',
-    client_msg_bg: '#FFFFFF',
-    agent_msg_color: '#000000',
-    client_msg_color: '#000000',
-    agent_avatar: true,
-    agent_post: true,
-    markeaze_link: true,
-    client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/sounds/new_message'
+      title_color: '#fff',
+      title_bg: '#F28E24',
+      agent_msg_bg: '#E7FEEA',
+      client_msg_bg: '#FFFFFF',
+      agent_msg_color: '#000000',
+      client_msg_color: '#000000',
+      agent_avatar: true,
+      agent_post: true,
+      markeaze_link: true,
+      client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/sounds/new_message'
+    },
+    behavior: {
+      attachment_cta: {
+        product: {
+          label_text: 'add_to_cart',
+          handler: '(function(offer) { console.log("add to cart", offer); })',
+          callback_label_text: 'added_to_cart',
+          callback: '(function(offer) { console.log("go to link", offer); })'
+        }
+      }
+    }
   }
   app.destroy()
-  app.preview('en', options, settings)
+  app.preview('en', settings, options)
 }
     </script>
     <script src="/mkz-chat-client.js" type="text/javascript"></script>

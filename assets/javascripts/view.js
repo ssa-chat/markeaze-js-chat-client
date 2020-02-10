@@ -52,6 +52,26 @@ export default class View {
       }
     })
   }
+  bindMessages () {
+    if (this.previewMode) return
+
+    for (const el of this.elProductAttachmentActions) {
+      domEvent.add(el, 'click', this.productAttachmentClick.bind(this))
+    }
+  }
+  productAttachmentClick (e) {
+    const el = e.target
+    const offer = JSON.parse(el.dataset.data)
+    const callbackLabel = el.dataset.callback_label
+    const settings = this.app.settings.behavior.attachment_cta.product
+
+    if (el.handlerDone && settings.callback) eval(settings.callback)(offer)
+    else {
+      eval(settings.handler)(offer)
+      el.innerHTML = callbackLabel
+      el.handlerDone = true
+    }
+  }
   focus () {
     this.windowFocus = true
   }
@@ -114,8 +134,8 @@ export default class View {
   }
   assignAgent () {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
-    if (this.app.options.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
-    if (this.app.options.agent_avatar && this.app.currentAgent.avatar_url) {
+    if (this.app.settings.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
+    if (this.app.settings.agent_avatar && this.app.currentAgent.avatar_url) {
       this.elAgentAvatar.src = this.app.currentAgent.avatar_url
       this.elAgentAvatar.style.display = 'block'
     } else this.elAgentAvatar.style.display = 'none'
@@ -173,6 +193,9 @@ export default class View {
   renderMessages () {
     const html = this.app.history.map((msg) => this.template.message(msg)).join('')
     this.elHistory.innerHTML = html
+
+    this.elProductAttachmentActions = this.el.querySelectorAll('.mkz-c-o-js-action')
+    this.bindMessages()
   }
   renderUnread () {
     if (!this.elUnread) return
