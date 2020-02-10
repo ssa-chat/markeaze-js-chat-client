@@ -23,13 +23,21 @@ export default class View {
     if (!el) return
     el.parentNode.removeChild(el)
   }
+  bindMessages () {
+    for (const el of this.elProductAttachmentActions) {
+      domEvent.add(el, 'click', this.productAttachmentClick.bind(this))
+    }
+  }
+  productAttachmentClick (e) {
+    console.log(e.target.dataset.json)
+  }
   bind () {
     domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
 
     domEvent.add(this.elToggle, 'click', this.collapse.bind(this))
     domEvent.add(this.elClose, 'click', this.collapse.bind(this))
 
-    if (this.previewMode) return
+    // if (this.previewMode) return
 
     domEvent.add(window, 'focus', this.focus.bind(this))
     domEvent.add(window, 'blur', this.blur.bind(this))
@@ -173,6 +181,9 @@ export default class View {
   renderMessages () {
     const html = this.app.history.map((msg) => this.template.message(msg)).join('')
     this.elHistory.innerHTML = html
+
+    this.elProductAttachmentActions = this.el.querySelectorAll('.mkz-c-o-js-action')
+    this.bindMessages()
   }
   renderUnread () {
     if (!this.elUnread) return

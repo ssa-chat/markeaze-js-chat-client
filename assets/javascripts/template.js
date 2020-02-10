@@ -44,7 +44,9 @@ export default class Template {
             </div>
           </div>
           <div class="mkz-c-o__action">
-            <a href="${this.safe(offer.url)}" class="mkz-c-o__btn">${this.t('view_product')}</a>
+            <span data-json="${this.attribute(offer)}" class="mkz-c-o__btn mkz-c-o-js-action">
+              ${this.safe(this.app.options.product_attachment_action_handler.common_label_key)}
+            </span>
           </div>
         </div>
         ${counterHtml}

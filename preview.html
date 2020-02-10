@@ -93,7 +93,17 @@ var render = function(settings) {
     agent_avatar: true,
     agent_post: true,
     markeaze_link: true,
-    client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/sounds/new_message'
+    client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/sounds/new_message',
+    product_attachment_action_handler: {
+      common_label_key: 'add_to_cart',
+      common_handler: function(offer, callback) {
+        window.location.href = offer.url;
+      },
+      disabled_label_key: 'got_to_cart',
+      disabled_handler: function(offer, callback) {
+        window.location.href = offer.url;
+      }
+    }
   }
   app.destroy()
   app.preview('en', options, settings)
