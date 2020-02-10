@@ -6,7 +6,7 @@ module.exports = {
     out_of_stock: 'Не в наличии',
     view_product: 'Посмотреть товар',
     add_to_cart: 'Добавить в корзину',
-    got_to_cart: 'Перейти в корзину'
+    added_to_cart: 'Добавлен в корзину'
   },
   en: {
     copyright: 'Powered by Markeaze',
@@ -15,6 +15,6 @@ module.exports = {
     out_of_stock: 'Out of stock',
     view_product: 'View product',
     add_to_cart: 'Add to cart',
-    got_to_cart: 'Go to cart'
+    added_to_cart: 'Added to Cart!'
   }
 }

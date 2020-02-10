@@ -23,13 +23,19 @@ export default class View {
     if (!el) return
     el.parentNode.removeChild(el)
   }
-  bindMessages () {
-    for (const el of this.elProductAttachmentActions) {
-      domEvent.add(el, 'click', this.productAttachmentClick.bind(this))
-    }
-  }
   productAttachmentClick (e) {
-    console.log(e.target.dataset.json)
+    const el = e.target
+    const offer = JSON.parse(el.dataset.data)
+    const callbackLabel = el.dataset.callback_label
+    const settings = this.app.settings.appearance.product_attachment_action_handler
+
+    if (el.handlerDone) eval(settings.callback)(offer)
+    else {
+      eval(settings.handler)(offer, () => {
+        el.innerHTML = callbackLabel
+        el.handlerDone = true
+      })
+    }
   }
   bind () {
     domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
@@ -37,7 +43,7 @@ export default class View {
     domEvent.add(this.elToggle, 'click', this.collapse.bind(this))
     domEvent.add(this.elClose, 'click', this.collapse.bind(this))
 
-    // if (this.previewMode) return
+    if (this.previewMode) return
 
     domEvent.add(window, 'focus', this.focus.bind(this))
     domEvent.add(window, 'blur', this.blur.bind(this))
@@ -59,6 +65,13 @@ export default class View {
         }
       }
     })
+  }
+  bindMessages () {
+    if (this.previewMode) return
+
+    for (const el of this.elProductAttachmentActions) {
+      domEvent.add(el, 'click', this.productAttachmentClick.bind(this))
+    }
   }
   focus () {
     this.windowFocus = true
@@ -122,8 +135,8 @@ export default class View {
   }
   assignAgent () {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
-    if (this.app.options.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
-    if (this.app.options.agent_avatar && this.app.currentAgent.avatar_url) {
+    if (this.app.settings.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
+    if (this.app.settings.agent_avatar && this.app.currentAgent.avatar_url) {
       this.elAgentAvatar.src = this.app.currentAgent.avatar_url
       this.elAgentAvatar.style.display = 'block'
     } else this.elAgentAvatar.style.display = 'none'
