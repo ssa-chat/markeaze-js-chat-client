@@ -16,6 +16,7 @@ export default class Template {
     return translations[this.app.locale][key]
   }
   attribute (data) {
+    if (!data) return ''
     return data.replace(/\"/ig, '&quot;')
   }
   offer (offer, index, offers) {
