@@ -14,6 +14,8 @@ module.exports = {
   libs: {}, // Libraries from the main app
   previewMode: false,
   create (locale, settings) {
+    this.destroy()
+
     this.settings = settings
     this.locale = locale
     this.log('chat', 'created')

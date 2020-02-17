@@ -68,7 +68,7 @@ export default class View {
     if (el.handlerDone && settings.callback) eval(settings.callback)(offer)
     else {
       eval(settings.handler)(offer)
-      el.innerHTML = callbackLabel
+      if (settings.callback) el.innerHTML = callbackLabel
       el.handlerDone = true
     }
   }
@@ -134,8 +134,8 @@ export default class View {
   }
   assignAgent () {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
-    if (this.app.settings.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
-    if (this.app.settings.agent_avatar && this.app.currentAgent.avatar_url) {
+    if (this.app.settings.appearance.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
+    if (this.app.settings.appearance.agent_avatar && this.app.currentAgent.avatar_url) {
       this.elAgentAvatar.src = this.app.currentAgent.avatar_url
       this.elAgentAvatar.style.display = 'block'
     } else this.elAgentAvatar.style.display = 'none'
