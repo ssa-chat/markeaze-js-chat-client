@@ -72,6 +72,7 @@ export default class View {
 
     if (el.handlerDone) return
     el.handlerDone = true
+    el.setAttribute('disabled', true)
 
     eval(settings.handler)(offer, callback)
   }

@@ -602,9 +602,15 @@ $color_hint: #787878
     text-decoration: none
     cursor: pointer
 
+    &[disabled]
+      &, &:hover
+        background-color: #DF4555
+        cursor: default
+
     &:hover
       text-decoration: none
       background-color: #EF5565
+
 
   .mkz-c-o__counter
     font-size: 10px
