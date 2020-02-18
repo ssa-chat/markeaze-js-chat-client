@@ -65,12 +65,15 @@ export default class View {
     const callbackLabel = el.dataset.callback_label
     const settings = this.app.settings.behavior.attachment_cta.product
 
-    if (el.handlerDone && settings.callback) eval(settings.callback)(offer)
-    else {
-      eval(settings.handler)(offer)
-      if (settings.callback) el.innerHTML = callbackLabel
-      el.handlerDone = true
+    const callback = () => {
+      if (callbackLabel) el.innerHTML = callbackLabel
+      if (settings.callback) eval(settings.callback)(offer)
     }
+
+    if (el.handlerDone) return
+    el.handlerDone = true
+
+    eval(settings.handler)(offer, callback)
   }
   focus () {
     this.windowFocus = true

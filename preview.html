@@ -100,9 +100,9 @@ var render = function(options) {
       attachment_cta: {
         product: {
           label_text: 'add_to_cart',
-          handler: '(function(offer) { console.log("add to cart", offer); })',
+          handler: '(function(offer, callback) { console.log("Add to cart and timeout", offer); setTimeout(callback, 500); })',
           callback_label_text: 'added_to_cart',
-          callback: '(function(offer) { console.log("go to link", offer); })'
+          callback: '(function(offer) { console.log("Callback after timeout", offer); })'
         }
       }
     }
