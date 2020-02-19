@@ -3,6 +3,7 @@ const Socket = require('phoenix/assets/js/phoenix').Socket
 const msgStory = require('./msgStory')
 const msgDelivered = require('./msgDelivered')
 const View = require('./view').default
+const autoMsg = require('./autoMsg')
 const Sound = require('./sound').default
 
 module.exports = {
@@ -19,6 +20,9 @@ module.exports = {
     this.settings = settings
     this.locale = locale
     this.log('chat', 'created')
+
+    autoMsg.init(this)
+    this.history = autoMsg.mergeHistory(msgStory.getData())
     this.createConnection()
 
     this.sound = new Sound(this.settings.appearance.client_sound_path)
@@ -77,7 +81,7 @@ module.exports = {
     this.clientChannel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
     this.clientChannel.join()
       .receive('ok', this.handlerJoined.bind(this))
-      .receive('error', (e, d) => console.error(`Cannot join channel ${this.clientChannel.topic}`))
+      .receive('error', this.handlerFailJoined.bind(this))
     this.clientChannel.on('client:entered', this.handlerClientEntered.bind(this))
     this.clientChannel.on('message:new', this.handlerMsg.bind(this))
     this.clientChannel.on('message:resend', this.handlerMsgResend.bind(this))
@@ -90,10 +94,12 @@ module.exports = {
     this.view.disconnected()
   },
   handlerJoined () {
-    this.history = msgStory.getData()
     this.view.render()
     this.view.scrollBottom()
     this.log('chat', 'joined')
+  },
+  handlerFailJoined () {
+    console.error(`Cannot join channel ${this.clientChannel.topic}`)
   },
   handlerAgentStatus (isOnline, {agent_id}) {
     const agent = this.getAgent(agent_id)
@@ -106,15 +112,18 @@ module.exports = {
     this.sessionsCount = msg.sessionsCount
     this.setCurrentAgent(msg.current_agent_id)
     this.updateAgentState()
+    if (this.libs.eEmit) this.libs.eEmit.emit('plugin.chat.channel.entered')
     this.log('chat', 'ClientEntered', msg)
   },
   handlerMsg (msg) {
-    this.parseMsg(msg)
+    this.stateChangeMsg(msg)
+    this.addMsg(msg)
     this.log('chat', 'Msg', msg)
     this.view.scrollBottom()
   },
   handlerMsgResend (msg) {
-    this.parseMsg(msg)
+    this.stateChangeMsg(msg)
+    this.addMsg(msg)
     this.view.scrollBottom()
     this.setCurrentAgent(msg.current_agent_id)
     this.log('chat', 'Resend', msg)
@@ -143,12 +152,27 @@ module.exports = {
 
     const timestamp = +(new Date)
     const uid = this.store.uid
-    return this.clientChannel.push('message:new', {
+    const payload = {
       muid: `${uid}:c:${timestamp}`,
       text: text,
       status: 'sent',
       sent_at: this.getDateTime()
-    })
+    }
+
+    const lastMsg = this.history.length > 0 && this.history[this.history.length - 1]
+    if (lastMsg && lastMsg.auto_message) {
+      payload.prev_auto_message = {
+        muid: lastMsg.muid,
+        agent_id: 0,
+        text: lastMsg.text,
+        status: 'read',
+        sent_at: lastMsg.sent_at,
+        device_uid: uid
+      }
+      autoMsg.trackReply(lastMsg.auto_message)
+    }
+
+    return this.clientChannel.push('message:new', payload)
   },
   pusherMsgState (muid, state) {
     if (!muid) return
@@ -162,25 +186,41 @@ module.exports = {
   getDateTime () {
     return (new Date).toISOString().replace('Z', '000Z')
   },
-  parseMsg (msg) {
-    if (msg.agent_id) {
-      const agent = this.getAgent(msg.agent_id)
-      msg.sender_avatar_url = agent ? agent.sender_avatar_url : null
+  stateChangeMsg (msg) {
+    if (msg.agent_id !== null) {
       // Status changes only for agent messages
       if (this.view.collapsed === false) this.pusherMsgState(msg.muid, 'read')
       else {
         this.pusherMsgState(msg.muid, 'delivered')
         msgDelivered.addItem(msg.muid)
-        this.view.renderUnread()
+      }
+    }
+  },
+  addMsg (msg) {
+    if (msg.agent_id !== null) {
+      // When the ws resived a message with agent_id=0
+      // so the agent_id is going to replaced to real value
+      // from the list of auto-message data.
+      if (msg.agent_id === 0) {
+        msg.agent_id = autoMsg.getMsgAgentId(msg)
+        // The current auto-message must remove from the list.
+        autoMsg.removeItem(msg.muid)
+      }
+
+      const agent = this.getAgent(msg.agent_id)
+      if (agent) {
+        msg.sender_avatar_url = agent.avatar_url || agent.sender_avatar_url
+        msg.sender_name = agent.name || msg.sender_name
       }
       if (!this.view.windowFocus || this.view.collapsed) this.sound.play()
+      if (this.view.collapsed === true) this.view.renderUnread()
     }
-    this.history = msgStory.addData(this.history, msg)
-    this.view.render()
+    msgStory.addData(msg)
+    this.history.push(msg)
+    this.view.renderMessage(msg)
   },
   setCurrentAgent (currentAgentId) {
     if (!currentAgentId && !this.currentAgent) return
-
     this.currentAgent = this.getAgent(currentAgentId)
     if (this.currentAgent) this.view.assignAgent()
     else this.view.unassignAgent()

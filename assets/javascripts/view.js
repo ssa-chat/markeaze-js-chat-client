@@ -52,11 +52,12 @@ export default class View {
       }
     })
   }
-  bindMessages () {
+  bindMessage (elMessage) {
     if (this.previewMode) return
 
-    for (const el of this.elProductAttachmentActions) {
-      domEvent.add(el, 'click', this.productAttachmentClick.bind(this))
+    const elProductActions = elMessage.querySelectorAll('.mkz-c-o-js-action')
+    for (const elProductAction of elProductActions) {
+      domEvent.add(elProductAction, 'click', this.productAttachmentClick.bind(this))
     }
   }
   productAttachmentClick (e) {
@@ -190,16 +191,25 @@ export default class View {
       this.elAgentAvatar = this.el.querySelector('.mkz-c-js-agent-avatar')
       this.bind()
       this.toggleNotice()
+      this.renderMessages()
     }
-    this.renderMessages()
     this.renderUnread()
   }
   renderMessages () {
-    const html = this.app.history.map((msg) => this.template.message(msg)).join('')
-    this.elHistory.innerHTML = html
-
-    this.elProductAttachmentActions = this.el.querySelectorAll('.mkz-c-o-js-action')
-    this.bindMessages()
+    const history = this.app.history
+    for (const msg of history) this.renderMessage(msg)
+  }
+  renderMessage (msg) {
+    const html = this.template.message(msg)
+    const msgEl = this.elHistory.querySelector(`[data-id="${msg.muid}"]`)
+    let elMessage
+    if (msgEl) {
+      elMessage = msgEl.parentElement
+      elMessage.innerHTML = html
+    } else {
+      elMessage = helpers.appendHTML(this.elHistory, html)
+    }
+    this.bindMessage(elMessage)
   }
   renderUnread () {
     if (!this.elUnread) return

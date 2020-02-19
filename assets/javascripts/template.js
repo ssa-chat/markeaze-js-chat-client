@@ -83,8 +83,8 @@ export default class Template {
   message (msg) {
     const htmlAvatar = msg.sender_avatar_url ? `<img src="${this.safe(msg.sender_avatar_url)}" class="mkz-c__i-avatar" alt="" title="${this.safe(msg.sender_name)}" />` : ''
     const text = (msg.text || '').split("\n").join('<br />')
-    const bg = msg.agent_id ? this.appearance.agent_msg_bg : this.appearance.client_msg_bg
-    const color = msg.agent_id ? this.appearance.agent_msg_color : this.appearance.client_msg_color
+    const bg = msg.agent_id === null ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
+    const color = msg.agent_id === null ? this.appearance.client_msg_color : this.appearance.agent_msg_color
     const htmlMsg = text ? `
                 <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
                   <div class="mkz-c__i-msg-overflow">
@@ -92,13 +92,15 @@ export default class Template {
                   </div>
                 </div>` : ''
     return `
-            <div class="mkz-c__i mkz-c__i_type_${msg.agent_id ? 'agent' : 'client'}">
+          <div>
+            <div class="mkz-c__i mkz-c__i_type_${msg.agent_id === null ? 'client' : 'agent'}" data-id="${msg.muid}">
               ${htmlAvatar}
               <div class="mkz-c__i-content">
                 ${htmlMsg}
                 ${this.attachments(msg)}
               </div>
-            </div>`
+            </div>
+          </div>`
   }
   doc (name) {
     return `

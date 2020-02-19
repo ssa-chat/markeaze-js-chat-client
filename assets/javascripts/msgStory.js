@@ -8,7 +8,9 @@ module.exports = {
     } catch (e) {}
     return history
   },
-  addData (history, msg) {
+  addData (msg) {
+    if (msg.exclude_history) return
+    const history = this.getData()
     history.push({
       muid: msg.muid,
       text: msg.text,
@@ -19,7 +21,6 @@ module.exports = {
       attachments: msg.attachments
     })
     this.setData(history)
-    return history
   },
   setData (history) {
     localStorage.setItem(this.name, JSON.stringify(history))
