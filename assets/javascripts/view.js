@@ -41,14 +41,7 @@ export default class View {
         e.preventDefault()
         this.sendMsg()
       } else {
-        if (!this.disableTyping) {
-          clearTimeout(this.timeoutTyping)
-          this.disableTyping = true
-          this.timeoutTyping = setTimeout((() => {
-            this.disableTyping = false
-            this.sendTyping()
-          }), this.typingTimeout)
-        }
+        this.startTyping()
       }
     })
   }
@@ -106,6 +99,17 @@ export default class View {
   disconnected () {
     this.disableSending()
   }
+  startTyping () {
+    if (this.timeoutTyping) return
+    this.timeoutTyping = setTimeout((() => {
+      this.sendTyping()
+      this.stopTyping()
+    }), this.typingTimeout)
+  }
+  stopTyping () {
+    clearTimeout(this.timeoutTyping)
+    this.timeoutTyping = null
+  }
   sendTyping () {
     const text = this.elInput.value
     this.app.pusherTyping(text)
@@ -114,6 +118,8 @@ export default class View {
     if (!this.allowSending) return
     const text = this.elInput.value.trim()
     if (!text) return
+    this.stopTyping()
+    this.disableSending()
     this.app.pusherNewMsg(text)
       .receive('ok', () => {
         this.elInput.value = null
@@ -122,7 +128,6 @@ export default class View {
       })
       .receive('error', () => this.enableSending.bind(this))
       .receive('timeout', () => this.enableSending.bind(this))
-    this.disableSending()
   }
   setMsgHeight () {
     this.elInput.style.height = 'auto'
