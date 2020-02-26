@@ -96,6 +96,7 @@ module.exports = {
   handlerJoined () {
     this.view.render()
     this.view.scrollBottom()
+    this.view.enableSending()
     this.log('chat', 'joined')
   },
   handlerFailJoined () {
