@@ -87,10 +87,13 @@ export default class View {
       helpers.addClass(document.documentElement, htmlClassName)
       helpers.removeClass(this.elContainer, containerClassName)
 
-      setTimeout(() => {
+      if (!this.previewMode) setTimeout(() => {
         this.elInput.focus()
       }, 100)
     }
+
+    if (this.previewMode) return
+
     this.app.handlerCollapse(this.collapsed)
   }
   connected () {
