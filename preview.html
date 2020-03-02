@@ -26,10 +26,70 @@ var render = function(options) {
       attachments: []
     },
     {
+      muid: 'zzz:a:1576752483293',
+      text: 'Auto message',
+      agent_id: 0,
+      sent_at: '2019-12-19T10:48:03.314923Z',
+      sender_avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/avatar.png',
+      sender_name: null,
+      attachments: []
+    },
+    {
+      muid: '86:sf-1:1576750210001',
+      text: 'Enter personal information',
+      custom_fields: {
+        elements: [
+          {
+            field: 'first_name',
+            required: false,
+            display_name: 'First name',
+            display_type: 'email'
+          },
+          {
+            field: 'email',
+            required: true,
+            display_name: 'E-mail',
+            display_type: 'email'
+          },
+          {
+            field: 'date_of_birth',
+            required: false,
+            display_name: 'Date of birth',
+            display_type: 'email'
+          },
+          {
+            field: 'gender',
+            required: true,
+            display_name: 'Gender',
+            display_type: 'select',
+            predefined_values: {
+              male: 'Male',
+              female: 'Female'
+            }
+          },
+          {
+            display_name: 'I agree to have my personal data for chats support.',
+            display_type: 'hint'
+          },
+          {
+            display_name: 'Start chatting',
+            display_type: 'button'
+          }
+        ],
+        follow_up_text: 'Thanks!',
+        title: null
+      },
+      agent_id: 1,
+      sent_at: '2020-02-20T11:12:36.833000Z',
+      sender_avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/avatar.png',
+      sender_name: 'tester'
+    },
+    {
       muid: '86:a:1576750209102',
       text: 'Answer',
       agent_id: 1,
       sent_at: '2019-12-19T10:50:09.107155Z',
+      sender_avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/avatar.png',
       sender_name: 'Tester',
       attachments: []
     },
@@ -38,6 +98,7 @@ var render = function(options) {
       text: null,
       agent_id: 1,
       sent_at: '2019-12-19T10:51:01.110155Z',
+      sender_avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/avatar.png',
       sender_name: 'Tester',
       attachments: [
         {
@@ -61,14 +122,6 @@ var render = function(options) {
           main_image_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/product.png'
         }
       ]
-    },
-    {
-      muid: '86:a:1576750210001',
-      text: 'The message is like an auto-message',
-      agent_id: 1,
-      sent_at: '2019-12-19T10:51:02.110155Z',
-      sender_name: 'Tester',
-      attachments: []
     }
   ]
   options.currentAgent = {

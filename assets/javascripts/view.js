@@ -19,9 +19,8 @@ export default class View {
     this.template = new Template(this)
   }
   destroy () {
-    const el = document.querySelector('[mkz-c]')
-    if (!el) return
-    el.parentNode.removeChild(el)
+    if (!this.el) return
+    this.el.parentNode.removeChild(this.el)
   }
   bind () {
     domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
@@ -50,10 +49,27 @@ export default class View {
 
     const elProductActions = elMessage.querySelectorAll('.mkz-c-o-js-action')
     for (const elProductAction of elProductActions) {
-      domEvent.add(elProductAction, 'click', this.productAttachmentClick.bind(this))
+      domEvent.add(elProductAction, 'click', this.clickProductAttachment.bind(this))
+    }
+
+    const elForms = elMessage.querySelectorAll('.mkz-f-js')
+    for (const elForm of elForms) {
+      domEvent.add(elForm, 'submit', this.submitSurveyForm.bind(this))
     }
   }
-  productAttachmentClick (e) {
+  submitSurveyForm (e) {
+    e.preventDefault()
+    const el = e.target
+    const valid = (new this.libs.Validation(el)).valid()
+    const formData = new this.libs.FormToObject(el)
+    const muid = el.dataset.uid
+
+    if (!valid) return
+
+    this.app.pusherNewSurveyMsg(muid, formData)
+    el.querySelector('button').disabled = true
+  }
+  clickProductAttachment (e) {
     const el = e.target
     const offer = JSON.parse(el.dataset.data)
     const callbackLabel = el.dataset.callback_label

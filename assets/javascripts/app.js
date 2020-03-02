@@ -4,6 +4,7 @@ const msgStory = require('./msgStory')
 const msgDelivered = require('./msgDelivered')
 const View = require('./view').default
 const autoMsg = require('./autoMsg')
+const surveyForm = require('./surveyForm')
 const Sound = require('./sound').default
 
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
     this.log('chat', 'created')
 
     autoMsg.init(this)
-    this.history = autoMsg.mergeHistory(msgStory.getData())
+    this.history = autoMsg.mergeHistory(msgStory.getHistory())
     this.createConnection()
 
     this.sound = new Sound(this.settings.appearance.client_sound_path)
@@ -35,7 +36,10 @@ module.exports = {
     this.previewMode = true
 
     this.settings = settings
-    this.history = options.history || []
+    this.history = (options.history || []).map((msg) => {
+      msg.type = this.getMsgType(msg)
+      return msg
+    })
     this.locale = locale
     this.view = new View(this)
     this.view.width = options.width || null
@@ -86,6 +90,8 @@ module.exports = {
     this.clientChannel.on('message:new', this.handlerMsg.bind(this))
     this.clientChannel.on('message:resend', this.handlerMsgResend.bind(this))
     this.clientChannel.on('agent:assign', this.handlerAgentAssign.bind(this))
+    this.clientChannel.on('survey:show', this.handlerSurveyShow.bind(this))
+    this.clientChannel.on('event:survey_submitted', this.handlerSurveySubmitted.bind(this))
   },
   handlerConnected () {
     this.view.connected()
@@ -116,15 +122,20 @@ module.exports = {
     if (this.libs.eEmit) this.libs.eEmit.emit('plugin.chat.channel.entered')
     this.log('chat', 'ClientEntered', msg)
   },
+  handlerSurveyShow (msg) {
+    if (this.view.windowFocus) surveyForm.trackShow(msg.muid)
+    msg.agent_id = 0
+    this.handlerMsg(msg)
+  },
   handlerMsg (msg) {
+    msg = this.addMsg(msg)
     this.stateChangeMsg(msg)
-    this.addMsg(msg)
-    this.log('chat', 'Msg', msg)
     this.view.scrollBottom()
+    this.log('chat', 'Msg', msg)
   },
   handlerMsgResend (msg) {
+    msg = this.addMsg(msg)
     this.stateChangeMsg(msg)
-    this.addMsg(msg)
     this.view.scrollBottom()
     this.setCurrentAgent(msg.current_agent_id)
     this.log('chat', 'Resend', msg)
@@ -139,6 +150,14 @@ module.exports = {
     for (const muid of muids) this.pusherMsgState(muid, 'read')
     msgDelivered.resetList()
     this.view.renderUnread()
+  },
+  handlerSurveySubmitted (payload) {
+    const msg = msgStory.findMsg(payload.custom_fields.muid, this.history)
+    if (!msg) return
+
+    msg.custom_fields.submitted = true
+    msgStory.addMsg(msg)
+    this.view.renderMessage(msg)
   },
   pusherTyping (text) {
     if (!text) return
@@ -184,6 +203,17 @@ module.exports = {
       sent_at: this.getDateTime()
     })
   },
+  pusherNewSurveyMsg (muid, visitorInfo) {
+    const msg = msgStory.findMsg(muid, this.history)
+    if (!msg) return
+
+    this.clientChannel.push('survey:submit', {
+      muid: muid,
+      title: msg.custom_fields.title
+    })
+
+    surveyForm.trackSubmit(muid, visitorInfo)
+  },
   getDateTime () {
     return (new Date).toISOString().replace('Z', '000Z')
   },
@@ -197,7 +227,13 @@ module.exports = {
       }
     }
   },
+  getMsgType (msg) {
+    const res = /[^:]*:([a-z]+)/.exec(msg.muid)
+    return res ? res[1] : 'c'
+  },
   addMsg (msg) {
+    msg.type = this.getMsgType(msg)
+
     if (msg.agent_id !== null) {
       // When the ws resived a message with agent_id=0
       // so the agent_id is going to replaced to real value
@@ -216,9 +252,10 @@ module.exports = {
       if (!this.view.windowFocus || this.view.collapsed) this.sound.play()
       if (this.view.collapsed === true) this.view.renderUnread()
     }
-    msgStory.addData(msg)
+    msgStory.addMsg(msg)
     this.history.push(msg)
     this.view.renderMessage(msg)
+    return msg
   },
   setCurrentAgent (currentAgentId) {
     if (!currentAgentId && !this.currentAgent) return

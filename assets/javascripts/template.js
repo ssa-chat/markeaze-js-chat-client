@@ -72,35 +72,108 @@ export default class Template {
       ${offers.map(this.offer.bind(this)).join("\n")}
     </div>`
   }
+  form (fields, uid) {
+    const html =  fields.map((item) => {
+      switch(item.display_type) {
+        case 'text':
+          return this.formText(item)
+        case 'email':
+          return this.formEmail(item)
+        case 'select':
+          return this.formSelect(item)
+        case 'hint':
+          return this.formHint(item)
+        case 'button':
+          return this.formButton(item)
+        default:
+          return ''
+      }
+    })
+    .map((html) => `<div class="mkz-f__row">${html}</div>`)
+    .join('')
+    return `
+      <form class="mkz-f mkz-f-js" data-uid="${this.attribute(uid)}" novalidate>${html}</form>`
+  }
+  formText (data) {
+    return `
+    <label class="mkz-f__label">${data.display_name}</label>
+    <input type="text" name="${data.field}" class="mkz-f__input" autocomplete="off" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'} />
+    `
+  }
+  formEmail (data) {
+    return `
+    <label class="mkz-f__label">${data.display_name}</label>
+    <input type="email" name="${data.field}" class="mkz-f__input" autocomplete="off" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'} />
+    `
+  }
+  formSelect (data) {
+    const options = Object.entries(data.predefined_values).map(([text, value]) => {
+      return `<option value="${this.attribute(value)}">${this.safe(text)}</option>`
+    }).join('')
+    return `
+    <label class="mkz-f__label">${data.display_name}</label>
+    <select name="${data.field}" class="mkz-f__select" autocomplete="off" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'}>${options}</select>
+    `
+  }
+  formHint (data) {
+    return `
+    <div class="mkz-f__note">${data.display_name}</div>
+    `
+  }
+  formButton (data) {
+    return `
+    <button type="submit" class="mkz-f__btn" ${data.disabled ? 'disabled="true"' : ''}>${data.display_name}</button>
+    `
+  }
   attachments (msg) {
     const attachmentGroups = (msg.attachments || []).reduce((result, item) => {
       if (!result[item.type]) result[item.type] = []
       result[item.type].push(item)
       return result
     }, {})
-    return this.offers(attachmentGroups.product)
+    return Object.entries(attachmentGroups).map(([key, group]) => {
+      switch(key) {
+        case 'product':
+          return this.offers(group)
+      }
+    })
   }
   message (msg) {
     const htmlAvatar = msg.sender_avatar_url ? `<img src="${this.safe(msg.sender_avatar_url)}" class="mkz-c__i-avatar" alt="" title="${this.safe(msg.sender_name)}" />` : ''
-    const text = (msg.text || '').split("\n").join('<br />')
-    const bg = msg.agent_id === null ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
-    const color = msg.agent_id === null ? this.appearance.client_msg_color : this.appearance.agent_msg_color
-    const htmlMsg = text ? `
-                <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
-                  <div class="mkz-c__i-msg-overflow">
-                    ${text}
-                  </div>
-                </div>` : ''
     return `
           <div>
             <div class="mkz-c__i mkz-c__i_type_${msg.agent_id === null ? 'client' : 'agent'}" data-id="${msg.muid}">
               ${htmlAvatar}
               <div class="mkz-c__i-content">
-                ${htmlMsg}
-                ${this.attachments(msg)}
+                ${this.messageContent(msg)}
               </div>
             </div>
           </div>`
+  }
+  messageContent (msg) {
+    const bg = msg.agent_id === null ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
+    const color = msg.agent_id === null ? this.appearance.client_msg_color : this.appearance.agent_msg_color
+    const wrap = (html) => `
+      <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
+        <div class="mkz-c__i-msg-overflow">
+          ${html}
+        </div>
+      </div>`
+    switch(msg.type) {
+      case 'c':
+      case 'a':
+        const text = (msg.text || '').split("\n").join('<br />')
+        return `
+          ${text ? wrap(text) : ''}
+          ${this.attachments(msg)}`
+      case 'sf':
+        const customFields = msg.custom_fields
+        const submitted = customFields.submitted
+        const followUp = customFields.follow_up_text
+        const htmlText = msg.text ? wrap(msg.text) : ''
+        const htmlForm = submitted ? wrap(followUp) : wrap(this.form(customFields.elements, msg.muid))
+        return htmlText + htmlForm
+    }
   }
   doc (name) {
     return `
@@ -144,7 +217,7 @@ export default class Template {
   content () {
     const chatPosition = ['l-t', 'l-b'].indexOf(this.appearance.bar_position) > -1 ? 'left' : 'right'
     return `
-<div mkz-c>
+<div mkz>
   <div class="mkz-c mkz-c_collapse_yes mkz-c-js">
 
     <div class="mkz-c__handler mkz-c__handler_type_${this.safe(this.appearance.bar_type)} mkz-c__handler_position_${this.safe(this.appearance.bar_position)}" style="margin: ${this.safe(this.appearance.bar_padding_y)} ${this.safe(this.appearance.bar_padding_x)}">
