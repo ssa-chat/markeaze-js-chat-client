@@ -124,7 +124,6 @@ module.exports = {
   },
   handlerSurveyShow (msg) {
     if (this.view.windowFocus) surveyForm.trackShow(msg.muid)
-    msg.agent_id = 0
     this.handlerMsg(msg)
   },
   handlerMsg (msg) {

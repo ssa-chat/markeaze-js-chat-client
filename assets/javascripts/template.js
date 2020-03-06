@@ -81,6 +81,8 @@ export default class Template {
           return this.formEmail(item)
         case 'select':
           return this.formSelect(item)
+        case 'date':
+          return this.formDate(item)
         case 'hint':
           return this.formHint(item)
         case 'button':
@@ -106,8 +108,14 @@ export default class Template {
     <input type="email" name="${data.field}" class="mkz-f__input" autocomplete="off" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'} />
     `
   }
+  formDate (data) {
+    return `
+    <label class="mkz-f__label">${data.display_name}</label>
+    <input type="date" name="${data.field}" class="mkz-f__input" autocomplete="off" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'} />
+    `
+  }
   formSelect (data) {
-    const options = Object.entries(data.predefined_values).map(([text, value]) => {
+    const options = [['', '-']].concat(Object.entries(data.predefined_values)).map(([value, text]) => {
       return `<option value="${this.attribute(value)}">${this.safe(text)}</option>`
     }).join('')
     return `
@@ -142,7 +150,7 @@ export default class Template {
     const htmlAvatar = msg.sender_avatar_url ? `<img src="${this.safe(msg.sender_avatar_url)}" class="mkz-c__i-avatar" alt="" title="${this.safe(msg.sender_name)}" />` : ''
     return `
           <div>
-            <div class="mkz-c__i mkz-c__i_type_${msg.agent_id === null ? 'client' : 'agent'}" data-id="${msg.muid}">
+            <div class="mkz-c__i mkz-c__i_type_${msg.sender_type === 'client' ? 'client' : 'agent'}" data-id="${msg.muid}">
               ${htmlAvatar}
               <div class="mkz-c__i-content">
                 ${this.messageContent(msg)}
@@ -151,8 +159,8 @@ export default class Template {
           </div>`
   }
   messageContent (msg) {
-    const bg = msg.agent_id === null ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
-    const color = msg.agent_id === null ? this.appearance.client_msg_color : this.appearance.agent_msg_color
+    const bg = msg.sender_type === 'client' ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
+    const color = msg.sender_type === 'client' ? this.appearance.client_msg_color : this.appearance.agent_msg_color
     const wrap = (html) => `
       <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
         <div class="mkz-c__i-msg-overflow">
@@ -169,8 +177,8 @@ export default class Template {
       case 'sf':
         const customFields = msg.custom_fields
         const submitted = customFields.submitted
-        const followUp = customFields.follow_up_text
-        const htmlText = msg.text ? wrap(msg.text) : ''
+        const followUp = this.safe(customFields.follow_up_text)
+        const htmlText = msg.text ? wrap(this.safe(msg.text)) : ''
         const htmlForm = submitted ? wrap(followUp) : wrap(this.form(customFields.elements, msg.muid))
         return htmlText + htmlForm
     }

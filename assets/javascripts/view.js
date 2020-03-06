@@ -17,6 +17,11 @@ export default class View {
     this.noticeHideTimeout = 10000
     this.width = null
     this.template = new Template(this)
+
+    this.validationOptions = {
+      invalidClassName: 'mkz-f__invalid',
+      requiredParentClassName: 'mkz-f__invalid-wrap'
+    }
   }
   destroy () {
     if (!this.el) return
@@ -60,7 +65,7 @@ export default class View {
   submitSurveyForm (e) {
     e.preventDefault()
     const el = e.target
-    const valid = (new this.libs.Validation(el)).valid()
+    const valid = (new this.libs.Validation(el, this.validationOptions)).valid()
     const formData = new this.libs.FormToObject(el)
     const muid = el.dataset.uid
 

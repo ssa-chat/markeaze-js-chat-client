@@ -22,6 +22,7 @@ module.exports = {
       text: msg.text,
       custom_fields: msg.custom_fields,
       agent_id: msg.agent_id,
+      sender_type: msg.sender_type,
       sent_at: msg.sent_at,
       sender_avatar_url: msg.sender_avatar_url,
       sender_name: msg.sender_name,
