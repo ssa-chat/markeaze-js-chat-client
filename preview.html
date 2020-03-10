@@ -17,25 +17,17 @@ window.mkz = function (method, pluginName, plugin) {
 var render = function(options) {
   options.history = [
     {
-      muid: 'zzz:c:1576752483292',
-      text: 'Questin',
-      agent_id: null,
-      sent_at: '2019-12-19T10:48:03.314923Z',
-      sender_avatar_url: null,
-      sender_name: null,
-      attachments: []
-    },
-    {
-      muid: 'zzz:a:1576752483293',
+      muid: '1',
       text: 'Auto message',
       agent_id: 0,
+      msg_type: 'message:auto',
       sent_at: '2019-12-19T10:48:03.314923Z',
-      sender_avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/avatar.png',
+      sender_avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png',
       sender_name: null,
       attachments: []
     },
     {
-      muid: '86:sf-1:1576750210001',
+      muid: '2',
       text: 'Enter personal information',
       custom_fields: {
         elements: [
@@ -80,25 +72,41 @@ var render = function(options) {
         title: null
       },
       agent_id: 1,
+      msg_type: 'survey:show',
       sent_at: '2020-02-20T11:12:36.833000Z',
-      sender_avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/avatar.png',
+      sender_type: 'agent',
+      sender_avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png',
       sender_name: 'tester'
     },
     {
-      muid: '86:a:1576750209102',
+      muid: '3',
+      text: 'Question',
+      agent_id: null,
+      msg_type: 'message:new',
+      sent_at: '2019-12-19T10:48:03.314923Z',
+      sender_avatar_url: null,
+      sender_name: null,
+      attachments: []
+    },
+    {
+      muid: '4',
       text: 'Answer',
       agent_id: 1,
+      msg_type: 'message:new',
       sent_at: '2019-12-19T10:50:09.107155Z',
-      sender_avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/avatar.png',
+      sender_type: 'client',
+      sender_avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png',
       sender_name: 'Tester',
       attachments: []
     },
     {
-      muid: '86:a:1576750209103',
+      muid: '5',
       text: null,
       agent_id: 1,
+      msg_type: 'message:new',
       sent_at: '2019-12-19T10:51:01.110155Z',
-      sender_avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/avatar.png',
+      sender_type: 'agent',
+      sender_avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png',
       sender_name: 'Tester',
       attachments: [
         {
@@ -109,7 +117,7 @@ var render = function(options) {
           price: 36.99,
           display_price: 'US $36.99',
           available: true,
-          main_image_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/product.png'
+          main_image_url: 'https://themes.markeaze.com/default/livechat/product.png'
         },
         {
           type: 'product',
@@ -119,7 +127,7 @@ var render = function(options) {
           price: 36.99,
           display_price: 'US $36.99',
           available: true,
-          main_image_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/product.png'
+          main_image_url: 'https://themes.markeaze.com/default/livechat/product.png'
         }
       ]
     }
@@ -128,7 +136,7 @@ var render = function(options) {
     isOnline: true,
     name: 'Buffalo Bill',
     job_title: 'Real killer',
-    avatar_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png'
+    avatar_url: 'https://themes.markeaze.com/default/livechat/icons/halloween.png'
   }
   const settings = {
     appearance: {
@@ -141,7 +149,7 @@ var render = function(options) {
       bar_text_online: 'We’re here. Let’s chat!',
       bar_text_offline: 'Leave message',
       // bar_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/some.svg',
-      notice_icon_url: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/icons/halloween.png',
+      notice_icon_url: 'https://themes.markeaze.com/default/livechat/icons/halloween.png',
       notice_text: 'Looking for halloween gifts?',
       notice_color: '#fff',
       notice_bg: '#333',
@@ -155,7 +163,7 @@ var render = function(options) {
       agent_avatar: true,
       agent_post: true,
       markeaze_link: true,
-      client_sound_path: 'https://markeaze-themes.s3.eu-central-1.amazonaws.com/default/livechat/sounds/new_message'
+      client_sound_path: 'https://themes.markeaze.com/default/livechat/sounds/new_message'
     },
     behavior: {
       attachment_cta: {
