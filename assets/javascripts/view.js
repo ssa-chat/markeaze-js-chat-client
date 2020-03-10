@@ -22,7 +22,7 @@ export default class View {
 
     this.validationOptions = {
       invalidClassName: 'mkz-f__invalid',
-      requiredParentClassName: 'mkz-f__invalid-wrap'
+      invalidParentClassName: 'mkz-f__invalid-wrap'
     }
   }
   destroy () {
