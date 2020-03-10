@@ -75,8 +75,6 @@ export default class Template {
   form (fields, uid) {
     const html =  fields.map((item) => {
       switch(item.display_type) {
-        case 'text':
-          return this.formText(item)
         case 'email':
           return this.formEmail(item)
         case 'select':
@@ -88,7 +86,7 @@ export default class Template {
         case 'button':
           return this.formButton(item)
         default:
-          return ''
+          return this.formText(item)
       }
     })
     .map((html) => `<div class="mkz-f__row">${html}</div>`)
