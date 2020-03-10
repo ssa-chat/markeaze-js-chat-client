@@ -34,6 +34,7 @@ module.exports = {
           agent_id: item.sender_id,
           attachments: [],
           muid: `${uid}:a:${timestamp}`,
+          msg_type: 'message:auto',
           sender_avatar_url: null,
           sender_name: null,
           sent_at: sentAt,
@@ -66,26 +67,26 @@ module.exports = {
 
     autoMsgStory.setItems(this.items)
   },
-  getMsgAgentId (msg) {
-    const item = this.items.find((item) => item.payload.muid === msg.muid)
+  getMsgAgentId (muid) {
+    const item = this.items.find((item) => item.payload.muid === muid)
     return (item && item.payload.agent_id) || 0
   },
   removeItem (muid) {
     this.cached = false
     this.items = autoMsgStory.removeItem(muid)
-    console.log(muid, this.items)
   },
   trackShow (amsg) {
     mkz('trackAutoMessageShow', {
       custom_fields_uid: amsg.uid
     })
   },
-  trackReply (amsg) {
-    if (!amsg.reply_once) return
+  trackReply (muid) {
+    const item = this.items.find((item) => item.payload.muid === muid)
+    if (!item.payload.reply_once) return
 
     mkz('trackAutoMessageReply', {
-      custom_fields_uid: amsg.uid,
-      reply_text: amsg.text
+      custom_fields_uid: item.payload.uid,
+      reply_text: item.payload.text
     })
   }
 }

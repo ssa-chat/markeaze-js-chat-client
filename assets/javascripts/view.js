@@ -230,14 +230,14 @@ export default class View {
     const history = this.history || msgStory.getHistory()
     for (const msg of history) this.renderMessage(msg)
   }
-  renderMessage (msg, prevMsg) {
+  renderMessage (msg, nextMsg) {
     const html = this.template.message(msg)
     let msgEl = this.findMsg(msg.muid)
     if (msgEl) {
-      msgEl.parentElement.innerHTML = html
+      msgEl.innerHTML = html
     } else {
-      const prevMsgEl = prevMsg && this.findMsg(prevMsg.muid)
-      if (prevMsgEl) msgEl = helpers.afterHTML(prevMsgEl, html)
+      const nextMsgEl = nextMsg && this.findMsg(nextMsg.muid)
+      if (nextMsgEl) msgEl = helpers.beforeHTML(nextMsgEl, html)
       else msgEl = helpers.appendHTML(this.elHistory, html)
     }
     this.bindMessage(msgEl)

@@ -94,33 +94,61 @@ export default class Template {
     .map((html) => `<div class="mkz-f__row">${html}</div>`)
     .join('')
     return `
-      <form class="mkz-f mkz-f-js" data-uid="${this.attribute(uid)}" novalidate>${html}</form>`
+      <form class="mkz-f mkz-f-js" data-uid="${this.attribute(uid)}" novalidate autocomplete="off">${html}</form>`
   }
   formText (data) {
     return `
     <label class="mkz-f__label">${data.display_name}</label>
-    <input type="text" name="${data.field}" class="mkz-f__input" autocomplete="off" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'} />
+    <input
+      type="text"
+      name="${data.field}"
+      class="mkz-f__input"
+      value="${this.attribute(data.value)}"
+      ${data.disabled ? 'disabled="true"' : ''}
+      ${data.required && 'required'}
+    />
     `
   }
   formEmail (data) {
     return `
     <label class="mkz-f__label">${data.display_name}</label>
-    <input type="email" name="${data.field}" class="mkz-f__input" autocomplete="off" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'} />
+    <input
+      type="email"
+      name="${data.field}"
+      class="mkz-f__input"
+      value="${this.attribute(data.value)}"
+      ${data.disabled ? 'disabled="true"' : ''}
+      ${data.required && 'required'}
+    />
     `
   }
   formDate (data) {
     return `
     <label class="mkz-f__label">${data.display_name}</label>
-    <input type="date" name="${data.field}" class="mkz-f__input" autocomplete="off" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'} />
+    <input
+      type="date"
+      name="${data.field}"
+      class="mkz-f__input"
+      pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+      value="${this.attribute(data.value)}"
+      ${data.disabled ? 'disabled="true"' : ''}
+      ${data.required && 'required'}
+    />
     `
   }
   formSelect (data) {
     const options = [['', '-']].concat(Object.entries(data.predefined_values)).map(([value, text]) => {
-      return `<option value="${this.attribute(value)}">${this.safe(text)}</option>`
+      const selected = data.value === value ? 'selected="selected"' : ''
+      return `<option value="${this.attribute(value)}" ${selected}>${this.safe(text)}</option>`
     }).join('')
     return `
     <label class="mkz-f__label">${data.display_name}</label>
-    <select name="${data.field}" class="mkz-f__select" autocomplete="off" ${data.disabled ? 'disabled="true"' : ''} ${data.required && 'required'}>${options}</select>
+    <select
+      name="${data.field}"
+      class="mkz-f__select"
+      ${data.disabled ? 'disabled="true"' : ''}
+      ${data.required && 'required'}
+    >${options}</select>
     `
   }
   formHint (data) {
@@ -149,12 +177,10 @@ export default class Template {
   message (msg) {
     const htmlAvatar = msg.sender_avatar_url ? `<img src="${this.safe(msg.sender_avatar_url)}" class="mkz-c__i-avatar" alt="" title="${this.safe(msg.sender_name)}" />` : ''
     return `
-          <div>
-            <div class="mkz-c__i mkz-c__i_type_${msg.sender_type === 'client' ? 'client' : 'agent'}" data-id="${msg.muid}">
-              ${htmlAvatar}
-              <div class="mkz-c__i-content">
-                ${this.messageContent(msg)}
-              </div>
+          <div class="mkz-c__i mkz-c__i_type_${msg.sender_type === 'client' ? 'client' : 'agent'}" data-id="${msg.muid}">
+            ${htmlAvatar}
+            <div class="mkz-c__i-content">
+              ${this.messageContent(msg)}
             </div>
           </div>`
   }
@@ -167,20 +193,23 @@ export default class Template {
           ${html}
         </div>
       </div>`
-    switch(msg.type) {
-      case 'c':
-      case 'a':
+    switch(msg.msg_type) {
+      case 'survey:show':
+        const customFields = msg.custom_fields
+        const submitted = customFields.submitted
+        const elements = customFields.elements.map((e) => {
+          e.value = customFields.values && customFields.values[e.field]
+          return e
+        })
+        const followUp = this.safe(customFields.follow_up_text)
+        const htmlText = msg.text ? wrap(this.safe(msg.text)) : ''
+        const htmlForm = submitted ? wrap(followUp) : wrap(this.form(elements, msg.muid))
+        return htmlText + htmlForm
+      default:
         const text = (msg.text || '').split("\n").join('<br />')
         return `
           ${text ? wrap(text) : ''}
           ${this.attachments(msg)}`
-      case 'sf':
-        const customFields = msg.custom_fields
-        const submitted = customFields.submitted
-        const followUp = this.safe(customFields.follow_up_text)
-        const htmlText = msg.text ? wrap(this.safe(msg.text)) : ''
-        const htmlForm = submitted ? wrap(followUp) : wrap(this.form(customFields.elements, msg.muid))
-        return htmlText + htmlForm
     }
   }
   doc (name) {

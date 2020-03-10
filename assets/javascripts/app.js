@@ -37,10 +37,7 @@ module.exports = {
     this.settings = settings
     this.locale = locale
     this.view = new View(this)
-    this.view.history = (options.history || []).map((msg) => {
-      msg.type = this.getMsgType(msg)
-      return msg
-    })
+    this.view.history = (options.history || [])
     this.view.width = options.width || null
     this.view.render()
 
@@ -178,7 +175,7 @@ module.exports = {
 
     const history = msgStory.getHistory()
     const lastMsg = history.length > 0 && history[history.length - 1]
-    if (lastMsg && lastMsg.type === 'a') {
+    if (lastMsg && lastMsg.msg_type === 'message:auto') {
       payload.prev_auto_message = {
         muid: lastMsg.muid,
         agent_id: 0,
@@ -187,8 +184,7 @@ module.exports = {
         sent_at: lastMsg.sent_at,
         device_uid: uid
       }
-      autoMsg.removeItem(lastMsg.muid)
-      autoMsg.trackReply(lastMsg.custom_fields)
+      autoMsg.trackReply(lastMsg.muid)
     }
 
     return this.clientChannel.push('message:new', payload)
@@ -231,16 +227,15 @@ module.exports = {
     return res ? res[1] : 'c'
   },
   addMsg (msg) {
-    msg.type = this.getMsgType(msg)
-
-    if (msg.agent_id !== null) {
+    if (msg.sender_type === 'auto') {
       // When the ws resived a message with agent_id=0
       // so the agent_id is going to replaced to real value
       // from the list of auto-message data.
-      if (msg.agent_id === 0) {
-        msg.agent_id = autoMsg.getMsgAgentId(msg)
-      }
+      msg.agent_id = autoMsg.getMsgAgentId(msg.muid)
+      autoMsg.removeItem(msg)
+    }
 
+    if (msg.agent_id !== null) {
       const agent = this.getAgent(msg.agent_id)
       if (agent) {
         msg.sender_avatar_url = agent.avatar_url || agent.sender_avatar_url
@@ -249,8 +244,10 @@ module.exports = {
       if (!this.view.windowFocus || this.view.collapsed) this.sound.play()
       if (this.view.collapsed === true) this.view.renderUnread()
     }
+
     msgStory.addMsg(msg)
-    this.view.renderMessage(msg, msgStory.getPrevMsg(msg.muid))
+    const nextMsg = msgStory.getNextMsg(msg.muid)
+    this.view.renderMessage(msg, nextMsg)
     return msg
   },
   setCurrentAgent (currentAgentId) {

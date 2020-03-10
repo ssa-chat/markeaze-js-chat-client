@@ -24,7 +24,7 @@ module.exports = {
     const index = this.findMsgIndex(msg.muid)
     const newMsg = {
       muid: msg.muid,
-      type: msg.type,
+      msg_type: msg.msg_type,
       text: msg.text,
       custom_fields: msg.custom_fields,
       agent_id: msg.agent_id,
@@ -40,12 +40,12 @@ module.exports = {
 
     this.saveHistory(history)
   },
-  getPrevMsg (muid) {
+  getNextMsg (muid) {
     const index = this.findMsgIndex(muid)
-    if (index < 1) return
-
     const history = this.getHistory()
-    return history[index - 1]
+    if (!history[index + 1]) return
+
+    return history[index + 1]
   },
   findMsgIndex (muid) {
     const history = this.getHistory()

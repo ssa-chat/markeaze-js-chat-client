@@ -16,11 +16,11 @@ module.exports = {
     container.appendChild(el)
     return el
   },
-  afterHTML (container, html) {
+  beforeHTML (container, html) {
     const tmpEl = document.createElement('div')
     tmpEl.innerHTML = html
     const el = this.getFirstChild(tmpEl)
-    container.parentNode.insertBefore(el, container.nextSibling)
+    container.parentNode.insertBefore(el, container)
     return el
   },
   getFirstChild (el) {
