@@ -16,6 +16,13 @@ module.exports = {
     container.appendChild(el)
     return el
   },
+  afterHTML (container, html) {
+    const tmpEl = document.createElement('div')
+    tmpEl.innerHTML = html
+    const el = this.getFirstChild(tmpEl)
+    container.parentNode.insertBefore(el, container.nextSibling)
+    return el
+  },
   getFirstChild (el) {
     let firstChild = el.firstChild
     while(firstChild != null && firstChild.nodeType == 3) firstChild = firstChild.nextSibling

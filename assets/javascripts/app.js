@@ -23,7 +23,6 @@ module.exports = {
     this.log('chat', 'created')
 
     autoMsg.init(this)
-    this.history = autoMsg.mergeHistory(msgStory.getHistory())
     this.createConnection()
 
     this.sound = new Sound(this.settings.appearance.client_sound_path)
@@ -36,12 +35,12 @@ module.exports = {
     this.previewMode = true
 
     this.settings = settings
-    this.history = (options.history || []).map((msg) => {
+    this.locale = locale
+    this.view = new View(this)
+    this.view.history = (options.history || []).map((msg) => {
       msg.type = this.getMsgType(msg)
       return msg
     })
-    this.locale = locale
-    this.view = new View(this)
     this.view.width = options.width || null
     this.view.render()
 
@@ -61,7 +60,6 @@ module.exports = {
   agents: [],
   agentIsOnline: false,
   sessionsCount: 0,
-  history: [],
   settings: {},
   locale: null,
   log () {
@@ -123,7 +121,7 @@ module.exports = {
     this.log('chat', 'ClientEntered', msg)
   },
   handlerSurveyShow (msg) {
-    if (this.view.windowFocus) surveyForm.trackShow(msg.muid)
+    if (this.view.windowFocus) surveyForm.trackShow(msg.custom_fields.uid)
     this.handlerMsg(msg)
   },
   handlerMsg (msg) {
@@ -151,7 +149,7 @@ module.exports = {
     this.view.renderUnread()
   },
   handlerSurveySubmitted (payload) {
-    const msg = msgStory.findMsg(payload.custom_fields.muid, this.history)
+    const msg = msgStory.findMsg(payload.custom_fields.muid)
     if (!msg) return
 
     msg.custom_fields.submitted = true
@@ -178,8 +176,9 @@ module.exports = {
       sent_at: this.getDateTime()
     }
 
-    const lastMsg = this.history.length > 0 && this.history[this.history.length - 1]
-    if (lastMsg && lastMsg.auto_message) {
+    const history = msgStory.getHistory()
+    const lastMsg = history.length > 0 && history[history.length - 1]
+    if (lastMsg && lastMsg.type === 'a') {
       payload.prev_auto_message = {
         muid: lastMsg.muid,
         agent_id: 0,
@@ -188,7 +187,8 @@ module.exports = {
         sent_at: lastMsg.sent_at,
         device_uid: uid
       }
-      autoMsg.trackReply(lastMsg.auto_message)
+      autoMsg.removeItem(lastMsg.muid)
+      autoMsg.trackReply(lastMsg.custom_fields)
     }
 
     return this.clientChannel.push('message:new', payload)
@@ -203,7 +203,7 @@ module.exports = {
     })
   },
   pusherNewSurveyMsg (muid, visitorInfo) {
-    const msg = msgStory.findMsg(muid, this.history)
+    const msg = msgStory.findMsg(muid)
     if (!msg) return
 
     this.clientChannel.push('survey:submit', {
@@ -211,7 +211,7 @@ module.exports = {
       title: msg.custom_fields.title
     })
 
-    surveyForm.trackSubmit(muid, visitorInfo)
+    surveyForm.trackSubmit(msg.custom_fields.uid, visitorInfo)
   },
   getDateTime () {
     return (new Date).toISOString().replace('Z', '000Z')
@@ -239,8 +239,6 @@ module.exports = {
       // from the list of auto-message data.
       if (msg.agent_id === 0) {
         msg.agent_id = autoMsg.getMsgAgentId(msg)
-        // The current auto-message must remove from the list.
-        autoMsg.removeItem(msg.muid)
       }
 
       const agent = this.getAgent(msg.agent_id)
@@ -252,8 +250,7 @@ module.exports = {
       if (this.view.collapsed === true) this.view.renderUnread()
     }
     msgStory.addMsg(msg)
-    this.history.push(msg)
-    this.view.renderMessage(msg)
+    this.view.renderMessage(msg, msgStory.getPrevMsg(msg.muid))
     return msg
   },
   setCurrentAgent (currentAgentId) {

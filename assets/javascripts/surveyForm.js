@@ -1,14 +1,14 @@
 module.exports = {
-  trackShow (muid) {
+  trackShow (uid) {
     mkz('trackSurveyFormShow', {
-      survey_form_uid: muid
+      survey_form_uid: uid
     })
   },
-  trackSubmit (muid, visitorInfo) {
+  trackSubmit (uid, visitorInfo) {
     visitorInfo = Object.fromEntries(Object.entries(visitorInfo).filter((i) => i[1]))
 
     mkz('trackSurveyFormSubmit', {
-      survey_form_uid: muid
+      survey_form_uid: uid
     }, null, visitorInfo)
   }
 }

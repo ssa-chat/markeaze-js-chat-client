@@ -3,10 +3,10 @@ module.exports = {
   addItems (newItems) {
     let items = this.getItems()
     for (const newItem of newItems) {
-      const index = items.findIndex((item) => item.payload.auto_message.uid === newItem.payload.auto_message.uid)
+      const index = items.findIndex((item) => item.payload.custom_fields.uid === newItem.payload.custom_fields.uid)
       if (index === -1) items.push(newItem)
       else {
-        items[index].payload.auto_message = newItem.payload.auto_message
+        items[index].payload.custom_fields = newItem.payload.custom_fields
       }
     }
     this.setItems(items)

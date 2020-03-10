@@ -3,9 +3,11 @@ const msgDelivered = require('./msgDelivered')
 const helpers = require('./libs/helpers')
 const domEvent = require('./libs/domEvent')
 const Template = require('./template').default
+const msgStory = require('./msgStory')
 
 export default class View {
   constructor (app) {
+    this.history = null
     this.collapsed = true
     this.windowFocus = true
     this.app = app
@@ -225,20 +227,23 @@ export default class View {
     this.renderUnread()
   }
   renderMessages () {
-    const history = this.app.history
+    const history = this.history || msgStory.getHistory()
     for (const msg of history) this.renderMessage(msg)
   }
-  renderMessage (msg) {
+  renderMessage (msg, prevMsg) {
     const html = this.template.message(msg)
-    const msgEl = this.elHistory.querySelector(`[data-id="${msg.muid}"]`)
-    let elMessage
+    let msgEl = this.findMsg(msg.muid)
     if (msgEl) {
-      elMessage = msgEl.parentElement
-      elMessage.innerHTML = html
+      msgEl.parentElement.innerHTML = html
     } else {
-      elMessage = helpers.appendHTML(this.elHistory, html)
+      const prevMsgEl = prevMsg && this.findMsg(prevMsg.muid)
+      if (prevMsgEl) msgEl = helpers.afterHTML(prevMsgEl, html)
+      else msgEl = helpers.appendHTML(this.elHistory, html)
     }
-    this.bindMessage(elMessage)
+    this.bindMessage(msgEl)
+  }
+  findMsg (muid) {
+    return this.elHistory.querySelector(`[data-id="${muid}"]`)
   }
   renderUnread () {
     if (!this.elUnread) return

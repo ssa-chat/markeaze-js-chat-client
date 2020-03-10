@@ -1,9 +1,11 @@
 const autoMsgStory = require('./autoMsgStory')
 
 module.exports = {
+  cached: false,
   init (app) {
     this.app = app
     this.libs = app.libs
+    this.cached = false
     this.items = autoMsgStory.getItems()
     this.rendered = false
 
@@ -15,9 +17,14 @@ module.exports = {
       })
     }
   },
+  getHistory () {
+    this.cached = true
+    return this.items.map((item) => item.payload)
+  },
   saveItems (items) {
     if (items.length === 0) return
 
+    this.cached = false
     const uid = this.app.store.uid
     this.items = autoMsgStory.addItems(items.map((item) => {
       const sentAt = this.app.getDateTime()
@@ -31,8 +38,8 @@ module.exports = {
           sender_name: null,
           sent_at: sentAt,
           text: item.text,
-          exclude_history: true,
-          auto_message: item
+          exclude: true,
+          custom_fields: item
         },
         state: 'new',
         sent_at: sentAt
@@ -45,12 +52,13 @@ module.exports = {
     const items = this.items.filter((item) => item.state === 'new')
     if (items.length === 0) return
 
+    this.cached = false
     for (const item of items) {
       this.app.addMsg(item.payload)
       this.app.view.scrollBottom()
       this.app.setCurrentAgent(item.payload.agent_id)
 
-      this.trackShow(item.payload.auto_message)
+      this.trackShow(item.payload.custom_fields)
 
       item.state = 'sent'
     }
@@ -58,38 +66,25 @@ module.exports = {
 
     autoMsgStory.setItems(this.items)
   },
-  mergeHistory (history) {
-    const msgs = this.items.map((item) => item.payload)
-    const arr = history.concat(msgs)
-
-    for (let i = 1, l = arr.length; i < l; i++) {
-      const current = arr[i]
-      let j = i
-      while (j > 0 && new Date(arr[j - 1].sent_at) > new Date(current.sent_at)) {
-        arr[j] = arr[j - 1]
-        j--
-      }
-      arr[j] = current
-    }
-    return arr
-  },
   getMsgAgentId (msg) {
     const item = this.items.find((item) => item.payload.muid === msg.muid)
     return (item && item.payload.agent_id) || 0
   },
   removeItem (muid) {
+    this.cached = false
     this.items = autoMsgStory.removeItem(muid)
+    console.log(muid, this.items)
   },
   trackShow (amsg) {
     mkz('trackAutoMessageShow', {
-      auto_message_uid: amsg.uid
+      custom_fields_uid: amsg.uid
     })
   },
   trackReply (amsg) {
     if (!amsg.reply_once) return
 
     mkz('trackAutoMessageReply', {
-      auto_message_uid: amsg.uid,
+      custom_fields_uid: amsg.uid,
       reply_text: amsg.text
     })
   }
