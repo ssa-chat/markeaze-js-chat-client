@@ -173,6 +173,7 @@ export default class View {
     if (this.app.settings.appearance.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
     if (this.app.settings.appearance.agent_avatar && this.app.currentAgent.avatar_url) {
       this.elAgentAvatar.src = this.app.currentAgent.avatar_url
+      this.elAgentAvatar.setAttribute('srcset', helpers.srcset(this.app.currentAgent.avatar_url))
       this.elAgentAvatar.style.display = 'block'
     } else this.elAgentAvatar.style.display = 'none'
     helpers.addClass(this.elContainer, 'mkz-c_agent_assign')

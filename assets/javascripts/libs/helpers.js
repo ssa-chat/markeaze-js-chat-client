@@ -32,5 +32,15 @@ module.exports = {
     const temp = document.createElement('div')
     temp.textContent = str || ''
     return temp.innerHTML
+  },
+  srcset (src) {
+    const getSrcSet = (src, size) => {
+      const delimeter = '/'
+      const t = src.split(delimeter)
+      const lastKey = t.length - 1
+      t[lastKey] = `x${size}_${t[lastKey]}`
+      return `${t.join(delimeter)} ${size}x`
+    }
+    return `${getSrcSet(src, 2)}, ${getSrcSet(src, 3)}`
   }
 }
