@@ -82,12 +82,13 @@ module.exports = {
   },
   trackReply (muid) {
     const item = this.items.find((item) => item.payload.muid === muid)
-    if (!item || !item.payload.custom_fields.reply_once) return
+    if (!item) return
 
     const customFields = item.payload.custom_fields
     mkz('trackAutoMessageReply', {
       auto_message_uid: customFields.uid,
-      reply_text: customFields.text
+      reply_text: customFields.text,
+      reply_once: customFields.reply_once
     })
   }
 }

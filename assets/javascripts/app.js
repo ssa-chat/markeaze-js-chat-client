@@ -152,6 +152,11 @@ module.exports = {
     msg.custom_fields.submitted = true
     msgStory.addMsg(msg)
     this.view.renderMessage(msg)
+
+    msgStory.batchUpdateMsg(
+      (m) => m.muid !== msg.muid && m.msg_type === 'survey:show' && m.custom_fields.uid === m.custom_fields.uid,
+      (m) => m.custom_fields.hidden = true
+    ).map((m) => this.view.renderMessage(m))
   },
   pusherTyping (text) {
     if (!text) return
@@ -222,13 +227,9 @@ module.exports = {
       }
     }
   },
-  getMsgType (msg) {
-    const res = /[^:]*:([a-z]+)/.exec(msg.muid)
-    return res ? res[1] : 'c'
-  },
   addMsg (msg) {
     if (msg.sender_type === 'auto') {
-      // When the ws resived a message with agent_id=0
+      // When the ws resived a auto-message
       // so the agent_id is going to replaced to real value
       // from the list of auto-message data.
       msg.agent_id = autoMsg.getMsgAgentId(msg.muid)

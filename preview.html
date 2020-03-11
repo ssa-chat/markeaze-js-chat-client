@@ -35,7 +35,13 @@ var render = function(options) {
             field: 'first_name',
             required: false,
             display_name: 'First name',
-            display_type: 'email'
+            display_type: 'text'
+          },
+          {
+            field: 'age',
+            required: false,
+            display_name: 'Age',
+            display_type: 'numeric'
           },
           {
             field: 'email',
@@ -64,7 +70,7 @@ var render = function(options) {
             display_type: 'hint'
           },
           {
-            display_name: 'Start chatting',
+            display_name: 'Submit',
             display_type: 'button'
           }
         ],

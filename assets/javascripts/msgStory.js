@@ -5,22 +5,27 @@ module.exports = {
   cached: false,
   history: [],
   getHistory () {
-    if (this.cached && autoMsg.cached) this.history
+    if (this.cached && autoMsg.cached) return this.history
+
+    this.cached = true
 
     const json = localStorage.getItem(this.name)
     let history = []
     try {
       history = JSON.parse(json) || []
     } catch (e) {}
-    return this.sortHistory(history.concat(autoMsg.getHistory()))
+    this.history = this.sortHistory(history.concat(autoMsg.getHistory()))
+
+    return this.history
   },
   saveHistory (history) {
+    this.cached = false
+
     localStorage.setItem(this.name, JSON.stringify(history.filter((msg) => !msg.exclude)))
     return history
   },
   addMsg (msg) {
     const history = this.getHistory()
-
     const index = this.findMsgIndex(msg.muid)
     const newMsg = {
       muid: msg.muid,
@@ -46,6 +51,14 @@ module.exports = {
     if (!history[index + 1]) return
 
     return history[index + 1]
+  },
+  batchUpdateMsg (callbackCondition, callbackUpdate) {
+    const history = this.getHistory()
+
+    const msgs = history.filter(callbackCondition)
+    msgs.map(callbackUpdate)
+    this.saveHistory(history)
+    return msgs
   },
   findMsgIndex (muid) {
     const history = this.getHistory()

@@ -76,7 +76,9 @@ export default class Template {
     const html =  fields.map((item) => {
       switch(item.display_type) {
         case 'email':
-          return this.formEmail(item)
+          return this.formText(item, 'email')
+        case 'numeric':
+          return this.formText(item, 'number')
         case 'select':
           return this.formSelect(item)
         case 'date':
@@ -86,7 +88,7 @@ export default class Template {
         case 'button':
           return this.formButton(item)
         default:
-          return this.formText(item)
+          return this.formText(item, 'text')
       }
     })
     .map((html) => `<div class="mkz-f__row">${html}</div>`)
@@ -94,24 +96,11 @@ export default class Template {
     return `
       <form class="mkz-f mkz-f-js" data-uid="${this.attribute(uid)}" novalidate autocomplete="off">${html}</form>`
   }
-  formText (data) {
+  formText (data, type) {
     return `
     <label class="mkz-f__label">${data.display_name}</label>
     <input
-      type="text"
-      name="${data.field}"
-      class="mkz-f__input"
-      value="${this.attribute(data.value)}"
-      ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required && 'required'}
-    />
-    `
-  }
-  formEmail (data) {
-    return `
-    <label class="mkz-f__label">${data.display_name}</label>
-    <input
-      type="email"
+      type="${type}"
       name="${data.field}"
       class="mkz-f__input"
       value="${this.attribute(data.value)}"
@@ -195,13 +184,14 @@ export default class Template {
       case 'survey:show':
         const customFields = msg.custom_fields
         const submitted = customFields.submitted
+        const hidden = customFields.hidden
         const elements = customFields.elements.map((e) => {
           e.value = customFields.values && customFields.values[e.field]
           return e
         })
         const followUp = this.safe(customFields.follow_up_text)
         const htmlText = msg.text ? wrap(this.safe(msg.text)) : ''
-        const htmlForm = submitted ? wrap(followUp) : wrap(this.form(elements, msg.muid))
+        const htmlForm = submitted ? wrap(followUp) : (hidden ? '' : wrap(this.form(elements, msg.muid)))
         return htmlText + htmlForm
       default:
         const text = (msg.text || '').split("\n").join('<br />')
