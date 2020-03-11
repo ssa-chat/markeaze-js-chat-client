@@ -59,7 +59,7 @@ module.exports = {
       this.app.view.scrollBottom()
       this.app.setCurrentAgent(item.payload.agent_id)
 
-      this.trackShow(item.payload.custom_fields)
+      this.trackShow(item.payload.custom_fields.uid)
 
       item.state = 'sent'
     }
@@ -75,18 +75,19 @@ module.exports = {
     this.cached = false
     this.items = autoMsgStory.removeItem(muid)
   },
-  trackShow (amsg) {
+  trackShow (uid) {
     mkz('trackAutoMessageShow', {
-      custom_fields_uid: amsg.uid
+      auto_message_uid: uid
     })
   },
   trackReply (muid) {
     const item = this.items.find((item) => item.payload.muid === muid)
-    if (!item.payload.reply_once) return
+    if (!item || !item.payload.custom_fields.reply_once) return
 
+    const customFields = item.payload.custom_fields
     mkz('trackAutoMessageReply', {
-      custom_fields_uid: item.payload.uid,
-      reply_text: item.payload.text
+      auto_message_uid: customFields.uid,
+      reply_text: customFields.text
     })
   }
 }
