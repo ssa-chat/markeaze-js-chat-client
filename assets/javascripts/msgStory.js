@@ -54,7 +54,6 @@ module.exports = {
   },
   batchUpdateMsg (callbackCondition, callbackUpdate) {
     const history = this.getHistory()
-
     const msgs = history.filter(callbackCondition)
     msgs.map(callbackUpdate)
     this.saveHistory(history)

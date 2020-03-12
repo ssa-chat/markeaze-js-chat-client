@@ -154,7 +154,7 @@ module.exports = {
     this.view.renderMessage(msg)
 
     msgStory.batchUpdateMsg(
-      (m) => m.muid !== msg.muid && m.msg_type === 'survey:show' && m.custom_fields.uid === m.custom_fields.uid,
+      (m) => m.muid !== msg.muid && m.msg_type === 'survey:show' && m.custom_fields.uid === msg.custom_fields.uid,
       (m) => m.custom_fields.hidden = true
     ).map((m) => this.view.renderMessage(m))
   },
