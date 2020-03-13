@@ -11,15 +11,15 @@
 
 mkz('debug', true);
 mkz('updateStore', {
-  trackerEndpoint: 'localhost:5000',
-  chatEndpoint: 'localhost:4000',
+  trackerEndpoint: '<%= process.env.TRACKER_URL %>:5000',
+  chatEndpoint: '<%= process.env.TRACKER_URL %>:4000',
   plugins: {
     chat: {url: '/mkz-chat-client.js'}
   },
-  trackerCustomUrl: 'http://localhost:8084/demo_data.html'
+  trackerCustomUrl: 'http://<%= process.env.TRACKER_URL %>:8084/demo_data.html'
 });
 
-mkz('appKey', 'f1164146b9feb98a@dev');
+mkz('appKey', '<%= process.env.APP_KEY %>');
 
 mkz('trackPageView', {
   page: {

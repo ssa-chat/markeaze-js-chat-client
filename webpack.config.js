@@ -1,4 +1,6 @@
 const WebpackAutoInject = require('webpack-auto-inject-version')
+const Dotenv = require('dotenv-webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './app.js',
@@ -11,6 +13,23 @@ module.exports = {
         AutoIncreaseVersion: false,
         InjectAsComment: false
       }
+    }),
+    new Dotenv({
+      path: './.env',
+      safe: true,
+      systemvars: true,
+      silent: true,
+      defaults: false
+    }),
+    new HtmlWebpackPlugin({
+      filename: `index.html`,
+      template: './index.html',
+      inject: false
+    }),
+    new HtmlWebpackPlugin({
+      filename: `preview.html`,
+      template: './preview.html',
+      inject: false
     })
   ],
   module: {
