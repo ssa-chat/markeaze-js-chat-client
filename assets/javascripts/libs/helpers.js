@@ -42,5 +42,29 @@ module.exports = {
       return `${t.join(delimeter)} ${size}x`
     }
     return `${getSrcSet(src, 2)}, ${getSrcSet(src, 3)}`
+  },
+  linkify (str) {
+    // URLs starting with http://, https://, or ftp://
+    const re1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim
+    str = str.replace(re1, '<a href="$1" target="_blank">$1</a>')
+
+    // URLs starting with www. (without // before it, or it'd re-link the ones done above)
+    const re2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim
+    str = str.replace(re2, '$1<a href="http://$2" target="_blank">$2</a>')
+
+    // Change email addresses to mailto:: links
+    const re3 = /(([a-zA-Z_-]+\.)*[a-zA-Z_-]+@([a-zA-Z_-]+\.)*[a-zA-Z_-]+\.[a-zA-Z]{2,6})/gim
+    str = str.replace(re3, '<a href="mailto:$1">$1</a>')
+
+    return str
+  },
+  br (str) {
+    return (str || '').split("\n").join('<br />')
+  },
+  htmlFormatting (str) {
+    return this.linkify(this.br(str))
+  },
+  textFormatting (str) {
+    return this.htmlFormatting(this.htmlToText(str))
   }
 }

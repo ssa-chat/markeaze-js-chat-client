@@ -98,7 +98,7 @@ export default class Template {
   }
   formText (data, type) {
     return `
-    <label class="mkz-f__label">${data.display_name}</label>
+    <label class="mkz-f__label">${this.safe(data.display_name)}</label>
     <input
       type="${type}"
       name="${data.field}"
@@ -111,7 +111,7 @@ export default class Template {
   }
   formDate (data) {
     return `
-    <label class="mkz-f__label">${data.display_name}</label>
+    <label class="mkz-f__label">${this.safe(data.display_name)}</label>
     <input
       type="date"
       name="${data.field}"
@@ -129,23 +129,23 @@ export default class Template {
       return `<option value="${this.attribute(value)}" ${selected}>${this.safe(text)}</option>`
     }).join('')
     return `
-    <label class="mkz-f__label">${data.display_name}</label>
+    <label class="mkz-f__label">${this.safe(data.display_name)}</label>
     <select
       name="${data.field}"
       class="mkz-f__select"
       ${data.disabled ? 'disabled="true"' : ''}
       ${data.required && 'required'}
-    >${options}</select>
+    >${this.safe(options)}</select>
     `
   }
   formHint (data) {
     return `
-    <div class="mkz-f__note">${data.display_name}</div>
+    <div class="mkz-f__note">${this.safe(data.display_name)}</div>
     `
   }
   formButton (data) {
     return `
-    <button type="submit" class="mkz-f__btn" ${data.disabled ? 'disabled="true"' : ''}>${data.display_name}</button>
+    <button type="submit" class="mkz-f__btn" ${data.disabled ? 'disabled="true"' : ''}>${this.safe(data.display_name)}</button>
     `
   }
   attachments (msg) {
@@ -189,12 +189,12 @@ export default class Template {
           e.value = customFields.values && customFields.values[e.field]
           return e
         })
-        const followUp = this.safe(customFields.follow_up_text)
-        const htmlText = msg.text ? wrap(this.safe(msg.text)) : ''
+        const followUp = helpers.textFormatting(customFields.follow_up_text)
+        const htmlText = msg.text ? wrap(helpers.textFormatting(msg.text)) : ''
         const htmlForm = submitted ? wrap(followUp) : (hidden ? '' : wrap(this.form(elements, msg.muid)))
         return htmlText + htmlForm
       default:
-        const text = (msg.text || '').split("\n").join('<br />')
+        const text = helpers.textFormatting(msg.text)
         return `
           ${text ? wrap(text) : ''}
           ${this.attachments(msg)}`
@@ -204,7 +204,7 @@ export default class Template {
     return `
             <div class="mkz-c-docs__i">
               <div class="mkz-c-docs__btn">
-                ${name}
+                ${this.safe(name)}
               </div>
             </div>`
   }
