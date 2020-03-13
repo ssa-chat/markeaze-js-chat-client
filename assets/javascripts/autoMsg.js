@@ -35,6 +35,7 @@ module.exports = {
           attachments: [],
           muid: `${uid}:a:${timestamp}`,
           msg_type: 'message:auto',
+          sender_type: item.sender_type,
           sender_avatar_url: null,
           sender_name: null,
           sent_at: sentAt,
