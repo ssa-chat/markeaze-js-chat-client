@@ -185,6 +185,7 @@ module.exports = {
         muid: lastMsg.muid,
         agent_id: 0,
         text: lastMsg.text,
+        sender_type: 'auto',
         status: 'read',
         sent_at: lastMsg.sent_at,
         device_uid: uid
