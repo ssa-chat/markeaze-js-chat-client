@@ -44,13 +44,22 @@ module.exports = {
     return `${getSrcSet(src, 2)}, ${getSrcSet(src, 3)}`
   },
   linkify (str) {
+    getAttrs = (url) => {
+      const host = window.location.host.replace(/^www\./i, '').replace(/:[0-9]+/i, '')
+      return url.indexOf(host) > -1 ? '' : ' target="_blank"'
+    }
+
     // URLs starting with http://, https://, or ftp://
     const re1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim
-    str = str.replace(re1, '<a href="$1" target="_blank">$1</a>')
+    str = str.replace(re1, (a, url) => {
+      return `<a href="${url}"${getAttrs(url)}>${url}</a>`
+    })
 
     // URLs starting with www. (without // before it, or it'd re-link the ones done above)
     const re2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim
-    str = str.replace(re2, '$1<a href="http://$2" target="_blank">$2</a>')
+    str = str.replace(re2, (a, prefix, url) => {
+      return `${prefix}<a href="http://${url}"${getAttrs(url)}>${url}</a>`
+    })
 
     // Change email addresses to mailto:: links
     const re3 = /(([a-zA-Z_-]+\.)*[a-zA-Z_-]+@([a-zA-Z_-]+\.)*[a-zA-Z_-]+\.[a-zA-Z]{2,6})/gim
