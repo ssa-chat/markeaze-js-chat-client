@@ -64,29 +64,17 @@ $color_hint: #787878
     left: 0
     top: 0
 
-    &.mkz-c__handler_type_bar
-      margin-top: 0 !important
-
   .mkz-c__handler_position_r-t
     right: 0
     top: 0
-
-    &.mkz-c__handler_type_bar
-      margin-top: 0 !important
 
   .mkz-c__handler_position_l-b
     left: 0
     bottom: 0
 
-    &.mkz-c__handler_type_bar
-      margin-bottom: 0 !important
-
   .mkz-c__handler_position_r-b
     right: 0
     bottom: 0
-
-    &.mkz-c__handler_type_bar
-      margin-bottom: 0 !important
 
   .mkz-c__handler_type_bubble
 
@@ -189,6 +177,18 @@ $color_hint: #787878
 
   .mkz-c__handler_type_bar
 
+    &.mkz-c__handler_position_l-t
+      margin-top: 0 !important
+
+    &.mkz-c__handler_position_r-t
+      margin-top: 0 !important
+
+    &.mkz-c__handler_position_l-b
+      margin-bottom: 0 !important
+
+    &.mkz-c__handler_position_r-b
+      margin-bottom: 0 !important
+
     &.mkz-c__handler_position_l-t, &.mkz-c__handler_position_r-t
 
       .mkz-c__btn
@@ -213,6 +213,55 @@ $color_hint: #787878
           bottom: 100%
           top: auto
           transform: rotate(180deg)
+
+    &.mkz-c__handler_position_t, &.mkz-c__handler_position_l
+
+      .mkz-c__btn
+        border-radius: 0 0 15px 15px
+
+        &:hover
+          padding-top: 20px
+          padding-bottom: 8px
+
+      .mkz-c__tooltip
+        bottom: auto
+        top: 100%
+        margin-top: 25px
+        margin-bottom: 0
+        border-radius: 0 0 6px 6px
+
+        &:after
+          content: ''
+          position: absolute
+          left: 0
+          right: 0
+          bottom: 100%
+          top: auto
+          transform: rotate(180deg)
+
+    &.mkz-c__handler_position_t
+      right: 0
+      top: 0
+      margin-top: 0 !important
+
+    &.mkz-c__handler_position_l
+      transform: rotate(-90deg) translateX(-100%)
+      transform-origin: 0 0
+      left: 0
+      top: 0
+      margin-left: 0 !important
+
+    &.mkz-c__handler_position_r
+      transform: rotate(-90deg) translateY(-100%)
+      transform-origin: 100% 0
+      right: 0
+      top: 0
+      margin-right: 0 !important
+
+    &.mkz-c__handler_position_b
+      right: 0
+      bottom: 0
+      margin-bottom: 0 !important
 
     .mkz-c__tooltip-picture
       display: none

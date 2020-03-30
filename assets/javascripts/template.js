@@ -240,7 +240,7 @@ export default class Template {
       </div>` : ''
   }
   content () {
-    const chatPosition = ['l-t', 'l-b'].indexOf(this.appearance.bar_position) > -1 ? 'left' : 'right'
+    const chatPosition = ['l-t', 'l-b', 'l'].indexOf(this.appearance.bar_position) > -1 ? 'left' : 'right'
     return `
 <div mkz>
   <div class="mkz-c mkz-c_collapse_yes mkz-c-js">
