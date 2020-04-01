@@ -245,7 +245,7 @@ export default class Template {
 <div mkz>
   <div class="mkz-c mkz-c_collapse_yes mkz-c-js">
 
-    <div class="mkz-c__handler mkz-c__handler_type_${this.safe(this.appearance.bar_type)} mkz-c__handler_position_${this.safe(this.appearance.bar_position)}" style="margin: ${this.safe(this.appearance.bar_padding_y)} ${this.safe(this.appearance.bar_padding_x)}">
+    <div class="mkz-c__handler mkz-c__handler_type_${this.safe(this.appearance.bar_type)} mkz-c__handler_position_${this.safe(this.appearance.bar_position)}" style="margin: ${this.safe(this.appearance.bar_padding_y)}px ${this.safe(this.appearance.bar_padding_x)}px">
       ${this.notice()}
       <div class="mkz-c__btn mkz-c-js-toggle" style="background-color: ${this.appearance.bar_bg}; color: ${this.safe(this.appearance.bar_color)};">
         <div class="mkz-c__btn-text">
