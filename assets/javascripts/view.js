@@ -19,6 +19,9 @@ export default class View {
     this.noticeHideTimeout = 10000
     this.width = null
     this.template = new Template(this)
+    this.containerBeaconClassName = 'mkz-c_beacon_show'
+    this.containerChatClassName = 'mkz-c_chat_show'
+    this.htmlClassName = 'mkz-c-fixed'
 
     this.validationOptions = {
       invalidClassName: 'mkz-f__invalid',
@@ -32,13 +35,13 @@ export default class View {
   bind () {
     domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
 
-    domEvent.add(this.elToggle, 'click', this.collapse.bind(this))
-    domEvent.add(this.elClose, 'click', this.collapse.bind(this))
+    domEvent.add(this.elToggle, 'click', this.showChat.bind(this))
+    domEvent.add(this.elClose, 'click', this.hideChat.bind(this))
 
     if (this.previewMode) return
 
-    domEvent.add(window, 'focus', this.focus.bind(this))
-    domEvent.add(window, 'blur', this.blur.bind(this))
+    domEvent.add(window, 'focus', this.onFocus.bind(this))
+    domEvent.add(window, 'blur', this.onBlur.bind(this))
 
     domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
 
@@ -93,31 +96,53 @@ export default class View {
 
     eval(settings.handler)(offer, callback)
   }
-  focus () {
+  onFocus () {
     this.windowFocus = true
   }
-  blur () {
+  onBlur () {
     this.windowFocus = false
   }
-  collapse () {
-    const containerClassName = 'mkz-c_collapse_yes'
-    const htmlClassName = 'mkz-c-fixed'
-    this.collapsed = !this.collapsed
-    if (this.collapsed) {
-      helpers.removeClass(document.documentElement, htmlClassName)
-      helpers.addClass(this.elContainer, containerClassName)
-    } else {
-      helpers.addClass(document.documentElement, htmlClassName)
-      helpers.removeClass(this.elContainer, containerClassName)
+  showChat () {
+    if (!this.collapsed) return
 
-      if (!this.previewMode) setTimeout(() => {
-        this.elInput.focus()
-      }, 100)
-    }
+    this.collapsed = false
+
+    helpers.addClass(document.documentElement, this.htmlClassName)
+    helpers.addClass(this.elContainer, this.containerChatClassName)
+
+    this.hideBeacon()
 
     if (this.previewMode) return
 
     this.app.handlerCollapse(this.collapsed)
+
+    setTimeout(() => {
+      this.elInput.focus()
+    }, 100)
+  }
+  hideChat () {
+    if (this.collapsed) return
+
+    this.collapsed = true
+
+    helpers.removeClass(document.documentElement, this.htmlClassName)
+    helpers.removeClass(this.elContainer, this.containerChatClassName)
+
+    this.showBeacon()
+
+    if (this.previewMode) return
+
+    this.app.handlerCollapse(this.collapsed)
+  }
+  showBeacon (hasMessage) {
+    if (this.app.settings.beaconState === 'disabled') return
+
+    if (this.app.settings.beaconState === 'hidden' && !hasMessage) return
+
+    helpers.addClass(this.elContainer, this.containerBeaconClassName)
+  }
+  hideBeacon () {
+    helpers.removeClass(this.elContainer, this.containerBeaconClassName)
   }
   connected () {
     this.enableSending()
@@ -222,9 +247,11 @@ export default class View {
       this.elAgentPost = this.el.querySelector('.mkz-c-js-agent-post')
       this.elAgentAvatar = this.el.querySelector('.mkz-c-js-agent-avatar')
       this.bind()
+      this.showBeacon()
       this.toggleNotice()
       this.renderMessages()
     }
+
     this.renderUnread()
   }
   renderMessages () {
@@ -248,6 +275,7 @@ export default class View {
   }
   renderUnread () {
     if (!this.elUnread) return
+
     const unreadCount = msgDelivered.getList().length
     this.elUnread.innerHTML = unreadCount
     this.elUnread.style.display = unreadCount === 0 ? 'none' : 'block'

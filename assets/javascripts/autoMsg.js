@@ -9,13 +9,11 @@ module.exports = {
     this.items = autoMsgStory.getItems()
     this.rendered = false
 
-    if (this.libs.eEmit) {
-      this.libs.eEmit.subscribe('plugin.chat.auto_messages', this.saveItems.bind(this))
-      this.libs.eEmit.subscribe('plugin.chat.channel.entered', () => {
-        this.rendered = true
-        this.renderNewItems()
-      })
-    }
+    this.libs.eEmit.subscribe('plugin.chat.auto_messages', this.saveItems.bind(this))
+    this.libs.eEmit.subscribe('plugin.chat.channel.entered', () => {
+      this.rendered = true
+      this.renderNewItems()
+    })
   },
   getHistory () {
     this.cached = true
@@ -64,7 +62,7 @@ module.exports = {
 
       item.state = 'sent'
     }
-    if (this.app.view.collapsed) this.app.view.collapse()
+    this.app.view.showChat()
 
     autoMsgStory.setItems(this.items)
   },

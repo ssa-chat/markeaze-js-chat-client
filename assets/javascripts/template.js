@@ -243,7 +243,7 @@ export default class Template {
     const chatPosition = ['l-t', 'l-b', 'l'].indexOf(this.appearance.bar_position) > -1 ? 'left' : 'right'
     return `
 <div mkz>
-  <div class="mkz-c mkz-c_collapse_yes mkz-c-js">
+  <div class="mkz-c mkz-c-js">
 
     <div class="mkz-c__handler mkz-c__handler_type_${this.safe(this.appearance.bar_type)} mkz-c__handler_position_${this.safe(this.appearance.bar_position)}" style="margin: ${this.safe(this.appearance.bar_padding_y)}px ${this.safe(this.appearance.bar_padding_x)}px">
       ${this.notice()}

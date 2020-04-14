@@ -5,7 +5,68 @@ $color_text: #000
 $color_bg: #FFF
 $color_hint: #787878
 
+=reset()
+  html, body, div, span, applet, object, iframe,
+  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+  a, abbr, acronym, address, big, cite, code,
+  del, dfn, em, img, ins, kbd, q, s, samp,
+  small, strike, strong, sub, sup, tt, var,
+  b, u, i, center,
+  dl, dt, dd, ol, ul, li,
+  fieldset, form, label, legend,
+  table, caption, tbody, tfoot, thead, tr, th, td,
+  article, aside, canvas, details, embed,
+  figure, figcaption, footer, header, hgroup,
+  menu, nav, output, ruby, section, summary,
+  time, mark, audio, video
+    margin: 0
+    padding: 0
+    border: 0
+    font-size: 100%
+    font: inherit
+    vertical-align: baseline
+    color: inherit
+    font-weight: inherit
+    text-transform: inherit
+    max-width: none
+
+  label, legend
+    width: auto
+    height: auto
+
+  input, select, textarea, button
+    margin: 0
+    padding: 0
+    font-size: 100%
+    font: inherit
+    vertical-align: baseline
+    background-image: none
+    outline: none
+
+  /* HTML5 display-role reset for older browsers */
+  article, aside, details, figcaption, figure,
+  footer, header, hgroup, menu, nav, section
+    display: block
+
+  line-height: 1
+
+  ol, ul
+    list-style: none
+
+  blockquote, q
+    quotes: none
+
+  blockquote:before, blockquote:after,
+  q:before, q:after
+    content: ''
+    content: none
+
+  table
+    border-collapse: collapse
+    border-spacing: 0
+
 [mkz]
+  +reset()
 
   .mkz-c
     text-align: left
@@ -18,15 +79,17 @@ $color_hint: #787878
       font-family: $font
       -webkit-tap-highlight-color: transparent
 
-  .mkz-c_collapse_yes
+  .mkz-c_chat_show
+
+    .mkz-c__chat
+      opacity: 1
+      visibility: visible
+
+  .mkz-c_beacon_show
 
     .mkz-c__handler
       opacity: 1
       visibility: visible
-
-    .mkz-c__chat
-      opacity: 0
-      visibility: hidden
 
     &.mkz-c_tooltip_yes
 
@@ -351,8 +414,8 @@ $color_hint: #787878
 
   .mkz-c__chat
     transition: opacity 0.2s linear, visibility 0.4s 0s linear
-    opacity: 1
-    visibility: visible
+    opacity: 0
+    visibility: hidden
     position: fixed
     right: 0
     bottom: 0

@@ -1,4 +1,3 @@
-require('./notifier')
 const Socket = require('phoenix/assets/js/phoenix').Socket
 const msgStory = require('./msgStory')
 const msgDelivered = require('./msgDelivered')
@@ -21,11 +20,15 @@ module.exports = {
     this.settings = settings
     this.locale = locale
     this.log('chat', 'created')
+    this.view = new View(this)
+    this.sound = new Sound(this.settings.appearance.client_sound_path)
 
     autoMsg.init(this)
-    this.createConnection()
 
-    this.sound = new Sound(this.settings.appearance.client_sound_path)
+    this.libs.eEmit.subscribe('plugin.chat.show', this.view.showChat.bind(this.view))
+    this.libs.eEmit.subscribe('plugin.chat.hide', this.view.hideChat.bind(this.view))
+
+    this.createConnection()
   },
   destroy () {
     if (this.view) this.view.destroy()
@@ -42,7 +45,7 @@ module.exports = {
     this.view.render()
 
     if (options.collapsed) this.view.showNotice()
-    else this.view.collapse()
+    else this.view.showChat()
 
     if (options.currentAgent) {
       this.currentAgent = options.currentAgent
@@ -64,8 +67,6 @@ module.exports = {
   },
   createConnection () {
     this.socket = new Socket(`//${this.store.chatEndpoint}/socket`)
-
-    this.view = new View(this)
 
     this.socket.onOpen(this.handlerConnected.bind(this))
     this.socket.onClose(this.handlerDisconnected.bind(this))
@@ -244,7 +245,10 @@ module.exports = {
         msg.sender_name = agent.name || msg.sender_name
       }
       if (!this.view.windowFocus || this.view.collapsed) this.sound.play()
-      if (this.view.collapsed === true) this.view.renderUnread()
+      if (this.view.collapsed === true) {
+        this.view.renderUnread()
+        this.view.showBeacon(true)
+      }
     }
 
     msgStory.addMsg(msg)
