@@ -183,6 +183,7 @@ module.exports = {
     const lastMsg = history.length > 0 && history[history.length - 1]
     if (lastMsg && lastMsg.msg_type === 'message:auto') {
       payload.prev_auto_message = {
+        uid: lastMsg.uid,
         muid: lastMsg.muid,
         agent_id: 0,
         text: lastMsg.text,

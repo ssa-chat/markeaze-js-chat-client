@@ -29,6 +29,7 @@ module.exports = {
       const timestamp = +(new Date(sentAt))
       return {
         payload: {
+          uid: item.uid,
           agent_id: item.sender_id,
           attachments: [],
           muid: `${uid}:a:${timestamp}`,
