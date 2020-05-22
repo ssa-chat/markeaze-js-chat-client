@@ -75,15 +75,36 @@ export default class View {
 
     if (!valid) return
 
-    const formData = Object.entries(new this.libs.FormToObject(el))
-      .reduce((data, [key, value]) => {
-        data[key] = value
-        if (value === 'true') data[key] = true
-        if (value === 'false') data[key] = false
-        return data
-      }, {})
+    let form = new this.libs.FormToObject(el)
 
-    this.app.pusherNewSurveyMsg(muid, formData)
+    const msg = msgStory.findMsg(muid)
+    if (msg && msg.custom_fields) {
+      const elements = msg.custom_fields.elements
+      form = Object.entries(form)
+        .reduce((data, [key, value]) => {
+          data[key] = value
+
+          const element = elements.find((element) => element.field === key)
+          if (element) {
+            switch(element.display_type) {
+              case 'boolean':
+                if (value === 'true') data[key] = true
+                if (value === 'false') data[key] = false
+                break
+              case 'numeric':
+                if (value !== '') data[key] = parseFloat(value)
+                break
+              case 'integer':
+                if (value !== '') data[key] = parseInt(value)
+                break
+            }
+          }
+
+          return data
+        }, {})
+    }
+
+    this.app.pusherNewSurveyMsg(muid, form)
     el.querySelector('button').disabled = true
   }
   clickProductAttachment (e) {

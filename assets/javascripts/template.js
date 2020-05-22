@@ -109,7 +109,7 @@ export default class Template {
       class="mkz-f__input"
       value="${this.attribute(data.value)}"
       ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required && 'required'}
+      ${data.required ? 'required' : ''}
       ${attr}
     />
     `
@@ -124,7 +124,7 @@ export default class Template {
       pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
       value="${this.attribute(data.value)}"
       ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required && 'required'}
+      ${data.required ? 'required' : ''}
     />
     `
   }
@@ -144,7 +144,7 @@ export default class Template {
       name="${data.field}"
       class="mkz-f__select"
       ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required && 'required'}
+      ${data.required ? 'required' : ''}
     >${options}</select>
     `
   }
@@ -159,7 +159,7 @@ export default class Template {
       name="${data.field}"
       class="mkz-f__select"
       ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required && 'required'}
+      ${data.required ? 'required' : ''}
     >${options}</select>
     `
   }
