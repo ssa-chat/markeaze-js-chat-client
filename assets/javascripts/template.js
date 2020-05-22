@@ -78,7 +78,11 @@ export default class Template {
         case 'email':
           return this.formText(item, 'email')
         case 'numeric':
+          return this.formText(item, 'text', 'numeric')
+        case 'integer':
           return this.formText(item, 'number')
+        case 'boolean':
+          return this.formBoolean(item)
         case 'select':
           return this.formSelect(item)
         case 'date':
@@ -96,7 +100,7 @@ export default class Template {
     return `
       <form class="mkz-f mkz-f-js" data-uid="${this.attribute(uid)}" novalidate autocomplete="off">${html}</form>`
   }
-  formText (data, type) {
+  formText (data, type, attr = '') {
     return `
     <label class="mkz-f__label">${this.safe(data.display_name)}</label>
     <input
@@ -106,6 +110,7 @@ export default class Template {
       value="${this.attribute(data.value)}"
       ${data.disabled ? 'disabled="true"' : ''}
       ${data.required && 'required'}
+      ${attr}
     />
     `
   }
@@ -123,6 +128,26 @@ export default class Template {
     />
     `
   }
+  formBoolean (data) {
+    const values = {
+      '': '-',
+      'true': this.t('true'),
+      'false': this.t('false')
+    }
+    const options = Object.entries(values).map(([value, text]) => {
+      const selected = data.value === String(value) ? 'selected="selected"' : ''
+      return `<option value="${this.attribute(value)}" ${selected}>${this.safe(text)}</option>`
+    }).join('')
+    return `
+    <label class="mkz-f__label">${this.safe(data.display_name)}</label>
+    <select
+      name="${data.field}"
+      class="mkz-f__select"
+      ${data.disabled ? 'disabled="true"' : ''}
+      ${data.required && 'required'}
+    >${options}</select>
+    `
+  }
   formSelect (data) {
     const options = [['', '-']].concat(Object.entries(data.predefined_values)).map(([value, text]) => {
       const selected = data.value === value ? 'selected="selected"' : ''
@@ -135,7 +160,7 @@ export default class Template {
       class="mkz-f__select"
       ${data.disabled ? 'disabled="true"' : ''}
       ${data.required && 'required'}
-    >${this.safe(options)}</select>
+    >${options}</select>
     `
   }
   formHint (data) {

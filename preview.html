@@ -38,10 +38,16 @@ var render = function(options) {
             display_type: 'text'
           },
           {
+            field: 'Price',
+            required: false,
+            display_name: 'price',
+            display_type: 'numeric'
+          },
+          {
             field: 'age',
             required: false,
             display_name: 'Age',
-            display_type: 'numeric'
+            display_type: 'integer'
           },
           {
             field: 'email',
@@ -54,6 +60,12 @@ var render = function(options) {
             required: true,
             display_name: 'Date of birth',
             display_type: 'date'
+          },
+          {
+            field: 'subscription',
+            required: true,
+            display_name: 'Subscription',
+            display_type: 'boolean'
           },
           {
             field: 'gender',
