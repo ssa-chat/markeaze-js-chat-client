@@ -71,10 +71,17 @@ export default class View {
     e.preventDefault()
     const el = e.target
     const valid = (new this.libs.Validation(el, this.validationOptions)).valid()
-    const formData = new this.libs.FormToObject(el)
     const muid = el.dataset.uid
 
     if (!valid) return
+
+    const formData = Object.entries(new this.libs.FormToObject(el))
+      .reduce((data, [key, value]) => {
+        data[key] = value
+        if (value === 'true') data[key] = true
+        if (value === 'false') data[key] = false
+        return data
+      }, {})
 
     this.app.pusherNewSurveyMsg(muid, formData)
     el.querySelector('button').disabled = true

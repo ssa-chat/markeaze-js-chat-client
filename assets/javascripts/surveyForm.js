@@ -5,8 +5,6 @@ module.exports = {
     })
   },
   trackSubmit (uid, visitorInfo) {
-    visitorInfo = Object.fromEntries(Object.entries(visitorInfo).filter((i) => i[1]))
-
     mkz('trackSurveyFormSubmit', {
       survey_form_uid: uid
     }, null, visitorInfo)

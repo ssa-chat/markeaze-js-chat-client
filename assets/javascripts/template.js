@@ -214,9 +214,9 @@ export default class Template {
           e.value = customFields.values && customFields.values[e.field]
           return e
         })
-        const followUp = helpers.textFormatting(customFields.follow_up_text)
+        const followUp = customFields.follow_up_text ? wrap(helpers.textFormatting(customFields.follow_up_text)) : ''
         const htmlText = msg.text ? wrap(helpers.textFormatting(msg.text)) : ''
-        const htmlForm = submitted ? wrap(followUp) : (hidden ? '' : wrap(this.form(elements, msg.muid)))
+        const htmlForm = submitted ? followUp : (hidden ? '' : wrap(this.form(elements, msg.muid)))
         return htmlText + htmlForm
       default:
         const text = helpers.textFormatting(msg.text)
