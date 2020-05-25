@@ -80,7 +80,7 @@ export default class Template {
         case 'numeric':
           return this.formText(item, 'text', 'numeric')
         case 'integer':
-          return this.formText(item, 'number')
+          return this.formText(item, 'text', 'integer')
         case 'boolean':
           return this.formBoolean(item)
         case 'select':

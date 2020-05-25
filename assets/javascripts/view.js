@@ -77,6 +77,7 @@ export default class View {
 
     let form = new this.libs.FormToObject(el)
 
+    // Converting format of variables
     const msg = msgStory.findMsg(muid)
     if (msg && msg.custom_fields) {
       const elements = msg.custom_fields.elements
@@ -103,6 +104,19 @@ export default class View {
           return data
         }, {})
     }
+
+    // Move custom fields to properties by name prefix
+    const prefix = 'properties.'
+    form = Object.entries(form)
+      .reduce((data, [key, value]) => {
+        if (key.indexOf(prefix) === 0) {
+          data.properties = data.properties || {}
+          data.properties[key.replace(prefix, '')] = value
+        } else {
+          data[key] = value
+        }
+        return data
+      }, {})
 
     this.app.pusherNewSurveyMsg(muid, form)
     el.querySelector('button').disabled = true
