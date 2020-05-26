@@ -2,12 +2,33 @@
   <head>
     <title>Markeaze js chat client</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style type="text/css">
+body {
+  padding: 20px;
+  margin: 0;
+  font-size: 14px;
+  font-family: Arial;
+}
+a {
+  color: red;
+  text-decoration: underline;
+  cursor: pointer;
+}
+    </style>
     <!-- Markeaze -->
     <script type="text/javascript">
 
 // (function(w,d,c,h){w[c]=w[c]||function(){(w[c].q=w[c].q||[]).push(arguments)};var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','https://cdn.jsdelivr.net/gh/markeaze/markeaze-js-tracker@latest/dist/mkz.js');
 
 (function(w,d,c,h){w[c]=w[c]||function(){(w[c].q=w[c].q||[]).push(arguments)};var s = d.createElement('script');s.type = 'text/javascript';s.async = true;s.charset = 'utf-8';s.src = h;var x = d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s, x);})(window,document,'mkz','http://localhost:8084/mkz.js');
+
+mkz('watch', 'plugin.chat.created', function() {
+  document.getElementById('chatVersion').innerHTML = mkz('pluginVersion', 'chat');
+});
+
+mkz(function() {
+  document.getElementById('version').innerHTML = mkz('version');
+});
 
 mkz('debug', true);
 mkz('updateStore', {
@@ -29,11 +50,16 @@ mkz('trackPageView', {
 });
 
     </script>
-      <!-- /Markeaze -->
+    <!-- /Markeaze -->
   </head>
   <body>
-    <h1>Markeaze js chat client</h1>
-    <h2>Common mode</h2>
+    <h1>Markeaze Js Chat Client</h1>
+    <p>
+      Js Trakcer v<b id="version">###</b>
+    </p>
+    <p>
+      Js Chat Client v<b id="chatVersion">###</b>
+    </p>
     <a href="/preview.html">Go to preview mode</a>
     <hr />
     <button onclick="mkz('emitPlugin', 'chat', 'show')">Show</button>
