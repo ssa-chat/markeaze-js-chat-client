@@ -1,6 +1,7 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WebpackAutoInject = require('webpack-auto-inject-version')
 const Dotenv = require('dotenv-webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
   entry: './app.js',
@@ -8,12 +9,6 @@ module.exports = {
     filename: 'mkz-chat-client.js'
   },
   plugins: [
-    new WebpackAutoInject({
-      components: {
-        AutoIncreaseVersion: false,
-        InjectAsComment: false
-      }
-    }),
     new Dotenv({
       path: './.env',
       safe: true,
@@ -30,6 +25,12 @@ module.exports = {
       filename: `preview.html`,
       template: './preview.html',
       inject: false
+    }),
+    new WebpackAutoInject({
+      components: {
+        AutoIncreaseVersion: false,
+        InjectAsComment: false
+      }
     })
   ],
   module: {
@@ -60,7 +61,19 @@ module.exports = {
   },
   optimization: {
     minimize: true,
-    sideEffects: false
+    minimizer: [
+      new TerserPlugin({
+        extractComments: {
+          condition: /^\**!|@preserve|@license|@cc_on|Copyright|License|LICENSE/i,
+          filename(fileData) {
+            return `${fileData.filename}.LICENSE`;
+          },
+          banner(licenseFile) {
+            return `License information can be found in https://raw.githubusercontent.com/markeaze/markeaze-js-chat-client/master/dist/${licenseFile}`;
+          }
+        }
+      })
+    ]
   },
   devServer: {
     port: 8085
