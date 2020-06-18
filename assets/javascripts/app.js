@@ -66,7 +66,7 @@ module.exports = {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)
   },
   createConnection () {
-    this.socket = new Socket(`//${this.store.chatEndpoint}/socket`)
+    this.socket = new Socket(`wss://${this.store.chatEndpoint}/socket`)
 
     this.socket.onOpen(this.handlerConnected.bind(this))
     this.socket.onClose(this.handlerDisconnected.bind(this))
