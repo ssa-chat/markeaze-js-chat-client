@@ -75,5 +75,10 @@ module.exports = {
   },
   textFormatting (str) {
     return this.htmlFormatting(this.htmlToText(str))
+  },
+  getUrlParameter (name) {
+    regex = new RegExp('[?&]' + name + '=([^&#]*)')
+    results = regex.exec(location.search)
+    if (results !== null) return decodeURIComponent(results[1].replace(/\+/g, ' '))
   }
 }

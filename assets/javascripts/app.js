@@ -143,8 +143,10 @@ module.exports = {
 
     const muids = msgDelivered.getList()
     for (const muid of muids) this.pusherMsgState(muid, 'read')
-    msgDelivered.resetList()
-    this.view.renderUnread()
+    if (muids.length > 0) {
+      msgDelivered.resetList()
+      this.view.renderUnread()
+    }
   },
   handlerSurveySubmitted (payload) {
     const msg = msgStory.findMsg(payload.custom_fields.muid)

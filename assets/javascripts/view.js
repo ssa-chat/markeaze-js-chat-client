@@ -8,7 +8,8 @@ const msgStory = require('./msgStory')
 export default class View {
   constructor (app) {
     this.history = null
-    this.collapsed = true
+    this.collapsed = helpers.getUrlParameter('mkz_expand_chat') !== 'true'
+    this.oldCollapsed = true
     this.windowFocus = true
     this.app = app
     this.previewMode = app.previewMode
@@ -145,36 +146,39 @@ export default class View {
     this.windowFocus = false
   }
   showChat () {
-    if (!this.collapsed) return
-
     this.collapsed = false
-
-    helpers.addClass(document.documentElement, this.htmlClassName)
-    helpers.addClass(this.elContainer, this.containerChatClassName)
-
-    this.hideBeacon()
-
-    if (this.previewMode) return
-
-    this.app.handlerCollapse(this.collapsed)
-
-    setTimeout(() => {
-      this.elInput.focus()
-    }, 100)
+    this.renderChatToggle()
   }
   hideChat () {
-    if (this.collapsed) return
-
     this.collapsed = true
+    this.renderChatToggle()
+  }
+  renderChatToggle () {
+    if (this.collapsed === this.oldCollapsed) return
 
-    helpers.removeClass(document.documentElement, this.htmlClassName)
-    helpers.removeClass(this.elContainer, this.containerChatClassName)
+    this.oldCollapsed = this.collapsed
 
-    this.showBeacon()
+    if (this.collapsed) {
+      helpers.removeClass(document.documentElement, this.htmlClassName)
+      helpers.removeClass(this.elContainer, this.containerChatClassName)
+
+      this.showBeacon()
+    } else {
+      helpers.addClass(document.documentElement, this.htmlClassName)
+      helpers.addClass(this.elContainer, this.containerChatClassName)
+
+      this.hideBeacon()
+    }
 
     if (this.previewMode) return
 
     this.app.handlerCollapse(this.collapsed)
+
+    if (!this.collapsed) {
+      setTimeout(() => {
+        this.elInput.focus()
+      }, 100)
+    }
   }
   showBeacon (hasMessage) {
     if (this.app.settings.beaconState === 'disabled') return
@@ -294,6 +298,7 @@ export default class View {
       this.renderMessages()
     }
 
+    this.renderChatToggle()
     this.renderUnread()
   }
   renderMessages () {
