@@ -66,7 +66,7 @@ module.exports = {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)
   },
   createConnection () {
-    this.socket = new Socket(`wss://${this.store.chatEndpoint}/socket`)
+    this.socket = new Socket(`${this.store.chatProtocol || 'wss://'}${this.store.chatEndpoint}/socket`)
 
     this.socket.onOpen(this.handlerConnected.bind(this))
     this.socket.onClose(this.handlerDisconnected.bind(this))
@@ -227,6 +227,7 @@ module.exports = {
       else {
         this.pusherMsgState(msg.muid, 'delivered')
         msgDelivered.addItem(msg.muid)
+        this.view.renderUnread()
       }
     }
   },
@@ -247,7 +248,6 @@ module.exports = {
       }
       if (!this.view.windowFocus || this.view.collapsed) this.sound.play()
       if (this.view.collapsed === true) {
-        this.view.renderUnread()
         this.view.showBeacon(true)
       }
     }

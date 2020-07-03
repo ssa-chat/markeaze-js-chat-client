@@ -34,6 +34,7 @@ mkz('debug', true);
 mkz('updateStore', {
   trackerEndpoint: '<%= process.env.TRACKER_URL %>:5000',
   chatEndpoint: '<%= process.env.TRACKER_URL %>:4000',
+  chatProtocol: 'ws://',
   plugins: {
     chat: {url: '/mkz-chat-client.js'}
   },
