@@ -860,7 +860,22 @@ $color_hint: #787878
       color: red !important
       box-shadow: 0 0 1px 1px red !important
 
-  @media (max-width: 600px)
+.mkz-c-mobile
+
+  &.mkz-c-fixed
+    position: fixed !important
+    height: 100% !important
+    width: 100% !important
+    max-width: 100% !important
+    overflow-x: hidden !important
+
+    body
+      z-index: auto !important
+      zoom: 1 !important
+      max-width: 100% !important
+      overflow-x: hidden !important
+
+  [mkz]
 
     .mkz-c__chat
       max-height: none
@@ -887,18 +902,3 @@ $color_hint: #787878
 
     .mkz-c__copy
       display: none
-
-@media (max-width: 600px)
-
-  .mkz-c-fixed
-    position: fixed !important
-    height: 100% !important
-    width: 100% !important
-    max-width: 100% !important
-    overflow-x: hidden !important
-
-    body
-      z-index: auto !important
-      zoom: 1 !important
-      max-width: 100% !important
-      overflow-x: hidden !important

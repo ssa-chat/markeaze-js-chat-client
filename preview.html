@@ -30,7 +30,7 @@ a {
 var app = {};
 window.mkz = function (method, pluginName, plugin) {
   app = plugin
-  render({collapsed: true});
+  render({collapsed: true, isMobile: false});
 }
 var render = function(options) {
   options.history = [
@@ -176,7 +176,7 @@ var render = function(options) {
   }
   const settings = {
     appearance: {
-      bar_type: 'bar', // bar / bubble
+      bar_type: 'bubble', // bar / bubble
       bar_position: 'b', // l-t / r-t / l-b / r-b // t / r / b / l
       bar_padding_x: 20,
       bar_padding_y: 20,

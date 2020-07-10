@@ -14,6 +14,7 @@ module.exports = {
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   previewMode: false,
+  isMobile: false,
   create (locale, settings) {
     this.destroy()
 
@@ -29,6 +30,8 @@ module.exports = {
     this.libs.eEmit.subscribe('plugin.chat.hide', this.view.hideChat.bind(this.view))
 
     this.createConnection()
+
+    this.isMobile = this.libs.helpers.isMobile()
   },
   destroy () {
     if (this.view) this.view.destroy()
@@ -37,6 +40,7 @@ module.exports = {
   preview (locale, settings, options = {}) {
     this.previewMode = true
 
+    this.isMobile = Boolean(options.isMobile)
     this.settings = settings
     this.locale = locale
     this.view = new View(this)

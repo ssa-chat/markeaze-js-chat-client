@@ -23,6 +23,7 @@ export default class View {
     this.containerBeaconClassName = 'mkz-c_beacon_show'
     this.containerChatClassName = 'mkz-c_chat_show'
     this.htmlClassName = 'mkz-c-fixed'
+    this.mobileClassName = 'mkz-c-mobile'
 
     this.validationOptions = {
       invalidClassName: 'mkz-f__invalid',
@@ -43,6 +44,7 @@ export default class View {
 
     domEvent.add(window, 'focus', this.onFocus.bind(this))
     domEvent.add(window, 'blur', this.onBlur.bind(this))
+    domEvent.add(window, 'resize', this.setZoom.bind(this))
 
     domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
 
@@ -67,6 +69,14 @@ export default class View {
     for (const elForm of elForms) {
       domEvent.add(elForm, 'submit', this.submitSurveyForm.bind(this))
     }
+  }
+  setZoom () {
+    // Disable form iframe mode
+    if (window.self !== window.top) return
+
+    const innerWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    const outerWidth = window.outerWidth || document.documentElement.outerWidth || document.body.outerWidth
+    this.elContainer.style.zoom = innerWidth / outerWidth
   }
   submitSurveyForm (e) {
     e.preventDefault()
@@ -296,6 +306,13 @@ export default class View {
       this.showBeacon()
       this.toggleNotice()
       this.renderMessages()
+
+      if (!this.previewMode) {
+        this.setZoom()
+      }
+
+      if (this.app.isMobile) helpers.addClass(document.documentElement, this.mobileClassName)
+      else helpers.removeClass(document.documentElement, this.mobileClassName)
     }
 
     this.renderChatToggle()

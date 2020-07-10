@@ -187,7 +187,8 @@ export default class Template {
     })
   }
   message (msg) {
-    const htmlAvatar = msg.sender_avatar_url ? `<div class="mkz-c__i-avatar"><img src="${this.safe(msg.sender_avatar_url)}" srcset="${helpers.srcset(msg.sender_avatar_url)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" /></div>` : ''
+    const enable = msg.sender_avatar_url && this.app.settings.appearance.agent_avatar
+    const htmlAvatar = enable ? `<div class="mkz-c__i-avatar"><img src="${this.safe(msg.sender_avatar_url)}" srcset="${helpers.srcset(msg.sender_avatar_url)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" /></div>` : ''
     return `
           <div class="mkz-c__i mkz-c__i_type_${msg.sender_type === 'client' ? 'client' : 'agent'}" data-id="${msg.muid}">
             ${htmlAvatar}
