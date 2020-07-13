@@ -70,28 +70,30 @@ module.exports = {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)
   },
   createConnection () {
+    const notifier = this.libs.notifier
+
     this.socket = new Socket(`${this.store.chatProtocol || 'wss://'}${this.store.chatEndpoint}/socket`)
 
-    this.socket.onOpen(this.handlerConnected.bind(this))
-    this.socket.onClose(this.handlerDisconnected.bind(this))
+    this.socket.onOpen(notifier.wrap(this.handlerConnected.bind(this)))
+    this.socket.onClose(notifier.wrap(this.handlerDisconnected.bind(this)))
     this.socket.connect()
 
     this.servicChannel = this.socket.channel(`chat-client:${this.store.appKey}`)
     this.servicChannel.join()
-      .receive('error', () => console.error(`Cannot join channel ${this.servicChannel.topic}`))
-    this.servicChannel.on('agent:entered', this.handlerAgentStatus.bind(this, true))
-    this.servicChannel.on('agent:exited', this.handlerAgentStatus.bind(this, false))
+      .receive('error', () => this.handlerFailJoined.bind(this, this.servicChannel.topic))
+    this.servicChannel.on('agent:entered', notifier.wrap(this.handlerAgentStatus.bind(this, true)))
+    this.servicChannel.on('agent:exited', notifier.wrap(this.handlerAgentStatus.bind(this, false)))
 
     this.clientChannel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
     this.clientChannel.join()
-      .receive('ok', this.handlerJoined.bind(this))
-      .receive('error', this.handlerFailJoined.bind(this))
-    this.clientChannel.on('client:entered', this.handlerClientEntered.bind(this))
-    this.clientChannel.on('message:new', this.handlerMsg.bind(this))
-    this.clientChannel.on('message:resend', this.handlerMsgResend.bind(this))
-    this.clientChannel.on('agent:assign', this.handlerAgentAssign.bind(this))
-    this.clientChannel.on('survey:show', this.handlerSurveyShow.bind(this))
-    this.clientChannel.on('event:survey_submitted', this.handlerSurveySubmitted.bind(this))
+      .receive('ok', notifier.wrap(this.handlerJoined.bind(this)))
+      .receive('error', this.handlerFailJoined.bind(this, this.clientChannel.topic))
+    this.clientChannel.on('client:entered', notifier.wrap(this.handlerClientEntered.bind(this)))
+    this.clientChannel.on('message:new', notifier.wrap(this.handlerMsg.bind(this)))
+    this.clientChannel.on('message:resend', notifier.wrap(this.handlerMsgResend.bind(this)))
+    this.clientChannel.on('agent:assign', notifier.wrap(this.handlerAgentAssign.bind(this)))
+    this.clientChannel.on('survey:show', notifier.wrap(this.handlerSurveyShow.bind(this)))
+    this.clientChannel.on('event:survey_submitted', notifier.wrap(this.handlerSurveySubmitted.bind(this)))
   },
   handlerConnected () {
     this.view.connected()
@@ -105,8 +107,10 @@ module.exports = {
     this.view.enableSending()
     this.log('chat', 'joined')
   },
-  handlerFailJoined () {
-    console.error(`Cannot join channel ${this.clientChannel.topic}`)
+  handlerFailJoined (topic) {
+    const error = new Error(`Cannot join channel ${topic}`)
+    this.libs.notifier.notify(error)
+    console.error(error)
   },
   handlerAgentStatus (isOnline, {agent_id}) {
     const agent = this.getAgent(agent_id)
