@@ -80,6 +80,7 @@ module.exports = {
 
     this.servicChannel = this.socket.channel(`chat-client:${this.store.appKey}`)
     this.servicChannel.join()
+      .receive('ok', notifier.wrap(this.handlerJoined.bind(this)))
       .receive('error', () => this.handlerFailJoined.bind(this, this.servicChannel.topic))
     this.servicChannel.on('agent:entered', notifier.wrap(this.handlerAgentStatus.bind(this, true)))
     this.servicChannel.on('agent:exited', notifier.wrap(this.handlerAgentStatus.bind(this, false)))
