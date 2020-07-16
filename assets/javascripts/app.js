@@ -11,27 +11,40 @@ module.exports = {
   // Plugin methods
 
   version: '[AIV]{version}[/AIV]',
+  airbrakeProject: 254408,
+  airbrakeApiKey: '84e2f7b3f257c5fffb9edf2d951f2054',
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   previewMode: false,
   isMobile: false,
   create (locale, settings) {
-    this.destroy()
+    if (this.libs.notifierInstance) {
+      this.notifier = this.libs.notifierInstance(
+        this.version,
+        this.airbrakeProject,
+        this.airbrakeApiKey,
+        process.env.NODE_ENV
+      )
+    } else {
+      this.notifier = this.libs.notifier
+    }
 
-    this.settings = settings
-    this.locale = locale
-    this.log('chat', 'created')
-    this.view = new View(this)
-    this.sound = new Sound(this.settings.appearance.client_sound_path)
+    this.notifier.call(() => {
+      this.settings = settings
+      this.locale = locale
+      this.log('chat', 'created')
+      this.view = new View(this)
+      this.sound = new Sound(this.settings.appearance.client_sound_path)
 
-    autoMsg.init(this)
+      autoMsg.init(this)
 
-    this.libs.eEmit.subscribe('plugin.chat.show', this.view.showChat.bind(this.view))
-    this.libs.eEmit.subscribe('plugin.chat.hide', this.view.hideChat.bind(this.view))
+      this.libs.eEmit.subscribe('plugin.chat.show', this.view.showChat.bind(this.view))
+      this.libs.eEmit.subscribe('plugin.chat.hide', this.view.hideChat.bind(this.view))
 
-    this.createConnection()
+      this.createConnection()
 
-    this.isMobile = this.libs.helpers.isMobile()
+      this.isMobile = this.libs.helpers.isMobile()
+    })
   },
   destroy () {
     if (this.view) this.view.destroy()
@@ -70,105 +83,126 @@ module.exports = {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)
   },
   createConnection () {
-    const notifier = this.libs.notifier
+    this.notifier.call(() => {
+      this.socket = new Socket(`${this.store.chatProtocol || 'wss://'}${this.store.chatEndpoint}/socket`)
 
-    this.socket = new Socket(`${this.store.chatProtocol || 'wss://'}${this.store.chatEndpoint}/socket`)
+      this.socket.onOpen(this.handlerConnected.bind(this))
+      this.socket.onClose(this.handlerDisconnected.bind(this))
+      this.socket.connect()
 
-    this.socket.onOpen(notifier.wrap(this.handlerConnected.bind(this)))
-    this.socket.onClose(notifier.wrap(this.handlerDisconnected.bind(this)))
-    this.socket.connect()
+      this.servicChannel = this.socket.channel(`chat-client:${this.store.appKey}`)
+      this.servicChannel.join()
+        .receive('ok', this.handlerJoined.bind(this))
+        .receive('error', () => this.handlerFailJoined.bind(this, this.servicChannel.topic))
+      this.servicChannel.on('agent:entered', this.handlerAgentStatus.bind(this, true))
+      this.servicChannel.on('agent:exited', this.handlerAgentStatus.bind(this, false))
 
-    this.servicChannel = this.socket.channel(`chat-client:${this.store.appKey}`)
-    this.servicChannel.join()
-      .receive('ok', notifier.wrap(this.handlerJoined.bind(this)))
-      .receive('error', () => this.handlerFailJoined.bind(this, this.servicChannel.topic))
-    this.servicChannel.on('agent:entered', notifier.wrap(this.handlerAgentStatus.bind(this, true)))
-    this.servicChannel.on('agent:exited', notifier.wrap(this.handlerAgentStatus.bind(this, false)))
-
-    this.clientChannel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
-    this.clientChannel.join()
-      .receive('ok', notifier.wrap(this.handlerJoined.bind(this)))
-      .receive('error', this.handlerFailJoined.bind(this, this.clientChannel.topic))
-    this.clientChannel.on('client:entered', notifier.wrap(this.handlerClientEntered.bind(this)))
-    this.clientChannel.on('message:new', notifier.wrap(this.handlerMsg.bind(this)))
-    this.clientChannel.on('message:resend', notifier.wrap(this.handlerMsgResend.bind(this)))
-    this.clientChannel.on('agent:assign', notifier.wrap(this.handlerAgentAssign.bind(this)))
-    this.clientChannel.on('survey:show', notifier.wrap(this.handlerSurveyShow.bind(this)))
-    this.clientChannel.on('event:survey_submitted', notifier.wrap(this.handlerSurveySubmitted.bind(this)))
+      this.clientChannel = this.socket.channel(`room:${this.store.appKey}:${this.store.uid}`)
+      this.clientChannel.join()
+        .receive('ok', this.handlerJoined.bind(this))
+        .receive('error', this.handlerFailJoined.bind(this, this.clientChannel.topic))
+      this.clientChannel.on('client:entered', this.handlerClientEntered.bind(this))
+      this.clientChannel.on('message:new', this.handlerMsg.bind(this))
+      this.clientChannel.on('message:resend', this.handlerMsgResend.bind(this))
+      this.clientChannel.on('agent:assign', this.handlerAgentAssign.bind(this))
+      this.clientChannel.on('survey:show', this.handlerSurveyShow.bind(this))
+      this.clientChannel.on('event:survey_submitted', this.handlerSurveySubmitted.bind(this))
+    })
   },
   handlerConnected () {
-    this.view.connected()
+    this.notifier.call(() => {
+      this.view.connected()
+    })
   },
   handlerDisconnected () {
-    this.view.disconnected()
+    this.notifier.call(() => {
+      this.view.disconnected()
+    })
   },
   handlerJoined () {
-    this.view.render()
-    this.view.scrollBottom()
-    this.view.enableSending()
-    this.log('chat', 'joined')
+    this.notifier.call(() => {
+      this.view.render()
+      this.view.scrollBottom()
+      this.view.enableSending()
+      this.log('chat', 'joined')
+    })
   },
   handlerFailJoined (topic) {
     const error = new Error(`Cannot join channel ${topic}`)
-    this.libs.notifier.notify(error)
-    console.error(error)
+    this.notifier.notify(error)
   },
   handlerAgentStatus (isOnline, {agent_id}) {
-    const agent = this.getAgent(agent_id)
-    if (!agent) return
-    agent.isOnline = isOnline
-    this.updateAgentState()
+    this.notifier.call(() => {
+      const agent = this.getAgent(agent_id)
+      if (!agent) return
+      agent.isOnline = isOnline
+      this.updateAgentState()
+    })
   },
   handlerClientEntered (msg) {
-    this.setAgents(msg.agents)
-    this.sessionsCount = msg.sessionsCount
-    this.setCurrentAgent(msg.current_agent_id)
-    this.updateAgentState()
-    if (this.libs.eEmit) this.libs.eEmit.emit('plugin.chat.channel.entered')
-    this.log('chat', 'ClientEntered', msg)
+    this.notifier.call(() => {
+      this.setAgents(msg.agents)
+      this.sessionsCount = msg.sessionsCount
+      this.setCurrentAgent(msg.current_agent_id)
+      this.updateAgentState()
+      if (this.libs.eEmit) this.libs.eEmit.emit('plugin.chat.channel.entered')
+      this.log('chat', 'ClientEntered', msg)
+    })
   },
   handlerSurveyShow (msg) {
-    if (this.view.windowFocus) surveyForm.trackShow(msg.custom_fields.uid)
-    this.handlerMsg(msg)
+    this.notifier.call(() => {
+      if (this.view.windowFocus) surveyForm.trackShow(msg.custom_fields.uid)
+      this.handlerMsg(msg)
+    })
   },
   handlerMsg (msg) {
-    msg = this.addMsg(msg)
-    this.stateChangeMsg(msg)
-    this.view.scrollBottom()
-    this.log('chat', 'Msg', msg)
+    this.notifier.call(() => {
+      msg = this.addMsg(msg)
+      this.stateChangeMsg(msg)
+      this.view.scrollBottom()
+      this.log('chat', 'Msg', msg)
+    })
   },
   handlerMsgResend (msg) {
-    msg = this.addMsg(msg)
-    this.stateChangeMsg(msg)
-    this.view.scrollBottom()
-    this.setCurrentAgent(msg.current_agent_id)
-    this.log('chat', 'Resend', msg)
+    this.notifier.call(() => {
+      msg = this.addMsg(msg)
+      this.stateChangeMsg(msg)
+      this.view.scrollBottom()
+      this.setCurrentAgent(msg.current_agent_id)
+      this.log('chat', 'Resend', msg)
+    })
   },
   handlerAgentAssign (msg) {
-    this.setCurrentAgent(msg.target_agent_id)
+    this.notifier.call(() => {
+      this.setCurrentAgent(msg.target_agent_id)
+    })
   },
   handlerCollapse (collapsed) {
-    if (collapsed === true) return
+    this.notifier.call(() => {
+      if (collapsed === true) return
 
-    const muids = msgDelivered.getList()
-    for (const muid of muids) this.pusherMsgState(muid, 'read')
-    if (muids.length > 0) {
-      msgDelivered.resetList()
-      this.view.renderUnread()
-    }
+      const muids = msgDelivered.getList()
+      for (const muid of muids) this.pusherMsgState(muid, 'read')
+      if (muids.length > 0) {
+        msgDelivered.resetList()
+        this.view.renderUnread()
+      }
+    })
   },
   handlerSurveySubmitted (payload) {
-    const msg = msgStory.findMsg(payload.custom_fields.muid)
-    if (!msg) return
+    this.notifier.call(() => {
+      const msg = msgStory.findMsg(payload.custom_fields.muid)
+      if (!msg) return
 
-    msg.custom_fields.submitted = true
-    msgStory.addMsg(msg)
-    this.view.renderMessage(msg)
+      msg.custom_fields.submitted = true
+      msgStory.addMsg(msg)
+      this.view.renderMessage(msg)
 
-    msgStory.batchUpdateMsg(
-      (m) => m.muid !== msg.muid && m.msg_type === 'survey:show' && m.custom_fields.uid === msg.custom_fields.uid,
-      (m) => m.custom_fields.hidden = true
-    ).map((m) => this.view.renderMessage(m))
+      msgStory.batchUpdateMsg(
+        (m) => m.muid !== msg.muid && m.msg_type === 'survey:show' && m.custom_fields.uid === msg.custom_fields.uid,
+        (m) => m.custom_fields.hidden = true
+      ).map((m) => this.view.renderMessage(m))
+    })
   },
   pusherTyping (text) {
     if (!text) return
@@ -266,6 +300,7 @@ module.exports = {
     msgStory.addMsg(msg)
     const nextMsg = msgStory.getNextMsg(msg.muid)
     this.view.renderMessage(msg, nextMsg)
+
     return msg
   },
   setCurrentAgent (currentAgentId) {

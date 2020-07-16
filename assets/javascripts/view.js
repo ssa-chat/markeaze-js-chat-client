@@ -31,7 +31,7 @@ export default class View {
     }
   }
   destroy () {
-    if (!this.el) return
+    if (!this.el || !this.el.parentNode) return
     this.el.parentNode.removeChild(this.el)
   }
   bind () {
