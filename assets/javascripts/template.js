@@ -271,7 +271,7 @@ export default class Template {
 <div mkz>
   <div class="mkz-c mkz-c-js">
 
-    <div class="mkz-c__handler mkz-c__handler_type_${this.safe(this.appearance.bar_type)} mkz-c__handler_position_${this.safe(this.appearance.bar_position)}" style="margin: ${this.safe(this.appearance.bar_padding_y)}px ${this.safe(this.appearance.bar_padding_x)}px">
+    <div class="mkz-c__handler mkz-c__handler_type_${this.safe(this.appearance.bar_type)} mkz-c__handler_position_${this.safe(this.appearance.bar_position)} ${this.appearance.bar_bouncing ? 'mkz-c__handler_bouncing_yes' : ''}" style="margin: ${this.safe(this.appearance.bar_padding_y)}px ${this.safe(this.appearance.bar_padding_x)}px">
       ${this.notice()}
       <div class="mkz-c__btn mkz-c-js-toggle" style="background-color: ${this.appearance.bar_bg}; color: ${this.safe(this.appearance.bar_color)};">
         <div class="mkz-c__btn-text">
@@ -315,7 +315,7 @@ export default class Template {
         ${this.docs()}
         <label class="mkz-c__footer">
           <div class="mkz-c__footer-msg">
-            <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="${this.t('placeholder')}"></textarea>
+            <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="${this.safe(this.appearance.placeholder || this.t('placeholder'))}"></textarea>
           </div>
           <div class="mkz-c__footer-btn">
             <div class="mkz-c__submit mkz-c-js-submit">
