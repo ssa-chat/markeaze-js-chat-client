@@ -249,6 +249,9 @@ export default class View {
     this.allowSending = true
     if (this.elSubmit) helpers.removeClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
   }
+  visibleChat () {
+    helpers.addClass(this.elContainer, 'mkz-c_display_yes')
+  }
   assignAgent () {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
     if (this.app.settings.appearance.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''

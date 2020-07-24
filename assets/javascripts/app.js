@@ -41,9 +41,9 @@ module.exports = {
       this.libs.eEmit.subscribe('plugin.chat.show', this.view.showChat.bind(this.view))
       this.libs.eEmit.subscribe('plugin.chat.hide', this.view.hideChat.bind(this.view))
 
-      this.createConnection()
-
       this.isMobile = this.libs.helpers.isMobile()
+
+      this.createConnection()
     })
   },
   destroy () {
@@ -60,6 +60,7 @@ module.exports = {
     this.view.history = (options.history || [])
     this.view.width = options.width || null
     this.view.render()
+    this.view.visibleChat()
 
     if (options.collapsed) this.view.showNotice()
     else this.view.showChat()
@@ -84,6 +85,8 @@ module.exports = {
   },
   createConnection () {
     this.notifier.call(() => {
+      this.view.render()
+
       this.socket = new Socket(`${this.store.chatProtocol || 'wss://'}${this.store.chatEndpoint}/socket`)
 
       this.socket.onOpen(this.handlerConnected.bind(this))
@@ -92,7 +95,6 @@ module.exports = {
 
       this.servicChannel = this.socket.channel(`chat-client:${this.store.appKey}`)
       this.servicChannel.join()
-        .receive('ok', this.handlerJoined.bind(this))
         .receive('error', () => this.handlerFailJoined.bind(this, this.servicChannel.topic))
       this.servicChannel.on('agent:entered', this.handlerAgentStatus.bind(this, true))
       this.servicChannel.on('agent:exited', this.handlerAgentStatus.bind(this, false))
@@ -121,7 +123,7 @@ module.exports = {
   },
   handlerJoined () {
     this.notifier.call(() => {
-      this.view.render()
+      this.view.visibleChat()
       this.view.scrollBottom()
       this.view.enableSending()
       this.log('chat', 'joined')
