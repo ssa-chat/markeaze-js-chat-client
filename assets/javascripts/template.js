@@ -187,8 +187,10 @@ export default class Template {
     })
   }
   message (msg) {
-    const enable = msg.sender_avatar_url && this.app.settings.appearance.agent_avatar
-    const htmlAvatar = enable ? `<div class="mkz-c__i-avatar"><img src="${this.safe(msg.sender_avatar_url)}" srcset="${helpers.srcset(msg.sender_avatar_url)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" /></div>` : ''
+    const enable = this.app.settings.appearance.agent_avatar
+    const avatarUrl = msg.sender_avatar_url || this.view.defaultAvatar
+    console.log(avatarUrl)
+    const htmlAvatar = enable ? `<div class="mkz-c__i-avatar"><img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" /></div>` : ''
     return `
           <div class="mkz-c__i mkz-c__i_type_${msg.sender_type === 'client' ? 'client' : 'agent'}" data-id="${msg.muid}">
             ${htmlAvatar}
@@ -286,7 +288,7 @@ export default class Template {
     </div>
 
     <div class="mkz-c__chat mkz-c__chat_position_${chatPosition}" style="${this.view.width ? `max-width: ${this.view.width}px;` : '' }">
-      <div class="mkz-c__cart-shadow" style="box-shadow: 0 0 10px ${this.safe(this.appearance.title_bg)};"></div>
+      <div class="mkz-c__cart-shadow"></div>
       <div class="mkz-c__cart">
         <div class="mkz-c__head" style="color: ${this.safe(this.appearance.title_color)}; background-color: ${this.safe(this.appearance.title_bg)};">
           <div class="mkz-c__head-state">
@@ -302,7 +304,7 @@ export default class Template {
           </div>
           <div class="mkz-c__head-action">
             <div class="mkz-c__close mkz-c-js-close">
-              <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="30" height="30" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M11.4287 4.57129L4.57153 11.4284" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M4.57153 4.57129L11.4287 11.4284" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>

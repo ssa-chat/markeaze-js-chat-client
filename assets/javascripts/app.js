@@ -284,6 +284,7 @@ module.exports = {
       // so the agent_id is going to replaced to real value
       // from the list of auto-message data.
       msg.agent_id = autoMsg.getMsgAgentId(msg.muid)
+      if (msg.agent_id) this.setCurrentAgent(msg.agent_id)
       autoMsg.removeItem(msg)
     }
 
@@ -306,7 +307,13 @@ module.exports = {
     return msg
   },
   setCurrentAgent (currentAgentId) {
-    if (!currentAgentId && !this.currentAgent) return
+    // Set current agent by first online agent when current agent is empty
+    if (!currentAgentId && !this.currentAgent) {
+      const firstOnlineAgent = Object.values(this.agents).find((a) => a.isOnline)
+      if (firstOnlineAgent) currentAgentId = firstOnlineAgent.id
+      else return
+    }
+
     this.currentAgent = this.getAgent(currentAgentId)
     if (this.currentAgent) this.view.assignAgent()
     else this.view.unassignAgent()
