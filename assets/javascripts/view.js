@@ -24,6 +24,7 @@ export default class View {
     this.containerChatClassName = 'mkz-c_chat_show'
     this.htmlClassName = 'mkz-c-fixed'
     this.mobileClassName = 'mkz-c-mobile'
+    this.defaultAvatar = 'https://themes.markeaze.com/default/livechat/default_avatar.png'
 
     this.validationOptions = {
       invalidClassName: 'mkz-f__invalid',
@@ -255,9 +256,10 @@ export default class View {
   assignAgent () {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
     if (this.app.settings.appearance.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
-    if (this.app.settings.appearance.agent_avatar && this.app.currentAgent.avatar_url) {
-      this.elAgentAvatar.src = this.app.currentAgent.avatar_url
-      this.elAgentAvatar.setAttribute('srcset', helpers.srcset(this.app.currentAgent.avatar_url))
+    if (this.app.settings.appearance.agent_avatar) {
+      const avatarUrl = this.app.currentAgent.avatar_url || this.defaultAvatar
+      this.elAgentAvatar.src = avatarUrl
+      this.elAgentAvatar.setAttribute('srcset', helpers.srcset(avatarUrl))
       this.elAgentAvatar.style.display = 'block'
     } else this.elAgentAvatar.style.display = 'none'
     helpers.addClass(this.elContainer, 'mkz-c_agent_assign')
