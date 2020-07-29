@@ -436,7 +436,7 @@ $color_hint: #787878
     bottom: 0
     width: 100%
     max-width: 375px
-    max-height: 630px
+    max-height: 630px + 25 + 25
     height: 100vh
     z-index: 20000000
 
@@ -465,7 +465,7 @@ $color_hint: #787878
     box-shadow: 0 0 10px rgba(25, 25, 29, 0.25)
     opacity: 0.75
 
-  .mkz-c__head, .mkz-c__content, .mkz-c__docs, .mkz-c__footer
+  .mkz-c__head, .mkz-c__scroll, .mkz-c__docs, .mkz-c__footer
     padding: 0 15px
 
   .mkz-c__head, .mkz-c__docs, .mkz-c__footer
@@ -476,8 +476,16 @@ $color_hint: #787878
 
   .mkz-c__content
     flex: 1
+    position: relative
+
+  .mkz-c__scroll
     overflow: hidden
     overflow-y: auto
+    position: absolute
+    left: 0
+    top: 0
+    right: 0
+    bottom: 0
 
   .mkz-c__head
     display: flex
@@ -500,18 +508,22 @@ $color_hint: #787878
     flex: 0
     padding-left: 12px
 
-  .mkz-c__copy
+  .mkz-c__copy-wrap
     position: absolute
     left: 0
     bottom: 0
     right: 0
     text-align: center
+
+  .mkz-c__copy
+    display: inline-block
     font-size: 11px
     line-height: 24px
-    display: block
     color: $color_hint
     text-decoration: none
-    text-shadow: 0 0 1px #fff
+    background-color: #fff
+    border-radius: 6px 6px 0 0
+    padding: 0 5px
 
     &:hover
       text-decoration: none
@@ -563,8 +575,8 @@ $color_hint: #787878
     border-top: 1px solid $color_border
     display: flex
     align-items: center
-    padding-top: 20px
-    padding-bottom: 20px
+    padding-top: 30px
+    padding-bottom: 31px
     background-color: #fff
     border-radius: 0 0 6px 6px
 
@@ -619,6 +631,8 @@ $color_hint: #787878
     margin: 20px 0
 
   .mkz-c__i-avatar
+    display: flex
+    align-items: flex-end
     flex: 0 0 24px
     margin: 0 5px 0 0
 
@@ -914,9 +928,6 @@ $color_hint: #787878
 
     .mkz-c__footer-btn
       display: block
-
-    .mkz-c__copy
-      display: none
 
 @keyframes mkzBounceMdScale
   94%
