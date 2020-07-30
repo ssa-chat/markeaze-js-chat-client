@@ -55,21 +55,17 @@ module.exports = {
 
     this.cached = false
     for (const item of items) {
-      this.app.addMsg(item.payload)
-      this.app.view.scrollBottom()
-      this.app.setCurrentAgent(item.payload.agent_id)
+      const msg = item.payload
+      this.app.addMsg(msg)
+      if (msg.agent_id) this.app.setCurrentAgent(msg.agent_id)
 
-      this.trackShow(item.payload.custom_fields.uid)
+      this.trackShow(msg.custom_fields.uid)
 
       item.state = 'sent'
     }
     this.app.view.showChat()
 
     autoMsgStory.setItems(this.items)
-  },
-  getMsgAgentId (muid) {
-    const item = this.items.find((item) => item.payload.muid === muid)
-    return (item && item.payload.agent_id) || 0
   },
   removeItem (muid) {
     this.cached = false

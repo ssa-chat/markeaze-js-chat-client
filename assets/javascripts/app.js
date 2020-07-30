@@ -279,15 +279,6 @@ module.exports = {
     }
   },
   addMsg (msg) {
-    if (msg.sender_type === 'auto') {
-      // When the ws resived a auto-message
-      // so the agent_id is going to replaced to real value
-      // from the list of auto-message data.
-      msg.agent_id = autoMsg.getMsgAgentId(msg.muid)
-      if (msg.agent_id) this.setCurrentAgent(msg.agent_id)
-      autoMsg.removeItem(msg)
-    }
-
     if (msg.agent_id !== null) {
       const agent = this.getAgent(msg.agent_id)
       if (agent) {
