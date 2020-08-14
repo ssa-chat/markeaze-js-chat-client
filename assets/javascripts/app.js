@@ -44,6 +44,8 @@ module.exports = {
       this.isMobile = this.libs.helpers.isMobile()
 
       this.createConnection()
+
+      this.urlBind()
     })
   },
   destroy () {
@@ -82,6 +84,9 @@ module.exports = {
   locale: null,
   log () {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)
+  },
+  urlBind () {
+    if (decodeURIComponent(window.location.search).indexOf('mkz-chat=open') > -1) this.view.showChat()
   },
   createConnection () {
     this.notifier.call(() => {

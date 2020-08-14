@@ -51,7 +51,7 @@ module.exports = {
   htmlFormatting (str) {
     if (!str) return ''
 
-    return this.br(markdown.toHTML(str))
+    return this.linkify(this.br(markdown.toHTML(str)))
   },
   textFormatting (str) {
     return this.htmlFormatting(this.htmlToText(str))
@@ -60,5 +60,22 @@ module.exports = {
     regex = new RegExp('[?&]' + name + '=([^&#]*)')
     results = regex.exec(location.search)
     if (results !== null) return decodeURIComponent(results[1].replace(/\+/g, ' '))
+  },
+  linkify (str) {
+    if (!str) return str
+
+    // URLs starting with http://, https://, or ftp://
+    const re1 = /([^"'])(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])([^"']?)/gim
+    str = str.replace(re1, '$1<a href="$2" target="_blank">$2</a>$4')
+
+    // URLs starting with www. (without // before it, or it'd re-link the ones done above)
+    const re2 = /([^"']|^|[^\/])(www\.[\S]+(\b|$))([^"']?)/gim
+    str = str.replace(re2, '$1<a href="http://$2" target="_blank">$2</a>$4')
+
+    // Change email addresses to mailto:: links
+    const re3 = /([^"'])(([a-zA-Z_-]+\.)*[a-zA-Z_-]+@([a-zA-Z_-]+\.)*[a-zA-Z_-]+\.[a-zA-Z]{2,6})([^"']?)/gim
+    str = str.replace(re3, '$1<a href="mailto:$2">$2</a>$5')
+
+    return str
   }
 }
