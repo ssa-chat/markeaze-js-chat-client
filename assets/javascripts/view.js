@@ -75,9 +75,8 @@ export default class View {
     // Disable form iframe mode
     if (window.self !== window.top) return
 
-    const innerWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-    const outerWidth = window.outerWidth || document.documentElement.outerWidth || document.body.outerWidth
-    this.elContainer.style.zoom = innerWidth / outerWidth
+    const ratio = window.devicePixelRatio || 1
+    this.elContainer.style.zoom = 1 / ratio
   }
   submitSurveyForm (e) {
     e.preventDefault()
