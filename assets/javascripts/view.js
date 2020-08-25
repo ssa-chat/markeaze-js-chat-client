@@ -2,8 +2,10 @@ const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
 const msgDelivered = require('./msgDelivered')
 const helpers = require('./libs/helpers')
 const domEvent = require('./libs/domEvent')
+const { startBlink, stopBlink } = require('./libs/faviconBlink')
 const Template = require('./template').default
 const msgStory = require('./msgStory')
+const translations = require('./translations')
 
 export default class View {
   constructor (app) {
@@ -157,6 +159,7 @@ export default class View {
   }
   onFocus () {
     this.windowFocus = true
+    stopBlink()
   }
   onBlur () {
     this.windowFocus = false
@@ -332,7 +335,10 @@ export default class View {
     const history = this.history || msgStory.getHistory()
     for (const msg of history) this.renderMessage(msg)
   }
-  renderMessage (msg, nextMsg) {
+  renderMessage (msg, nextMsg, isNew) {
+    if (isNew && msg.sender_type === 'agent') {
+      if (!this.windowFocus) startBlink( translations[this.app.locale]['new_message'] )
+    }
     const html = this.template.message(msg)
     let msgEl = this.findMsg(msg.muid)
     if (msgEl) {

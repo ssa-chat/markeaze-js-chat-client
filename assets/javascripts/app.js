@@ -298,7 +298,7 @@ module.exports = {
 
     msgStory.addMsg(msg)
     const nextMsg = msgStory.getNextMsg(msg.muid)
-    this.view.renderMessage(msg, nextMsg)
+    this.view.renderMessage(msg, nextMsg, true)
 
     return msg
   },

@@ -8,7 +8,8 @@ module.exports = {
     add_to_cart: 'Добавить в корзину',
     added_to_cart: 'Добавлен в корзину',
     true: 'Да',
-    false: 'Нет'
+    false: 'Нет',
+    new_message: 'New message...'
   },
   en: {
     copyright: 'Powered by Markeaze',
@@ -19,6 +20,7 @@ module.exports = {
     add_to_cart: 'Add to cart',
     added_to_cart: 'Added to Cart!',
     true: 'True',
-    false: 'False'
+    false: 'False',
+    new_message: 'Новое сообщение...'
   }
 }
