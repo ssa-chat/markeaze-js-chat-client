@@ -4,7 +4,6 @@ const msgDelivered = require('./msgDelivered')
 const View = require('./view').default
 const autoMsg = require('./autoMsg')
 const surveyForm = require('./surveyForm')
-const Sound = require('./sound').default
 
 module.exports = {
 
@@ -36,7 +35,6 @@ module.exports = {
       this.locale = locale
       this.log('chat', 'created')
       this.view = new View(this)
-      this.sound = new Sound(this.settings.appearance.client_sound_path)
 
       autoMsg.init(this)
 
@@ -295,7 +293,7 @@ module.exports = {
         msg.sender_avatar_url = agent.avatar_url || agent.sender_avatar_url
         msg.sender_name = agent.name || msg.sender_name
       }
-      if (!this.view.windowFocus || this.view.collapsed) this.sound.play()
+      this.view.notifyNewMsg(msg)
       if (this.view.collapsed === true) {
         this.view.showBeacon(true)
       }
@@ -303,7 +301,7 @@ module.exports = {
 
     msgStory.addMsg(msg)
     const nextMsg = msgStory.getNextMsg(msg.muid)
-    this.view.renderMessage(msg, nextMsg, true)
+    this.view.renderMessage(msg, nextMsg)
 
     return msg
   },

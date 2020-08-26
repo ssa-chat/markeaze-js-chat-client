@@ -6,6 +6,7 @@ const { startBlink, stopBlink } = require('./libs/faviconBlink')
 const Template = require('./template').default
 const msgStory = require('./msgStory')
 const translations = require('./translations')
+const Sound = require('./sound').default
 
 export default class View {
   constructor (app) {
@@ -32,6 +33,8 @@ export default class View {
       invalidClassName: 'mkz-f__invalid',
       invalidParentClassName: 'mkz-f__invalid-wrap'
     }
+
+    this.sound = new Sound(app.settings.appearance.client_sound_path)
   }
   destroy () {
     if (!this.el || !this.el.parentNode) return
@@ -165,6 +168,7 @@ export default class View {
     this.windowFocus = false
   }
   showChat () {
+    if (this.app.settings.beaconState === 'disabled') return
     this.collapsed = false
     this.renderChatToggle()
   }
@@ -172,8 +176,19 @@ export default class View {
     this.collapsed = true
     this.renderChatToggle()
   }
+  notifyNewMsg (msg) {
+    if (this.app.settings.beaconState === 'disabled') return
+
+    if (!this.windowFocus) {
+      startBlink( translations[this.app.locale]['new_message'] )
+    }
+
+    if (this.collapsed || !this.windowFocus) {
+      this.sound.play()
+    }
+  }
   renderChatToggle () {
-    const updatedState = this.collapsed === this.oldCollapsed
+    const updatedState = this.collapsed !== this.oldCollapsed
     this.oldCollapsed = this.collapsed
 
     if (this.collapsed) {
@@ -334,10 +349,7 @@ export default class View {
     const history = this.history || msgStory.getHistory()
     for (const msg of history) this.renderMessage(msg)
   }
-  renderMessage (msg, nextMsg, isNew) {
-    if (isNew && msg.sender_type === 'agent') {
-      if (!this.windowFocus) startBlink( translations[this.app.locale]['new_message'] )
-    }
+  renderMessage (msg, nextMsg) {
     const html = this.template.message(msg)
     let msgEl = this.findMsg(msg.muid)
     if (msgEl) {
