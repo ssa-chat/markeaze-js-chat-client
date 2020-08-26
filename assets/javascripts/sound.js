@@ -31,6 +31,7 @@ export default class Sound {
 
   playAction () {
     this.audio.currentTime = 0
-    this.audio.play().catch((e) => {})
+    const playPromise = this.audio.play()
+    if (playPromise) playPromise.catch((e) => {})
   }
 }

@@ -18,6 +18,8 @@ module.exports = {
   previewMode: false,
   isMobile: false,
   create (locale, settings) {
+    if (!settings || Object.values(settings).length === 0) return
+
     if (this.libs.notifierInstance) {
       this.notifier = this.libs.notifierInstance(
         this.version,
@@ -135,8 +137,7 @@ module.exports = {
     })
   },
   handlerFailJoined (topic) {
-    const error = new Error(`Cannot join channel ${topic}`)
-    this.notifier.notify(error)
+    console.warn(`Cannot join channel ${topic}`)
   },
   handlerAgentStatus (isOnline, {agent_id}) {
     this.notifier.call(() => {
