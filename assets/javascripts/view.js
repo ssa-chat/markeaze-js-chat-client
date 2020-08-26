@@ -173,8 +173,7 @@ export default class View {
     this.renderChatToggle()
   }
   renderChatToggle () {
-    if (this.collapsed === this.oldCollapsed) return
-
+    const updatedState = this.collapsed === this.oldCollapsed
     this.oldCollapsed = this.collapsed
 
     if (this.collapsed) {
@@ -189,7 +188,7 @@ export default class View {
       this.hideBeacon()
     }
 
-    if (this.previewMode) return
+    if (this.previewMode || !updatedState) return
 
     this.app.handlerCollapse(this.collapsed)
 
@@ -200,9 +199,9 @@ export default class View {
     }
   }
   showBeacon (hasMessage) {
-    if (this.app.settings.beaconState === 'disabled') return
+    if (this.app.settings.beaconState === 'disabled') return this.hideBeacon()
 
-    if (this.app.settings.beaconState === 'hidden' && !hasMessage) return
+    if (this.app.settings.beaconState === 'hidden' && !hasMessage) return this.hideBeacon()
 
     helpers.addClass(this.elContainer, this.containerBeaconClassName)
   }

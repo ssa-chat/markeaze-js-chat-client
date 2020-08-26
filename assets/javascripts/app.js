@@ -40,6 +40,10 @@ module.exports = {
 
       autoMsg.init(this)
 
+      this.libs.eEmit.subscribe('plugin.chat.update', (settings) => {
+        this.settings = settings
+        this.view.render()
+      })
       this.libs.eEmit.subscribe('plugin.chat.show', this.view.showChat.bind(this.view))
       this.libs.eEmit.subscribe('plugin.chat.hide', this.view.hideChat.bind(this.view))
 
