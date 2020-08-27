@@ -77,5 +77,24 @@ module.exports = {
     str = str.replace(re3, '$1<a href="mailto:$2">$2</a>$5')
 
     return str
+  },
+  isBrokenIosViewport () {
+    // Ios < 13 version
+    return /iPad|iPhone|iPod/.test(navigator.platform)
+  },
+  getOrientation () {
+    const angle = window.orientation ? window.orientation : window.screen && window.screen.orientation && window.screen.orientation.angle
+    switch (angle) {
+      case -90:
+      case 90:
+        return 'landscape'
+        break
+      default:
+        return 'portrait'
+    }
+  },
+  getScale () {
+    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    return window.visualViewport && !this.isBrokenIosViewport() ? window.visualViewport.width / window.screen.width : 'landscape' === this.getOrientation() ? window.innerWidth / window.screen.height : window.innerWidth / window.screen.width
   }
 }

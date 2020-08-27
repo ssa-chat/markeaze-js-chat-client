@@ -590,22 +590,24 @@ $color_hint: #787878
     display: none
 
   .mkz-c__input
-    display: block
-    width: 100%
-    resize: none
-    padding: 0
-    font-size: 13px
-    line-height: 1.2em
-    font-family: $font
-    color: $color_text
-    border-style: none
-    outline-style: none
-    background-color: transparent
-    overflow: hidden
-    max-height: 50vh
-    min-height: 18px
-    height: 0
-    -webkit-appearance: none
+    &, &:hover, &:focus
+      display: block
+      width: 100%
+      resize: none
+      padding: 0
+      font-size: 13px
+      line-height: 1.2em
+      font-family: $font
+      color: $color_text
+      border-style: none
+      outline-style: none
+      background-color: transparent
+      overflow: hidden
+      max-height: 50vh
+      min-height: 18px
+      height: 0
+      -webkit-appearance: none
+      box-shadow: none
 
   .mkz-c__btn
     color: $color_link
@@ -677,6 +679,8 @@ $color_hint: #787878
     +markdown()
 
   .mkz-c__i-msg-overflow
+    padding: 0 2px
+    margin: 0 -2px
 
     &, & p, & code
       overflow: hidden
@@ -915,6 +919,9 @@ $color_hint: #787878
       left: 0
       top: 0
       bottom: 0
+
+    .mkz-c__input, .mkz-f__input, .mkz-f__select
+      font-size: 16px
 
     .mkz-c__cart, .mkz-c__chat_position_left .mkz-c__cart
       right: 0

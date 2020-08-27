@@ -79,15 +79,10 @@ export default class View {
   setZoom () {
     // Disable form iframe mode
     if (window.self !== window.top) return
+    if (!this.app.isMobile) return
 
-    const innerWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-    const outerWidth = window.outerWidth || document.documentElement.outerWidth || document.body.outerWidth
-    const devicePixelRatio = window.devicePixelRatio || 1
-    const zoom = (outerWidth / innerWidth) || devicePixelRatio
-
-    if (zoom < 1) return
-
-    this.elContainer.style.zoom = 1 / zoom
+    const zoom = helpers.getScale()
+    this.elContainer.style.zoom = zoom > 1 ? zoom : 1
   }
   submitSurveyForm (e) {
     e.preventDefault()
