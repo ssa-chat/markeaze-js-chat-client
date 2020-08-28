@@ -249,7 +249,7 @@ export default class Template {
   copy () {
     return !this.appearance.markeaze_link ? '' : `
       <div class="mkz-c__copy-wrap">
-        <a class="mkz-c__copy" href="https://markeaze.com/?utm_source=markeaze&utm_campaign=chatbox" target="_blank">
+        <a class="mkz-c__copy" href="https://markeaze.com/?utm_source=markeaze&utm_medium=ref&utm_campaign=chatbox" target="_blank">
           <svg width="11" height="9" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1.94727 2.8471C2.12716 2.49158 2.57173 2.38949 2.87918 2.63311C3.12176 2.82531 3.19515 3.17138 3.05276 3.45164L1.17079 7.15577C0.991709 7.50824 0.550808 7.60949 0.24532 7.3683C0.0037509 7.17757 -0.0698014 6.83352 0.0713545 6.55454L1.94727 2.8471Z" fill="#FC4566"/>
             <path d="M5.35667 1.9023C5.54038 1.55555 5.9926 1.45484 6.30746 1.69056C6.55814 1.87824 6.63496 2.21903 6.48885 2.49519L4.02121 7.15912C3.83664 7.50797 3.38122 7.60839 3.06569 7.36982C2.81616 7.18115 2.74036 6.8407 2.88648 6.5649L5.35667 1.9023Z" fill="#0EC52C"/>
