@@ -36,6 +36,8 @@ module.exports = {
     return temp.innerHTML
   },
   srcset (src) {
+    if (/^data:/i.test(src)) return ''
+
     const getSrcSet = (src, size) => {
       const delimeter = '/'
       const t = src.split(delimeter)

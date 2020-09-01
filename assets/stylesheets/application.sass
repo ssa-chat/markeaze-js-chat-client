@@ -1,7 +1,7 @@
 $font: Geneva, Arial, Helvetica, sans-serif
 $color_border: #E0E0E0
-$color_link: #7261FF
-$color_text: #000
+$color_link: #FC6881
+$color_text: #333333
 $color_bg: #FFF
 $color_hint: #787878
 
@@ -85,6 +85,11 @@ $color_hint: #787878
   .mkz-c_display_yes
     display: block
 
+  .mkz-c_valid-message_yes
+
+    .mkz-c__footer-btn
+      display: block
+
   .mkz-c_chat_show
 
     .mkz-c__chat
@@ -106,18 +111,11 @@ $color_hint: #787878
         opacity: 1
         visibility: visible
 
-  .mkz-c_agent_assign
-
-    .mkz-c__m-unassign-text
-      display: none
-
-    .mkz-c__m-assign-text, .mkz-c__m-assign-post, .mkz-c__m-assign-avatar
-      display: block
-
   .mkz-c_agent_online
 
     .mkz-c__state
       background-color: #0EC52C
+      display: block
 
     .mkz-c__btn-text-online
       display: block
@@ -150,8 +148,26 @@ $color_hint: #787878
 
   .mkz-c__handler_type_bubble
 
-    &.mkz-c__handler_bouncing_yes .mkz-c__btn
-      animation: mkzBounceMdScale  5s infinite linear
+    .mkz-c__btn-1, .mkz-c__btn-2, .mkz-c__btn-3
+      rx: 0
+
+    .mkz-c__btn-2, .mkz-c__btn-3
+      opacity: 0
+      rx: 10
+
+    &.mkz-c__handler_bouncing_yes
+
+      .mkz-c__btn-1, .mkz-c__btn-2, .mkz-c__btn-3
+        transform-origin: 50% 50%
+
+      .mkz-c__btn-1
+        animation: mkzBounceAnim1 8s infinite forwards
+
+      .mkz-c__btn-2
+        animation: mkzBounceAnim2 8s infinite forwards
+
+      .mkz-c__btn-3
+        animation: mkzBounceAnim3 8s infinite forwards
 
     &.mkz-c__handler_position_l-t, &.mkz-c__handler_position_l-b
 
@@ -183,7 +199,7 @@ $color_hint: #787878
     .mkz-c__btn
       width: 60px
       height: 60px
-      border-radius: 50%
+      border-radius: 25px 25px 0 25px
       background-color: #eee
       color: #000
       display: flex
@@ -423,7 +439,7 @@ $color_hint: #787878
     cursor: pointer
     transition: all linear 0.2s
     opacity: 1
-    color: $color_hint
+    color: $color_link
 
   .mkz-c__submit_disabled_yes
     cursor: default
@@ -437,8 +453,8 @@ $color_hint: #787878
     right: 0
     bottom: 0
     width: 100%
-    max-width: 375px
-    max-height: 630px + 25 + 25
+    max-width: 376px + 25
+    max-height: 688px + 25 + 25
     height: 100vh
     z-index: 20000000
 
@@ -467,8 +483,8 @@ $color_hint: #787878
     box-shadow: 0 0 10px rgba(25, 25, 29, 0.25)
     opacity: 0.75
 
-  .mkz-c__head, .mkz-c__scroll, .mkz-c__docs, .mkz-c__footer
-    padding: 0 15px
+  .mkz-c__head, .mkz-c__docs, .mkz-c__footer
+    padding: 0 24px
 
   .mkz-c__head, .mkz-c__docs, .mkz-c__footer
     flex: 0
@@ -488,69 +504,97 @@ $color_hint: #787878
     top: 0
     right: 0
     bottom: 0
+    padding: 0 16px
 
   .mkz-c__head
+    border-bottom: 1px solid $color_border
+    padding-top: 2px
+    padding-bottom: 2px
+    border-radius: 6px 6px 0 0
+    box-sizing: border-box
+
+  .mkz-c__head-row
     display: flex
     align-items: center
-    border-bottom: 1px solid $color_border
-    padding-top: 5px
-    padding-bottom: 5px
-    border-radius: 6px 6px 0 0
-    min-height: 80px
-    box-sizing: border-box
+    margin: 14px 0
+
+  .mkz-c__head-title
+    flex: 1
+    font-weight: bold
+    font-size: 17px
+    line-height: 22px
+    height: 22px
+    white-space: nowrap
 
   .mkz-c__head-state
     flex: 0
-    padding-right: 12px
+    padding-right: 14px
 
   .mkz-c__head-m
     flex: 1
+    overflow: hidden
 
   .mkz-c__head-action
     flex: 0
-    padding-left: 12px
+    position: relative
+    right: -10px
 
   .mkz-c__copy-wrap
-    position: absolute
-    left: 0
-    bottom: 0
-    right: 0
     text-align: center
+    margin-top: -35px
 
   .mkz-c__copy
     display: inline-block
-    font-size: 11px
-    line-height: 24px
+    font-size: 10px
+    line-height: 16px
     color: $color_hint
     text-decoration: none
-    background-color: #f7f7f7
-    border-radius: 6px 6px 0 0
-    padding: 0 5px
+    padding: 9px
 
     &:hover
       text-decoration: none
 
-  .mkz-c__m-assign-text, .mkz-c__m-unassign-text
+  .mkz-c__copy-logo
+    display: inline-block
+    vertical-align: middle
+    margin-right: 4px
+
+  .mkz-c__overflow
+    text-overflow: ellipsis
+    overflow: hidden
+
+  .mkz-c__m-assign-text
     font-weight: 600
     font-size: 14px
-    line-height: 1.2em
+    line-height: 20px
 
   .mkz-c__m-assign-post
-    font-size: 11px
-    line-height: 1.2em
-
-  .mkz-c__m-assign-text, .mkz-c__m-assign-post, .mkz-c__m-assign-avatar
-    display: none
+    font-size: 13px
+    line-height: 15px
+    margin-top: 2px
 
   .mkz-c__m-assign-avatar
     width: 40px
     height: 40px
-    border-radius: 50%
+    border-radius: 17px 17px 0 17px
+    border: 1px solid #fff
+    overflow: hidden
 
-  .mkz-c__close
+  .mkz-c__unmute
+    display: none
+
+  .mkz-c_mute_yes
+
+    .mkz-c__unmute
+      display: block
+
+    .mkz-c__mute
+      display: none
+
+  .mkz-c__close, .mkz-c__unmute, .mkz-c__mute
     cursor: pointer
     padding: 10px
-    margin: 0 -10px
+    margin: -10px 0
     opacity: 0.7
     transition: all linear 0.2s
 
@@ -559,26 +603,25 @@ $color_hint: #787878
 
   .mkz-c__state-wrap
     position: relative
-    min-width: 10px
-    min-height: 10px
 
   .mkz-c__state
     position: absolute
-    right: 0
+    right: -3px
     bottom: 0
-    width: 10px
-    height: 10px
+    width: 7px
+    height: 7px
     border-radius: 50%
     background-color: red
     transition: background 0.5s linear
-    box-shadow: 0 0 1px 1px #fff
+    border: 1px solid #fff
+    display: none
 
   .mkz-c__footer
     border-top: 1px solid $color_border
     display: flex
     align-items: center
-    padding-top: 30px
-    padding-bottom: 31px
+    padding-top: 23px
+    padding-bottom: 22px
     background-color: #fff
     border-radius: 0 0 6px 6px
 
@@ -595,7 +638,7 @@ $color_hint: #787878
       width: 100%
       resize: none
       padding: 0
-      font-size: 13px
+      font-size: 14px
       line-height: 1.2em
       font-family: $font
       color: $color_text
@@ -604,7 +647,7 @@ $color_hint: #787878
       background-color: transparent
       overflow: hidden
       max-height: 50vh
-      min-height: 18px
+      min-height: 20px
       height: 0
       -webkit-appearance: none
       box-shadow: none
@@ -630,6 +673,8 @@ $color_hint: #787878
 
   .mkz-c__list
     padding: 20px 0
+    min-height: 100%
+    box-sizing: border-box
 
   .mkz-c__i
     display: flex
@@ -638,11 +683,25 @@ $color_hint: #787878
   .mkz-c__i-avatar
     display: flex
     align-items: flex-end
-    flex: 0 0 24px
-    padding: 5px 0
+    flex: 0 0 44px
+    padding-bottom: 21px
+
+  .mkz-c__i-info
+    font-size: 11px
+    line-height: 16px
+    color: $color_hint
+    margin-top: 5px
+    white-space: nowrap
+    text-overflow: ellipsis
+    overflow: hidden
+
+  .mkz-c__i_type_agent
+    padding-right: 7px
 
   .mkz-c__i_type_client
+    padding-left: 7px
     flex-direction: row-reverse
+    text-align: right
 
     .mkz-c__i-avatar
       display: none
@@ -653,28 +712,29 @@ $color_hint: #787878
       border-radius: 6px 6px 0 6px
 
   .mkz-c__i-content
-    max-width: 100%
     overflow: hidden
     padding: 5px
+    margin: -5px
 
   .mkz-c__i-avatar-img
-    width: 24px
-    height: 24px
-    border-radius: 50%
+    width: 32px
+    height: 32px
+    border-radius: 11px 11px 0 11px
+    box-shadow: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 120, 0.1)
+
+  .mkz-c__i-msg-block:not(:last-child)
+    margin-bottom: 8px
 
   .mkz-c__i-msg
+    display: inline-block
     text-align: left
     background-color: #E7FEEA
     border-radius: 6px 6px 6px 0
-    padding: 8px 15px
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.12), 0px 0px 1px rgba(0, 0, 0, 0.48)
-    font-size: 13px
-    line-height: 1.5em
-    width: 100%
+    padding: 14px 16px
+    font-size: 14px
+    line-height: 20px
+    max-width: 100%
     box-sizing: border-box
-
-    &:not(:last-child)
-      margin-bottom: 15px
 
     +markdown()
 
@@ -685,99 +745,6 @@ $color_hint: #787878
     &, & p, & code
       overflow: hidden
       text-overflow: ellipsis
-
-  .mkz-c-o__i
-    width: 230px
-
-    &:not(:last-child)
-      margin-bottom: 20px
-
-  .mkz-c-o__content
-    padding: 20px
-    border: 1px solid $color_border
-    border-radius: 6px
-
-  .mkz-c-o__preview-link
-    display: flex
-    align-items: center
-    justify-content: center
-    height: 104px
-    margin-bottom: 10px
-
-  .mkz-c-o__preview-img
-    display: block
-    max-width: 100%
-    max-height: 100%
-    color: $color_hint
-
-  .mkz-c-o__name
-    font-size: 13px
-    line-height: 18px
-    margin-bottom: 10px
-
-  .mkz-c-o__name-link
-    color: $color_text
-    text-decoration: none
-    cursor: pointer
-
-    &:hover
-      text-decoration: underline
-
-  .mkz-c-o__info
-    display: flex
-    align-items: baseline
-    margin-bottom: 15px
-
-  .mkz-c-o__info-price, .mkz-c-o__info-avaliable
-    flex: 1
-
-  .mkz-c-o__info-price
-    font-weight: 600
-    font-size: 16px
-    line-height: 1.2em
-    padding-right: 10px
-
-  .mkz-c-o__info-avaliable
-    text-align: right
-    font-size: 12px
-    line-height: 1.2em
-    white-space: nowrap
-
-  .mkz-c-o__info-avaliable_color_green
-    color: #37833B
-
-  .mkz-c-o__info-avaliable_color_red
-    color: #FC4566
-
-  .mkz-c-o__btn
-    font-weight: 600
-    font-size: 13px
-    line-height: 1.2em
-    color: #fff
-    background-color: #FF6575
-    border-radius: 99px
-    padding: 8px 15px
-    text-align: center
-    display: block
-    outline-style: none
-    text-decoration: none
-    cursor: pointer
-
-    &[disabled]
-      &, &:hover
-        background-color: #DF4555
-        cursor: default
-
-    &:hover
-      text-decoration: none
-      background-color: #EF5565
-
-
-  .mkz-c-o__counter
-    font-size: 10px
-    line-height: 18px
-    padding: 3px 10px
-    color: $color_hint
 
   .mkz-c-docs
     margin: 10px -3px
@@ -810,18 +777,37 @@ $color_hint: #787878
       background-color: #E0E0E1
 
   .mkz-f
-    width: 230px
+    max-width: 281px
+    padding: 14px 16px
+    box-sizing: border-box
     margin: 0
-    padding: 5px 0
+    box-shadow: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 120, 0.1)
+    background-color: #fff
+    border-radius: 6px
 
   .mkz-f__row:not(:last-child)
-    margin-bottom: 10px
+    margin-bottom: 8px
 
   .mkz-f__label
     display: block
-    font-size: 14px
-    line-height: 1.2em
+    font-size: 13px
+    line-height: 15px
     margin-bottom: 4px
+
+  .mkz-f__control_type_success
+    position: relative
+
+    &:after
+      content: ''
+      background-image: url("data:image/svg+xml,%3Csvg width='18' height='13' viewBox='0 0 18 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 9.81305L16.192 0.672287L17.607 2.07825L7 12.625L0.636002 6.29714L2.05 4.89118L7 9.81305Z' fill='%2317B055'/%3E%3C/svg%3E");
+      background-repeat: no-repeat
+      background-size: 17px 12px
+      width: 17px
+      height: 12px
+      position: absolute
+      right: 14px
+      top: 50%
+      margin-top: -6px
 
   .mkz-f__input, .mkz-f__select
     display: block
@@ -829,21 +815,22 @@ $color_hint: #787878
     box-sizing: border-box
     resize: none
     padding: 0 0 0 10px
-    font-size: 13px
-    line-height: 30px
-    height: 32px
+    font-size: 14px
+    line-height: 38px
+    height: 40px
     font-family: $font
     color: $color_text
     outline-style: none
     background-color: #fff
     border-radius: 6px
-    border: 1px solid #CBCBCB
+    border: 1px solid #DFDFDF
     overflow: hidden
     -webkit-appearance: none
 
     &[disabled]
-      color: #777
-      background-color: #eee
+      color: #333333
+      background-color: #FAFAFA
+      border-color: #FAFAFA
 
   .mkz-f__select
     appearance: none
@@ -855,43 +842,100 @@ $color_hint: #787878
     background-position: calc(100% - 10px) center
     background-size: 10px
 
-  .mkz-f__note
-    font-size: 9px
-    line-height: 1.2em
-    text-align: center
+    &[disabled]
+      background-image: none
 
-  .mkz-f__btn
+  .mkz-f__note
+    font-size: 12px
+    line-height: 16px
+    color: $color_hint
+
+  .mkz-f__btn, .mkz-c-o__btn
     display: block
     width: 100%
     box-sizing: border-box
     font-weight: 600
-    font-size: 13px
+    font-size: 14px
     line-height: 1.2em
     color: #fff
-    background-color: #7261FF
+    background-color: $color_link
     border-radius: 6px
     border-style: none
-    padding: 8px 15px
+    padding: 16px
     text-align: center
     outline-style: none
     text-decoration: none
     cursor: pointer
-    text-transform: uppercase
+    transition: all linear 0.2s
 
     &[disabled]
       &, &:hover
-        background-color: #6251EF
+        background-color: desaturate($color_link, 30%)
         color: #aaa
         cursor: default
 
     &:hover
       text-decoration: none
-      background-color: #6251EF
+      background-color: darken($color_link, 10%)
 
   .mkz-f__invalid
     &, &::placeholder
       color: red !important
       box-shadow: 0 0 1px 1px red !important
+
+  .mkz-c-o__i
+    width: 192px
+
+    &:not(:last-child)
+      margin-bottom: 20px
+
+  .mkz-c-o__btn
+    padding: 12px 16px
+
+  .mkz-c-o__content
+    padding: 16px
+    border: 1px solid $color_border
+    border-radius: 6px
+
+  .mkz-c-o__preview-link
+    display: flex
+    align-items: center
+    justify-content: center
+    height: 128px
+    margin-bottom: 10px
+
+  .mkz-c-o__preview-img
+    display: block
+    max-width: 100%
+    max-height: 100%
+    color: $color_hint
+
+  .mkz-c-o__name
+    font-size: 14px
+    line-height: 20px
+    margin-bottom: 10px
+
+  .mkz-c-o__name-link
+    color: $color_text
+    text-decoration: none
+    cursor: pointer
+
+    &:hover
+      text-decoration: underline
+
+  .mkz-c-o__info
+    margin-bottom: 20px
+
+  .mkz-c-o__info-price
+    font-weight: 600
+    font-size: 17px
+    line-height: 22px
+
+  .mkz-c-o__counter
+    font-size: 10px
+    line-height: 18px
+    padding: 3px 10px
+    color: $color_hint
 
 .mkz-c-mobile
 
@@ -933,16 +977,61 @@ $color_hint: #787878
     .mkz-c__cart, .mkz-c__head, .mkz-c__footer
       border-radius: 0
 
-    .mkz-c__footer-btn
-      display: block
-
-@keyframes mkzBounceMdScale
-  94%
-    transform: scale(1)
-  98%
-    transform: scale(1.1)
+@keyframes mkzBounceAnim1
+  0%
+    transform: rotate(45deg) scale(1)
+    rx: 0
+  5%
+    transform: rotate(90deg) scale(1)
+    rx: 0
+  10%
+    transform: rotate(90deg) scale(0.5)
+    rx: 10
+  12%
+    transform: rotate(90deg) scale(0.5)
+  20%
+    transform: rotate(90deg) scale(0.5)
+    rx: 10
+  25%
+    transform: rotate(45deg) scale(1)
+    rx: 0
   100%
-    transform: scale(1)
+    transform: rotate(45deg) scale(1)
+    rx: 0
+
+@keyframes mkzBounceAnim2
+  10%
+    opacity: 1
+    transform: scale(0.5) translate(0, 0)
+  12%
+    opacity: 1
+    transform: scale(0.5) translate(-27px, 0)
+  17%
+    opacity: 1
+    transform: scale(0.5) translate(-27px, 0)
+  20%
+    opacity: 1
+    transform: scale(0.5) translate(0, 0)
+  25%
+    opacity: 0
+    transform: scale(0.5) translate(0, 0)
+
+@keyframes mkzBounceAnim3
+  10%
+    opacity: 1
+    transform: scale(0.5) translate(0, 0)
+  12%
+    opacity: 1
+    transform: scale(0.5) translate(27px, 0)
+  17%
+    opacity: 1
+    transform: scale(0.5) translate(27px, 0)
+  20%
+    opacity: 1
+    transform: scale(0.5) translate(0, 0)
+  25%
+    opacity: 0
+    transform: scale(0.5) translate(0, 0)
 
 @keyframes mkzBounceSmScale
   94%

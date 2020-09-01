@@ -27,6 +27,7 @@ module.exports = {
     this.items = autoMsgStory.addItems(items.map((item) => {
       const sentAt = this.app.getDateTime()
       const timestamp = +(new Date(sentAt))
+      const agent = this.app.getAgent(item.sender_id)
       return {
         payload: {
           auto_message_uid: item.uid,
@@ -35,8 +36,8 @@ module.exports = {
           muid: `${uid}:a:${timestamp}`,
           msg_type: 'message:auto',
           sender_type: item.sender_type,
-          sender_avatar_url: null,
-          sender_name: null,
+          sender_avatar_url: agent ? agent.avatar_url : null,
+          sender_name: agent ? agent.name : null,
           sent_at: sentAt,
           text: item.text,
           exclude: true,

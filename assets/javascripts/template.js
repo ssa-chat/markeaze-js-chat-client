@@ -1,6 +1,7 @@
 const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
 const helpers = require('./libs/helpers')
 const translations = require('./translations')
+const format = require('dateformat')
 
 export default class Template {
   constructor (view) {
@@ -17,7 +18,7 @@ export default class Template {
   }
   attribute (data) {
     if (!data) return ''
-    return data.replace(/\"/ig, '&quot;')
+    return String(data).replace(/\"/ig, '&quot;')
   }
   offer (offer, index, offers) {
     const htmlPicture = offer.icon ? `
@@ -46,9 +47,6 @@ export default class Template {
           <div class="mkz-c-o__info">
             <div class="mkz-c-o__info-price">
               ${this.safe(offer.display_price)}
-            </div>
-            <div class="mkz-c-o__info-avaliable mkz-c-o__info-avaliable_color_${offer.available ? 'green' : 'red'}">
-              ${this.t(offer.available ? 'in_stock' : 'out_of_stock')}
             </div>
           </div>
           <div class="mkz-c-o__action">
@@ -95,6 +93,7 @@ export default class Template {
           return this.formText(item, 'text')
       }
     })
+    .filter((html) => html)
     .map((html) => `<div class="mkz-f__row">${html}</div>`)
     .join('')
     return `
@@ -103,29 +102,33 @@ export default class Template {
   formText (data, type, attr = '') {
     return `
     <label class="mkz-f__label">${this.safe(data.display_name)}</label>
-    <input
-      type="${type}"
-      name="${data.field}"
-      class="mkz-f__input"
-      value="${this.attribute(data.value)}"
-      ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required ? 'required' : ''}
-      ${attr}
-    />
+    <div class="mkz-f__control ${data.disabled ? 'mkz-f__control_type_success' : ''}">
+      <input
+        type="${type}"
+        name="${data.field}"
+        class="mkz-f__input"
+        value="${this.attribute(data.value)}"
+        ${data.disabled ? 'disabled="true"' : ''}
+        ${data.required ? 'required' : ''}
+        ${attr}
+      />
+    </div>
     `
   }
   formDate (data) {
     return `
     <label class="mkz-f__label">${this.safe(data.display_name)}</label>
-    <input
-      type="date"
-      name="${data.field}"
-      class="mkz-f__input"
-      pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-      value="${this.attribute(data.value)}"
-      ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required ? 'required' : ''}
-    />
+    <div class="mkz-f__control ${data.disabled ? 'mkz-f__control_type_success' : ''}">
+      <input
+        type="date"
+        name="${data.field}"
+        class="mkz-f__input"
+        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+        value="${this.attribute(data.value)}"
+        ${data.disabled ? 'disabled="true"' : ''}
+        ${data.required ? 'required' : ''}
+      />
+    </div>
     `
   }
   formBoolean (data) {
@@ -140,12 +143,14 @@ export default class Template {
     }).join('')
     return `
     <label class="mkz-f__label">${this.safe(data.display_name)}</label>
-    <select
-      name="${data.field}"
-      class="mkz-f__select"
-      ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required ? 'required' : ''}
-    >${options}</select>
+    <div class="mkz-f__control ${data.disabled ? 'mkz-f__control_type_success' : ''}">
+      <select
+        name="${data.field}"
+        class="mkz-f__select"
+        ${data.disabled ? 'disabled="true"' : ''}
+        ${data.required ? 'required' : ''}
+      >${options}</select>
+    </div>
     `
   }
   formSelect (data) {
@@ -155,22 +160,26 @@ export default class Template {
     }).join('')
     return `
     <label class="mkz-f__label">${this.safe(data.display_name)}</label>
-    <select
-      name="${data.field}"
-      class="mkz-f__select"
-      ${data.disabled ? 'disabled="true"' : ''}
-      ${data.required ? 'required' : ''}
-    >${options}</select>
+    <div class="mkz-f__control ${data.disabled ? 'mkz-f__control_type_success' : ''}">
+      <select
+        name="${data.field}"
+        class="mkz-f__select"
+        ${data.disabled ? 'disabled="true"' : ''}
+        ${data.required ? 'required' : ''}
+      >${options}</select>
+    </div>
     `
   }
   formHint (data) {
+    if (data.disabled) return
     return `
     <div class="mkz-f__note">${this.safe(data.display_name)}</div>
     `
   }
   formButton (data) {
+    if (data.disabled) return
     return `
-    <button type="submit" class="mkz-f__btn" ${data.disabled ? 'disabled="true"' : ''}>${this.safe(data.display_name)}</button>
+    <button type="submit" class="mkz-f__btn">${this.safe(data.display_name)}</button>
     `
   }
   attachments (msg) {
@@ -186,44 +195,76 @@ export default class Template {
       }
     })
   }
+  isClientMsg (msg) {
+    return msg.sender_type === 'client'
+  }
+  getDate (msg) {
+    const isToday = (date) => {
+      const today = new Date()
+      return date.getDate() == today.getDate() &&
+        date.getMonth() == today.getMonth() &&
+        date.getFullYear() == today.getFullYear()
+    }
+
+    const string = msg.sent_at.replace(/\.[0-9]+Z$/g, '')
+    const date = new Date(string)
+    const dateWithTz = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+    return format(dateWithTz, this.t(isToday(dateWithTz) ? 'time' : 'dateTime'))
+  }
   message (msg) {
+    const isClientMsg = this.isClientMsg(msg)
     const enable = this.app.settings.appearance.agent_avatar
-    const avatarUrl = msg.sender_avatar_url || this.view.defaultAvatar
+    const avatarUrl = msg.sender_avatar_url || this.view.defaultAvatarUrl
     const htmlAvatar = enable ? `<div class="mkz-c__i-avatar"><img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" /></div>` : ''
+    const info = []
+    info.push(this.getDate(msg))
+    if (!isClientMsg && msg.sender_name) info.push(this.safe(msg.sender_name))
     return `
-          <div class="mkz-c__i mkz-c__i_type_${msg.sender_type === 'client' ? 'client' : 'agent'}" data-id="${msg.muid}">
+          <div class="mkz-c__i mkz-c__i_type_${isClientMsg ? 'client' : 'agent'}" data-id="${msg.muid}">
             ${htmlAvatar}
             <div class="mkz-c__i-content">
-              ${this.messageContent(msg)}
+              <div class="mkz-c__i-blocks">
+                ${this.messageContent(msg)}
+              </div>
+              <div class="mkz-c__i-info">
+                ${info.join(', ')}
+              </div>
             </div>
           </div>`
   }
   messageContent (msg) {
-    const bg = msg.sender_type === 'client' ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
-    const color = msg.sender_type === 'client' ? this.appearance.client_msg_color : this.appearance.agent_msg_color
+    const isClientMsg = this.isClientMsg(msg)
+    const bg = isClientMsg ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
+    const color = isClientMsg ? this.appearance.client_msg_color : this.appearance.agent_msg_color
     const wrap = (html) => `
-      <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
-        <div class="mkz-c__i-msg-overflow">
-          ${html}
+      <div class="mkz-c__i-msg-block">
+        ${html}
+      </div>
+    `
+    const msgWrap = (html) => wrap(`
+        <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
+          <div class="mkz-c__i-msg-overflow">
+            ${html}
+          </div>
         </div>
-      </div>`
+    `)
     switch(msg.msg_type) {
       case 'survey:show':
         const customFields = msg.custom_fields
         const submitted = customFields.submitted
-        const hidden = customFields.hidden
         const elements = customFields.elements.map((e) => {
-          e.value = customFields.values && customFields.values[e.field]
+          if (e.type === 'select' && !e.value) e.value = customFields.values && customFields.values[e.field]
+          if (submitted) e.disabled = true
           return e
         })
-        const followUp = customFields.follow_up_text ? wrap(helpers.htmlFormatting(customFields.follow_up_text)) : ''
-        const htmlText = msg.text ? wrap(helpers.htmlFormatting(msg.text)) : ''
-        const htmlForm = submitted ? followUp : (hidden ? '' : wrap(this.form(elements, msg.muid)))
-        return htmlText + htmlForm
+        const textHtml = msg.text ? msgWrap(helpers.htmlFormatting(msg.text)) : ''
+        const followUpHtml = submitted && customFields.follow_up_text ? msgWrap(helpers.htmlFormatting(customFields.follow_up_text)) : ''
+        const formHtml = wrap(this.form(elements, msg.muid))
+        return textHtml + formHtml + followUpHtml
       default:
         const text = helpers.htmlFormatting(msg.text)
         return `
-          ${text ? wrap(text) : ''}
+          ${text ? msgWrap(text) : ''}
           ${this.attachments(msg)}`
     }
   }
@@ -250,12 +291,11 @@ export default class Template {
     return !this.appearance.markeaze_link ? '' : `
       <div class="mkz-c__copy-wrap">
         <a class="mkz-c__copy" href="https://markeaze.com/?utm_source=markeaze&utm_medium=ref&utm_campaign=chatbox" target="_blank">
-          <svg width="11" height="9" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1.94727 2.8471C2.12716 2.49158 2.57173 2.38949 2.87918 2.63311C3.12176 2.82531 3.19515 3.17138 3.05276 3.45164L1.17079 7.15577C0.991709 7.50824 0.550808 7.60949 0.24532 7.3683C0.0037509 7.17757 -0.0698014 6.83352 0.0713545 6.55454L1.94727 2.8471Z" fill="#FC4566"/>
-            <path d="M5.35667 1.9023C5.54038 1.55555 5.9926 1.45484 6.30746 1.69056C6.55814 1.87824 6.63496 2.21903 6.48885 2.49519L4.02121 7.15912C3.83664 7.50797 3.38122 7.60839 3.06569 7.36982C2.81616 7.18115 2.74036 6.8407 2.88648 6.5649L5.35667 1.9023Z" fill="#0EC52C"/>
-            <path d="M8.81247 0.351483C8.99329 -0.00816918 9.44199 -0.111851 9.75226 0.134322C9.99632 0.327953 10.0705 0.67639 9.92784 0.959046L6.80213 7.15236C6.62323 7.50684 6.18144 7.61011 5.87387 7.36934C5.62976 7.17824 5.55453 6.83147 5.6961 6.54989L8.81247 0.351483Z" fill="#7261FF"/>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__copy-logo">
+            <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="#FC6881"/>
+            <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" fill="white"/>
           </svg>
-          ${this.t('copyright')}
+          <span class="mkz-c__copy-text">${this.t('copyright')}</span>
         </a>
       </div>`
   }
@@ -281,8 +321,10 @@ export default class Template {
           <span class="mkz-c__btn-text-online">${this.safe(this.appearance.bar_text_online)}</span>
           <span class="mkz-c__btn-text-offline">${this.safe(this.appearance.bar_text_offline)}</span>
         </div>
-        <svg width="27" height="27" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__btn-picture">
-          <path d="M20.6429 10.4641C20.6466 11.8783 20.3162 13.2733 19.6786 14.5355C18.9226 16.0481 17.7605 17.3204 16.3223 18.2098C14.8841 19.0992 13.2267 19.5706 11.5357 19.5713C10.1216 19.5749 8.72659 19.2445 7.46432 18.607L1.35718 20.6427L3.39289 14.5355C2.75532 13.2733 2.42492 11.8783 2.42861 10.4641C2.42926 8.77313 2.90069 7.11573 3.79009 5.67755C4.67949 4.23937 5.95174 3.07721 7.46432 2.32125C8.72659 1.68368 10.1216 1.35328 11.5357 1.35696H12.0715C14.3047 1.48017 16.414 2.42278 17.9955 4.00431C19.5771 5.58585 20.5197 7.69516 20.6429 9.92839V10.4641Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__btn-picture">
+          <rect x="20" y="20" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -12.4091 29.9928)" fill="#FFFFFF" width="20" height="20" fill="currentColor" class="mkz-c__btn-1" />
+          <rect x="20" y="20" fill="#FFFFFF" width="20" height="20" fill="currentColor" class="mkz-c__btn-2" />
+          <rect x="20" y="20" fill="#FFFFFF" width="20" height="20" fill="currentColor" class="mkz-c__btn-3" />
         </svg>
         <div class="mkz-c__btn-unread mkz-c-js-unread">0</div>
       </div>
@@ -291,46 +333,71 @@ export default class Template {
     <div class="mkz-c__chat mkz-c__chat_position_${chatPosition}" style="${this.view.width ? `max-width: ${this.view.width}px;` : '' }">
       <div class="mkz-c__cart-shadow"></div>
       <div class="mkz-c__cart">
+
         <div class="mkz-c__head" style="color: ${this.safe(this.appearance.title_color)}; background-color: ${this.safe(this.appearance.title_bg)};">
-          <div class="mkz-c__head-state">
-            <div class="mkz-c__state-wrap">
-              <img class="mkz-c__m-assign-avatar mkz-c-js-agent-avatar" alt="" />
-              <div class="mkz-c__state"></div>
+
+          <div class="mkz-c__head-row mkz-c__head-row_type_agent">
+            <div class="mkz-c__head-title mkz-c__overflow">
+              ${this.safe(this.appearance.title_text)}
+            </div>
+            <div class="mkz-c__head-action">
+              <div class="mkz-c__mute mkz-c-js-mute">
+                <svg width="16" height="17" viewBox="0 0 14 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.5 6.5C11.5 5.30653 11.0259 4.16193 10.182 3.31802C9.33807 2.47411 8.19347 2 7 2C5.80653 2 4.66193 2.47411 3.81802 3.31802C2.97411 4.16193 2.5 5.30653 2.5 6.5V12.5H11.5V6.5ZM13 13.0002L13.3 13.4C13.3418 13.4557 13.3672 13.522 13.3735 13.5913C13.3797 13.6607 13.3666 13.7304 13.3354 13.7927C13.3043 13.855 13.2564 13.9074 13.1971 13.944C13.1379 13.9806 13.0696 14 13 14H1C0.930358 14 0.862092 13.9806 0.802851 13.944C0.74361 13.9074 0.695735 13.855 0.66459 13.7927C0.633445 13.7304 0.620261 13.6607 0.626515 13.5913C0.63277 13.522 0.658215 13.4557 0.7 13.4L1 13.0002V6.5C1 4.9087 1.63214 3.38258 2.75736 2.25736C3.88258 1.13214 5.4087 0.5 7 0.5C8.5913 0.5 10.1174 1.13214 11.2426 2.25736C12.3679 3.38258 13 4.9087 13 6.5V13.0002ZM5.125 14.75H8.875C8.875 15.2473 8.67746 15.7242 8.32583 16.0758C7.97419 16.4275 7.49728 16.625 7 16.625C6.50272 16.625 6.02581 16.4275 5.67417 16.0758C5.32254 15.7242 5.125 15.2473 5.125 14.75Z" fill="currentColor" />
+                </svg>
+              </div>
+              <div class="mkz-c__unmute mkz-c-js-unmute">
+                <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12.9395 14H2.00005C1.93041 14 1.86214 13.9806 1.8029 13.944C1.74366 13.9074 1.69578 13.855 1.66464 13.7927C1.63349 13.7304 1.62031 13.6607 1.62656 13.5913C1.63282 13.522 1.65826 13.4557 1.70005 13.4L2.00005 13.0002V6.49999C2.00005 5.50249 2.24305 4.56199 2.6743 3.73474L0.0447998 1.10599L1.10605 0.0447388L15.9553 14.8947L14.894 15.9552L12.9395 14ZM3.80605 4.86649C3.60326 5.3872 3.49948 5.94119 3.50005 6.49999V12.5H11.4395L3.80605 4.86649ZM14 10.8395L12.5 9.33949V6.49999C12.5002 5.71074 12.2928 4.93533 11.8986 4.25158C11.5043 3.56782 10.9372 2.99977 10.2541 2.60443C9.57105 2.20908 8.79599 2.00035 8.00674 1.99918C7.2175 1.998 6.44182 2.20443 5.75755 2.59774L4.67005 1.50874C5.5736 0.905901 6.62385 0.559648 7.70876 0.506916C8.79368 0.454183 9.87255 0.69695 10.8303 1.20932C11.7881 1.72169 12.5888 2.48444 13.147 3.4162C13.7052 4.34797 14.0001 5.4138 14 6.49999V10.8395ZM6.12505 14.75H9.87505C9.87505 15.2473 9.67751 15.7242 9.32587 16.0758C8.97424 16.4274 8.49733 16.625 8.00005 16.625C7.50277 16.625 7.02586 16.4274 6.67422 16.0758C6.32259 15.7242 6.12505 15.2473 6.12505 14.75Z" fill="currentColor" />
+                </svg>
+              </div>
+            </div>
+            <div class="mkz-c__head-action">
+              <div class="mkz-c__close mkz-c-js-close">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 3.81846L8.88906 8.56553e-07L10 1.09077L5 6L-5.24496e-07 1.09077L1.11094 1.76568e-07L5 3.81846Z" fill="currentColor" />
+                </svg>
+              </div>
             </div>
           </div>
-          <div class="mkz-c__head-m">
-            <div class="mkz-c__m-assign-text mkz-c-js-agent-name"></div>
-            <div class="mkz-c__m-assign-post mkz-c-js-agent-post"></div>
-            <div class="mkz-c__m-unassign-text">${this.safe(this.appearance.bar_text_offline)}</div>
-          </div>
-          <div class="mkz-c__head-action">
-            <div class="mkz-c__close mkz-c-js-close">
-              <svg width="30" height="30" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.4287 4.57129L4.57153 11.4284" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4.57153 4.57129L11.4287 11.4284" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+
+          <div class="mkz-c__head-row">
+            <div class="mkz-c__head-state">
+              <div class="mkz-c__state-wrap">
+                <img class="mkz-c__m-assign-avatar mkz-c-js-agent-avatar" alt="" />
+                <div class="mkz-c__state"></div>
+              </div>
+            </div>
+            <div class="mkz-c__head-m">
+              <div class="mkz-c__m-assign-text mkz-c__overflow mkz-c-js-agent-name"></div>
+              <div class="mkz-c__m-assign-post mkz-c__overflow mkz-c-js-agent-post"></div>
             </div>
           </div>
+
         </div>
+
         <div class="mkz-c__content">
           <div class="mkz-c__scroll mkz-c-js-scroll">
             <div class="mkz-c__list mkz-c-js-history"></div>
+            ${this.copy()}
           </div>
-          ${this.copy()}
         </div>
+
         ${this.docs()}
+
         <label class="mkz-c__footer">
           <div class="mkz-c__footer-msg">
             <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="${this.safe(this.appearance.placeholder || this.t('placeholder'))}"></textarea>
           </div>
           <div class="mkz-c__footer-btn">
             <div class="mkz-c__submit mkz-c-js-submit">
-              <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18.9675 0.949039L12.9784 17.6706C12.9069 17.8682 12.7194 17.9999 12.5092 18H12.3495C12.1535 18 11.9749 17.8874 11.8903 17.7105L9.53462 12.719C9.18774 11.9831 9.322 11.1103 9.874 10.5128L12.8686 7.23833C13.0524 7.04551 13.0524 6.74232 12.8686 6.5495L12.4893 6.17015C12.2965 5.98633 11.9933 5.98633 11.8005 6.17015L8.52644 9.16505C7.92893 9.71711 7.05625 9.85139 6.32044 9.50447L1.32949 7.14848C1.13702 7.076 1.00706 6.89483 1.00009 6.68926V6.52953C0.982409 6.30492 1.11738 6.09631 1.32949 6.0204L18.0492 0.0306031C18.2289 -0.0354106 18.4306 0.00725579 18.5682 0.140416L18.8278 0.399974C18.9838 0.536262 19.0394 0.754748 18.9675 0.949039Z" fill="currentColor"/>
+              <svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.42925 0.290672L18.3527 9.59851C18.4246 9.63807 18.4845 9.6962 18.5263 9.76682C18.568 9.83744 18.59 9.91797 18.59 10C18.59 10.082 18.568 10.1626 18.5263 10.2332C18.4845 10.3038 18.4246 10.3619 18.3527 10.4015L1.42925 19.7093C1.35947 19.7477 1.28089 19.7673 1.20125 19.766C1.12161 19.7648 1.04367 19.7428 0.975112 19.7023C0.906549 19.6618 0.84973 19.6041 0.810256 19.5349C0.770781 19.4657 0.750014 19.3875 0.75 19.3078V0.692172C0.750014 0.612527 0.770781 0.534261 0.810256 0.465086C0.84973 0.395912 0.906549 0.338218 0.975112 0.297691C1.04367 0.257164 1.12161 0.235203 1.20125 0.233972C1.28089 0.232741 1.35947 0.252283 1.42925 0.290672ZM2.58333 10.9167V16.9823L15.2792 10L2.58333 3.01776V9.08334H7.16667V10.9167H2.58333Z" fill="currentColor" />
               </svg>
             </div>
           </div>
         </label>
+
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ const Template = require('./template').default
 const msgStory = require('./msgStory')
 const translations = require('./translations')
 const Sound = require('./sound').default
+const mute = require('./mute')
 
 export default class View {
   constructor (app) {
@@ -22,12 +23,14 @@ export default class View {
     this.noticeShowTimeout = 1000
     this.noticeHideTimeout = 10000
     this.width = null
+    this.focusOnHistory = false
     this.template = new Template(this)
     this.containerBeaconClassName = 'mkz-c_beacon_show'
     this.containerChatClassName = 'mkz-c_chat_show'
+    this.containerValidMessageClassName = 'mkz-c_valid-message_yes'
     this.htmlClassName = 'mkz-c-fixed'
     this.mobileClassName = 'mkz-c-mobile'
-    this.defaultAvatar = 'https://themes.markeaze.com/default/livechat/default_avatar.png'
+    this.defaultAvatarUrl = 'https://assets-shared.markeaze.com/public/avatars/mini_logo.png'
 
     this.validationOptions = {
       invalidClassName: 'mkz-f__invalid',
@@ -41,10 +44,19 @@ export default class View {
     this.el.parentNode.removeChild(this.el)
   }
   bind () {
-    domEvent.add(this.elInput, 'keyup', this.setMsgHeight.bind(this))
+    domEvent.add(this.elInput, 'keyup', this.renderForm.bind(this))
+    domEvent.add(this.elInput, 'cut', this.renderForm.bind(this))
+    domEvent.add(this.elInput, 'paste', this.renderForm.bind(this))
 
     domEvent.add(this.elToggle, 'click', this.showChat.bind(this))
     domEvent.add(this.elClose, 'click', this.hideChat.bind(this))
+
+    domEvent.add(this.elScroll, 'mouseenter', () => {
+      this.focusOnHistory = true
+    })
+    domEvent.add(this.elScroll, 'mouseleave', () => {
+      this.focusOnHistory = false
+    })
 
     if (this.previewMode) return
 
@@ -62,6 +74,8 @@ export default class View {
         this.startTyping()
       }
     })
+
+    mute.bind(this)
   }
   bindMessage (elMessage) {
     if (this.previewMode) return
@@ -75,6 +89,16 @@ export default class View {
     for (const elForm of elForms) {
       domEvent.add(elForm, 'submit', this.submitSurveyForm.bind(this))
     }
+  }
+  renderForm () {
+    setTimeout(() =>{
+      this.setMsgHeight()
+      this.renderFormValidate()
+    }, 0)
+  }
+  renderFormValidate () {
+    if (this.elInput.value.length > 0) helpers.addClass(this.elContainer, this.containerValidMessageClassName)
+    else helpers.removeClass(this.elContainer, this.containerValidMessageClassName)
   }
   setZoom () {
     // Disable form iframe mode
@@ -93,9 +117,17 @@ export default class View {
     if (!valid) return
 
     let form = new this.libs.FormToObject(el)
+    const msg = msgStory.findMsg(muid)
+
+    // Save form values into message stories
+    if (msg) {
+      msg.custom_fields.elements.map((element) => {
+        element.value = form[element.field] || ''
+      })
+      msgStory.addMsg(msg)
+    }
 
     // Converting format of variables
-    const msg = msgStory.findMsg(muid)
     if (msg && msg.custom_fields) {
       const elements = msg.custom_fields.elements
       form = Object.entries(form)
@@ -178,7 +210,7 @@ export default class View {
       startBlink( translations[this.app.locale]['new_message'] )
     }
 
-    if (this.collapsed || !this.windowFocus) {
+    if (!mute.getState() && (this.collapsed || !this.windowFocus)) {
       this.sound.play()
     }
   }
@@ -248,6 +280,7 @@ export default class View {
     this.app.pusherNewMsg(text)
       .receive('ok', () => {
         this.elInput.value = null
+        this.renderFormValidate()
         this.setMsgHeight()
         this.enableSending()
       })
@@ -274,7 +307,7 @@ export default class View {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
     if (this.app.settings.appearance.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
     if (this.app.settings.appearance.agent_avatar) {
-      const avatarUrl = this.app.currentAgent.avatar_url || this.defaultAvatar
+      const avatarUrl = this.app.currentAgent.avatar_url || this.defaultAvatarUrl
       this.elAgentAvatar.src = avatarUrl
       this.elAgentAvatar.setAttribute('srcset', helpers.srcset(avatarUrl))
       this.elAgentAvatar.style.display = 'block'
@@ -371,6 +404,8 @@ export default class View {
     else this.offlineAgents()
   }
   scrollBottom () {
+    if (this.focusOnHistory) return
+
     setTimeout(() => {
       this.elScroll.scrollTop = this.elScroll.scrollHeight
     }, 0)

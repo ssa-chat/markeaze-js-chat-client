@@ -146,6 +146,9 @@ module.exports = {
       const agent = this.getAgent(agent_id)
       if (!agent) return
       agent.isOnline = isOnline
+      if (this.currentAgent && this.currentAgent.agent_id === agent_id) {
+        this.currentAgent.isOnline = isOnline
+      }
       this.updateAgentState()
     })
   },
@@ -208,9 +211,10 @@ module.exports = {
       msgStory.addMsg(msg)
       this.view.renderMessage(msg)
 
+      // Search all survey forms in history with equal uid and replace for them similar custom_fields
       msgStory.batchUpdateMsg(
         (m) => m.muid !== msg.muid && m.msg_type === 'survey:show' && m.custom_fields.uid === msg.custom_fields.uid,
-        (m) => m.custom_fields.hidden = true
+        (m) => m.custom_fields = msg.custom_fields
       ).map((m) => this.view.renderMessage(m))
     })
   },
@@ -237,16 +241,13 @@ module.exports = {
     const history = msgStory.getHistory()
     const lastMsg = history.length > 0 && history[history.length - 1]
     if (lastMsg && lastMsg.msg_type === 'message:auto') {
-      payload.prev_auto_message = {
+      payload.prev_auto_message = Object.assign({}, lastMsg, {
         auto_message_uid: lastMsg.auto_message_uid,
-        muid: lastMsg.muid,
-        agent_id: 0,
-        text: lastMsg.text,
-        sender_type: 'auto',
         status: 'read',
-        sent_at: lastMsg.sent_at,
-        device_uid: uid
-      }
+        device_uid: uid,
+        custom_fields: {}
+      })
+      delete payload.prev_auto_message.exclude
       autoMsg.trackReply(lastMsg.muid)
     }
 
@@ -310,12 +311,14 @@ module.exports = {
     if (!currentAgentId && !this.currentAgent) {
       const firstOnlineAgent = Object.values(this.agents).find((a) => a.isOnline)
       if (firstOnlineAgent) currentAgentId = firstOnlineAgent.id
-      else return
+      else currentAgentId = Object.values(this.agents)[0].id
     }
 
     this.currentAgent = this.getAgent(currentAgentId)
     if (this.currentAgent) this.view.assignAgent()
     else this.view.unassignAgent()
+
+    this.updateAgentState()
   },
   setAgents (agents) {
     this.agents = agents.reduce((obj, agent) => {

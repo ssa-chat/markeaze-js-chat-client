@@ -35,14 +35,14 @@ a {
 var app = {};
 window.mkz = function (method, pluginName, plugin) {
   app = plugin
-  render({collapsed: true, isMobile: false});
+  render({collapsed: false, isMobile: false});
 }
 var render = function(options) {
   options.history = [
     {
       muid: '1',
       text: 'Auto message with sample link https://markeaze.com/help and email mail@example.net',
-      agent_id: 0,
+      agent_id: 1,
       msg_type: 'message:auto',
       sent_at: '2019-12-19T10:48:03.314923Z',
       sender_avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png',
@@ -122,7 +122,7 @@ var render = function(options) {
     {
       muid: '3',
       text: 'Question',
-      agent_id: null,
+      agent_id: 1,
       msg_type: 'message:new',
       sent_at: '2019-12-19T10:48:03.314923Z',
       sender_avatar_url: null,
@@ -132,7 +132,7 @@ var render = function(options) {
     {
       muid: '4',
       text: 'Answer',
-      agent_id: 1,
+      agent_id: null,
       msg_type: 'message:new',
       sent_at: '2019-12-19T10:50:09.107155Z',
       sender_type: 'client',
@@ -175,11 +175,33 @@ var render = function(options) {
     {
       muid: '6',
       text: 'Markdown:\ntext **bold** *italic* `code` [link](http://example.net)',
-      agent_id: 0,
+      agent_id: 1,
       msg_type: 'message:auto',
       sent_at: '2019-12-19T10:48:03.314923Z',
       sender_avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png',
       sender_name: null,
+      attachments: []
+    },
+    {
+      muid: '7',
+      text: 'LoooooooongAnswerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr',
+      agent_id: null,
+      msg_type: 'message:new',
+      sent_at: '2019-12-19T10:52:09.107155Z',
+      sender_type: 'client',
+      sender_avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png',
+      sender_name: 'Tester',
+      attachments: []
+    },
+    {
+      muid: '8',
+      text: 'LoooooooongQuestionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn',
+      agent_id: 1,
+      msg_type: 'message:new',
+      sent_at: '2019-12-19T10:53:10.107155Z',
+      sender_type: 'agent',
+      sender_avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png',
+      sender_name: 'Tester',
       attachments: []
     }
   ]
@@ -195,23 +217,24 @@ var render = function(options) {
       bar_position: 'r-b', // l-t / r-t / l-b / r-b // t / r / b / l
       bar_padding_x: 20,
       bar_padding_y: 20,
-      bar_color: '#000',
-      bar_bg: '#F28E24',
+      bar_color: '#ffffff',
+      bar_bg: '#FC6881',
       bar_text_online: 'We’re here. Let’s chat!',
       bar_text_offline: 'Leave message',
       // bar_icon_url: 'https://d2p70fm3k6a3cb.cloudfront.net/public/images/2019/12/25/some.svg',
       notice_icon_url: 'https://themes.markeaze.com/default/livechat/icons/halloween.png',
-      notice_text: 'Looking for halloween gifts?',
+      notice_text: '',
       notice_color: '#fff',
       notice_bg: '#333',
       bar_bouncing: true,
 
-      title_color: '#fff',
-      title_bg: '#F28E24',
-      agent_msg_bg: '#E7FEEA',
-      client_msg_bg: '#FFFFFF',
-      agent_msg_color: '#000000',
-      client_msg_color: '#000000',
+      title_text: 'Leave your message',
+      title_color: '#ffffff',
+      title_bg: '#FC6881',
+      agent_msg_bg: '#F5F5F5',
+      agent_msg_color: '#333333',
+      client_msg_bg: '#FC6881',
+      client_msg_color: '#ffffff',
       placeholder: 'Input any message here...',
       agent_avatar: true,
       agent_post: true,
