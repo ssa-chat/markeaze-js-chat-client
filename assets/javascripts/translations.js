@@ -9,7 +9,8 @@ module.exports = {
     false: 'Нет',
     new_message: 'New message...',
     dateTime: 'dd.mm.yyyy, HH:MM',
-    time: 'HH:MM'
+    time: 'HH:MM',
+    paginate: 'из'
   },
   en: {
     copyright: 'Powered by Markeaze',
@@ -21,6 +22,7 @@ module.exports = {
     false: 'False',
     new_message: 'Новое сообщение...',
     dateTime: 'mmm dd yyyy, h:MM tt',
-    time: 'h:MM tt'
+    time: 'h:MM tt',
+    paginate: 'of'
   }
 }

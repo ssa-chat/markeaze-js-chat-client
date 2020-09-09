@@ -20,17 +20,24 @@ export default class Template {
     if (!data) return ''
     return String(data).replace(/\"/ig, '&quot;')
   }
-  offer (offer, index, offers) {
-    const htmlPicture = offer.icon ? `
-          <img src="${this.safe(offer.icon)}" alt="" class="mkz-c-o__preview-img" />
+  offers (items) {
+    if (!items) return ''
+    return `
+    <div class="mkz-c-o">
+      ${items.map(this.offer.bind(this)).join("\n")}
+    </div>`
+  }
+  offer (item, index, items) {
+    const htmlPicture = item.icon ? `
+          <img src="${this.safe(item.icon)}" alt="" class="mkz-c-o__preview-img" />
     ` : `
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="480" height="448" viewBox="0 0 480 448" class="mkz-c-o__preview-img">
             <path fill="currentColor" d="M160 144c0 26.5-21.5 48-48 48s-48-21.5-48-48 21.5-48 48-48 48 21.5 48 48zM416 240v112h-352v-48l80-80 40 40 128-128zM440 64h-400c-4.25 0-8 3.75-8 8v304c0 4.25 3.75 8 8 8h400c4.25 0 8-3.75 8-8v-304c0-4.25-3.75-8-8-8zM480 72v304c0 22-18 40-40 40h-400c-22 0-40-18-40-40v-304c0-22 18-40 40-40h400c22 0 40 18 40 40z"></path>
           </svg>
     `
-    const counterHtml = offers.length < 2 ? '' : `
+    const counterHtml = items.length < 2 ? '' : `
         <div class="mkz-c-o__counter">
-          ${index+1}/${offers.length}
+          ${index+1}/${items.length}
         </dvi>
     `
     const callbackLabel = this.t(this.behavior.attachment_cta.product.callback_label_text)
@@ -38,20 +45,20 @@ export default class Template {
     return `
       <div class="mkz-c-o__i">
         <div class="mkz-c-o__content">
-          <a href="${this.safe(offer.url)}" class="mkz-c-o__preview-link">
+          <a href="${this.safe(item.url)}" class="mkz-c-o__preview-link">
             ${htmlPicture}
           </a>
           <div class="mkz-c-o__name">
-            <a href="${this.safe(offer.url)}" class="mkz-c-o__name-link">${this.safe(offer.name)}</a>
+            <a href="${this.safe(item.url)}" class="mkz-c-o__name-link">${this.safe(item.name)}</a>
           </div>
           <div class="mkz-c-o__info">
             <div class="mkz-c-o__info-price">
-              ${this.safe(offer.display_price)}
+              ${this.safe(item.display_price)}
             </div>
           </div>
           <div class="mkz-c-o__action">
             <span
-              data-data="${this.attribute(JSON.stringify(offer))}"
+              data-data="${this.attribute(JSON.stringify(item))}"
               data-callback_label="${this.attribute(callbackLabel)}"
               class="mkz-c-o__btn mkz-c-o-js-action"
             >
@@ -63,12 +70,51 @@ export default class Template {
       </div>
     `
   }
-  offers (offers) {
-    if (!offers) return ''
+  files (items) {
     return `
-    <div class="mkz-c-o">
-      ${offers.map(this.offer.bind(this)).join("\n")}
-    </div>`
+      <div class="mkz-c-f">
+        ${items.map(this.file.bind(this)).join("\n")}
+      </div>
+    `
+  }
+  file (item, index, items) {
+    if (!item.url) return ''
+    return `
+      <div class="mkz-c-f__i">
+        <a href="${item.url}" target="_blank" class="mkz-c-f__link">
+          <span class="mkz-c-f__preview">
+            <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 10H13L9 14L5 10H8V6H10V10ZM12 2H2V18H16V6H12V2ZM0 0.992C0 0.444 0.447 0 0.999 0H13L18 5V18.993C18.0009 19.1243 17.976 19.2545 17.9266 19.3762C17.8772 19.4979 17.8043 19.6087 17.7121 19.7022C17.6199 19.7957 17.5101 19.8701 17.3892 19.9212C17.2682 19.9723 17.1383 19.9991 17.007 20H0.993C0.730378 19.9982 0.479017 19.8931 0.293218 19.7075C0.107418 19.5219 0.00209465 19.2706 0 19.008V0.992Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="mkz-c-f__content">
+            <span class="mkz-c-f__text">
+              <span class="mkz-c-f__name">${item.name || item.url}</span>
+              <span class="mkz-c-f__size">${item.size ? helpers.formatFileSize(item.size) : ''}</span>
+            </span>
+          </span>
+        </a>
+      </div>`
+  }
+  images (files) {
+    return `
+      <div class="mkz-c-i">
+        ${files.map(this.image.bind(this)).join("\n")}
+      </div>
+    `
+  }
+  image (item, index, items) {
+    if (!item.url) return ''
+    const count = items.length
+    return `
+      <div class="mkz-c-i__i mkz-c-i__i_type_${count === 1 ? 2 : index % 3}">
+        <a
+          href="${item.url}"
+          target="_blank"
+          class="mkz-c-i__link mkz-c-i-js"
+          style="background-image: url('${this.attribute(item.url)}')"
+        ></a>
+      </div>`
   }
   form (fields, uid) {
     const html =  fields.map((item) => {
@@ -192,6 +238,10 @@ export default class Template {
       switch(key) {
         case 'product':
           return this.offers(group)
+        case 'file':
+          return this.files(group)
+        case 'image':
+          return this.images(group)
       }
     })
   }
@@ -232,22 +282,28 @@ export default class Template {
             </div>
           </div>`
   }
-  messageContent (msg) {
-    const isClientMsg = this.isClientMsg(msg)
-    const bg = isClientMsg ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
-    const color = isClientMsg ? this.appearance.client_msg_color : this.appearance.agent_msg_color
-    const wrap = (html) => `
+  messageBlockWrap (html) {
+    return `
       <div class="mkz-c__i-msg-block">
         ${html}
       </div>
     `
-    const msgWrap = (html) => wrap(`
+  }
+  messageContent (msg) {
+    const isClientMsg = this.isClientMsg(msg)
+    const bg = isClientMsg ? this.appearance.client_msg_bg : this.appearance.agent_msg_bg
+    const color = isClientMsg ? this.appearance.client_msg_color : this.appearance.agent_msg_color
+
+    const msgWrap = (html) => `
         <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
           <div class="mkz-c__i-msg-overflow">
             ${html}
           </div>
         </div>
-    `)
+    `
+
+    const htmlBlocks = []
+
     switch(msg.msg_type) {
       case 'survey:show':
         const customFields = msg.custom_fields
@@ -257,16 +313,23 @@ export default class Template {
           if (submitted) e.disabled = true
           return e
         })
-        const textHtml = msg.text ? msgWrap(helpers.htmlFormatting(msg.text)) : ''
-        const followUpHtml = submitted && customFields.follow_up_text ? msgWrap(helpers.htmlFormatting(customFields.follow_up_text)) : ''
-        const formHtml = wrap(this.form(elements, msg.muid))
-        return textHtml + formHtml + followUpHtml
+        if (msg.text) {
+          htmlBlocks.push(msgWrap(helpers.htmlFormatting(msg.text)))
+        }
+        htmlBlocks.push(this.form(elements, msg.muid))
+        if (submitted && customFields.follow_up_text) {
+          htmlBlocks.push(msgWrap(helpers.htmlFormatting(customFields.follow_up_text)))
+        }
+        break
       default:
         const text = helpers.htmlFormatting(msg.text)
-        return `
-          ${text ? msgWrap(text) : ''}
-          ${this.attachments(msg)}`
+        if (text) htmlBlocks.push(msgWrap(text))
+        this.attachments(msg).forEach((attachment) => {
+          htmlBlocks.push(attachment)
+        })
     }
+
+    return htmlBlocks.map(this.messageBlockWrap).join('')
   }
   doc (name) {
     return `
@@ -332,7 +395,7 @@ export default class Template {
 
     <div class="mkz-c__chat mkz-c__chat_position_${chatPosition}" style="${this.view.width ? `max-width: ${this.view.width}px;` : '' }">
       <div class="mkz-c__cart-shadow"></div>
-      <div class="mkz-c__cart">
+      <div class="mkz-c__cart mkz-c-js-cart">
 
         <div class="mkz-c__head" style="color: ${this.safe(this.appearance.title_color)}; background-color: ${this.safe(this.appearance.title_bg)};">
 

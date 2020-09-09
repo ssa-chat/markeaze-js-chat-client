@@ -8,6 +8,7 @@ const msgStory = require('./msgStory')
 const translations = require('./translations')
 const Sound = require('./sound').default
 const mute = require('./mute')
+const ImagePreview = require('./imagePreview').default
 
 export default class View {
   constructor (app) {
@@ -89,6 +90,16 @@ export default class View {
     for (const elForm of elForms) {
       domEvent.add(elForm, 'submit', this.submitSurveyForm.bind(this))
     }
+
+    const elImages = elMessage.querySelectorAll('.mkz-c-i-js')
+    for (const elImage of elImages) {
+      domEvent.add(elImage, 'click', (e) => this.renderPreviewImages(e, elImage, elImages))
+    }
+  }
+  renderPreviewImages (e, elImage, elImages) {
+    e.preventDefault()
+    const index = Array.prototype.indexOf.call(elImages, elImage)
+    new ImagePreview(this, index, elImages)
   }
   renderForm () {
     setTimeout(() =>{
@@ -347,6 +358,7 @@ export default class View {
     if (!this.el) {
       this.el = helpers.appendHTML(document.body, this.template.content())
       this.elContainer = this.el.querySelector('.mkz-c-js')
+      this.elCart = this.el.querySelector('.mkz-c-js-cart')
       this.elInput = this.el.querySelector('.mkz-c-js-input')
       this.elSubmit = this.el.querySelector('.mkz-c-js-submit')
       this.elUnread = this.el.querySelector('.mkz-c-js-unread')

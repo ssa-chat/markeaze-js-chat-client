@@ -4,8 +4,13 @@ $color_link: #FC6881
 $color_text: #333333
 $color_bg: #FFF
 $color_hint: #787878
+$color_gray_1: #DFDFDF
+$color_gray_2: #F5F5F5
+$color_gray_3: #828282
+$shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 120, 0.1)
 
 @import './markdown.sass'
+@import './imagePreview.sass'
 
 =reset()
   html, body, div, span, applet, object, iframe,
@@ -440,6 +445,7 @@ $color_hint: #787878
     transition: all linear 0.2s
     opacity: 1
     color: $color_link
+    margin: -1px 0
 
   .mkz-c__submit_disabled_yes
     cursor: default
@@ -712,6 +718,7 @@ $color_hint: #787878
       border-radius: 6px 6px 0 6px
 
   .mkz-c__i-content
+    flex: 1
     overflow: hidden
     padding: 5px
     margin: -5px
@@ -720,7 +727,7 @@ $color_hint: #787878
     width: 32px
     height: 32px
     border-radius: 11px 11px 0 11px
-    box-shadow: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 120, 0.1)
+    box-shadow: $shadow_box
 
   .mkz-c__i-msg-block:not(:last-child)
     margin-bottom: 8px
@@ -781,7 +788,7 @@ $color_hint: #787878
     padding: 14px 16px
     box-sizing: border-box
     margin: 0
-    box-shadow: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 120, 0.1)
+    box-shadow: $shadow_box
     background-color: #fff
     border-radius: 6px
 
@@ -823,7 +830,7 @@ $color_hint: #787878
     outline-style: none
     background-color: #fff
     border-radius: 6px
-    border: 1px solid #DFDFDF
+    border: 1px solid $color_gray_1
     overflow: hidden
     -webkit-appearance: none
 
@@ -883,6 +890,8 @@ $color_hint: #787878
       color: red !important
       box-shadow: 0 0 1px 1px red !important
 
+  /* Offers */
+
   .mkz-c-o__i
     width: 192px
 
@@ -936,6 +945,119 @@ $color_hint: #787878
     line-height: 18px
     padding: 3px 10px
     color: $color_hint
+
+  /* / Offers */
+
+  /* / Files */
+
+  .mkz-c-f__i
+
+    &:not(:last-child)
+      margin-bottom: 5px
+
+  .mkz-c-f__link
+    display: inline-block
+    max-width: 100%
+    border-radius: 6px
+    position: relative
+
+    &, &:hover
+      text-decoration: none
+      color: $color_text
+
+    &:hover
+      box-shadow: $shadow_box
+
+  .mkz-c-f__preview
+    position: absolute
+    left: 0
+    top: 0
+    bottom: 0
+    width: 40px
+    padding: 6px 0
+    box-sizing: border-box
+    display: flex
+    justify-content: center
+    align-items: center
+    background-color: $color_gray_2
+    border-radius: 6px 0 0 6px
+    z-index: 1
+
+  .mkz-c-f__content
+    min-height: 48px
+    padding: 6px 8px
+    margin-left: 40px
+    box-sizing: border-box
+    display: flex
+    align-items: center
+    background-color: $color_gray_1
+    border-radius: 0 6px 6px 0
+
+  .mkz-c-f__text
+    display: block
+    width: 100%
+
+  .mkz-c-f__name, .mkz-c-f__size
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+
+  .mkz-c-f__name
+    display: block
+    font-size: 14px
+    line-height: 20px
+
+  .mkz-c-f__size
+    display: block
+    font-size: 11px
+    line-height: 16px
+    color: $color_gray_3
+
+  /* / Files */
+
+  /* Images */
+
+  .mkz-c-i
+    font-size: 0
+    margin: 0 -4px
+
+  .mkz-c-i__i
+    display: inline-block
+    vertical-align: top
+    position: relative
+    height: 136px
+
+    &:not(:last-child)
+      margin-bottom: 8px
+
+  .mkz-c-i__i_type_0, .mkz-c-i__i_type_1
+    width: 50%
+
+  .mkz-c-i__i_type_2
+    width: 100%
+
+  .mkz-c-i__link
+    position: absolute
+    left: 4px
+    top: 0
+    right: 4px
+    bottom: 0
+    background-position: center center
+    background-size: cover
+    background-repeat: no-repeat
+    border-radius: 6px
+    cursor: pointer
+    background-color: $color_gray_2
+
+    &, &:hover
+      text-decoration: none
+
+    &:hover
+      box-shadow: $shadow_box
+
+  /* / Images */
+
+  +imagePreview()
 
 .mkz-c-mobile
 
