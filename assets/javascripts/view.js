@@ -386,6 +386,8 @@ export default class View {
     this.renderUnread()
   }
   renderMessages () {
+    this.renderWelcomeMsg()
+
     const history = this.history || msgStory.getHistory()
     for (const msg of history) this.renderMessage(msg)
   }
@@ -400,6 +402,21 @@ export default class View {
       else msgEl = helpers.appendHTML(this.elHistory, html)
     }
     this.bindMessage(msgEl)
+
+    this.removeWelcomeMsg()
+  }
+  renderWelcomeMsg () {
+    const msg = this.app.getWelcomeMsg()
+    const msgEl = this.findMsg(msg.muid)
+    if (!this.app.settings.appearance.welcome_message || msgEl) return
+    const html = this.template.message(msg)
+    this.bindMessage(helpers.appendHTML(this.elHistory, html))
+  }
+  removeWelcomeMsg () {
+    const msg = this.app.getWelcomeMsg()
+    const msgEl = this.findMsg(msg.muid)
+    if (!msgEl) return
+    msgEl.parentNode.removeChild(msgEl)
   }
   findMsg (muid) {
     return this.elHistory.querySelector(`[data-id="${muid}"]`)

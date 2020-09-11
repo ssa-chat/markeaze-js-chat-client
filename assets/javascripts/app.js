@@ -273,6 +273,19 @@ module.exports = {
 
     surveyForm.trackSubmit(msg.custom_fields.uid, visitorInfo)
   },
+  getWelcomeMsg () {
+    return {
+      muid: 'welcome-msg',
+      text: this.settings.appearance.welcome_message,
+      agent_id: null,
+      msg_type: 'message:new',
+      sent_at: this.getDateTime(),
+      sender_type: 'agent',
+      sender_avatar_url: null,
+      sender_name: null,
+      exclude: true
+    }
+  },
   getDateTime () {
     return (new Date).toISOString().replace('Z', '000Z')
   },
