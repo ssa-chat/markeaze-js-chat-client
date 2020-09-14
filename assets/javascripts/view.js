@@ -141,7 +141,7 @@ export default class View {
     // Converting format of variables
     if (msg && msg.custom_fields) {
       const elements = msg.custom_fields.elements
-      form = Object.entries(form)
+      form = helpers.entries(form)
         .reduce((data, [key, value]) => {
           data[key] = value
 
@@ -167,7 +167,7 @@ export default class View {
 
     // Move custom fields to properties by name prefix
     const prefix = 'properties.'
-    form = Object.entries(form)
+    form = helpers.entries(form)
       .reduce((data, [key, value]) => {
         if (key.indexOf(prefix) === 0) {
           data.properties = data.properties || {}

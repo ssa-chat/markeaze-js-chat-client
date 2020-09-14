@@ -183,7 +183,7 @@ export default class Template {
       'true': this.t('true'),
       'false': this.t('false')
     }
-    const options = Object.entries(values).map(([value, text]) => {
+    const options = helpers.entries(values).map(([value, text]) => {
       const selected = data.value === String(value) ? 'selected="selected"' : ''
       return `<option value="${this.attribute(value)}" ${selected}>${this.safe(text)}</option>`
     }).join('')
@@ -200,7 +200,7 @@ export default class Template {
     `
   }
   formSelect (data) {
-    const options = [['', '-']].concat(Object.entries(data.predefined_values)).map(([value, text]) => {
+    const options = [['', '-']].concat(helpers.entries(data.predefined_values)).map(([value, text]) => {
       const selected = data.value === value ? 'selected="selected"' : ''
       return `<option value="${this.attribute(value)}" ${selected}>${this.safe(text)}</option>`
     }).join('')
@@ -234,7 +234,7 @@ export default class Template {
       result[item.type].push(item)
       return result
     }, {})
-    return Object.entries(attachmentGroups).map(([key, group]) => {
+    return helpers.entries(attachmentGroups).map(([key, group]) => {
       switch(key) {
         case 'product':
           return this.offers(group)

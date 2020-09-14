@@ -106,5 +106,12 @@ module.exports = {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+  },
+  entries (obj) {
+    const ownProps = Object.keys( obj )
+    let i = ownProps.length
+    const resArray = new Array(i)
+    while (i--) resArray[i] = [ownProps[i], obj[ownProps[i]]]
+    return resArray
   }
 }
