@@ -9,6 +9,8 @@ const translations = require('./translations')
 const Sound = require('./sound').default
 const mute = require('./mute')
 const ImagePreview = require('./imagePreview').default
+const FileAttach = require('./fileAttach').default
+const Translate = require('./translate').default
 
 export default class View {
   constructor (app) {
@@ -31,7 +33,9 @@ export default class View {
     this.containerValidMessageClassName = 'mkz-c_valid-message_yes'
     this.htmlClassName = 'mkz-c-fixed'
     this.mobileClassName = 'mkz-c-mobile'
+    this.actionClassName = 'mkz-c__footer-action_disabled_yes'
     this.defaultAvatarUrl = 'https://assets-shared.markeaze.com/public/avatars/mini_logo.png'
+    this.translate = new Translate(this.app.locale)
 
     this.validationOptions = {
       invalidClassName: 'mkz-f__invalid',
@@ -41,6 +45,8 @@ export default class View {
     this.sound = new Sound(app.settings.appearance.client_sound_path)
   }
   destroy () {
+    if (this.fileAttach) this.fileAttach.remove()
+
     if (!this.el || !this.el.parentNode) return
     this.el.parentNode.removeChild(this.el)
   }
@@ -305,11 +311,11 @@ export default class View {
   }
   disableSending () {
     this.allowSending = false
-    if (this.elSubmit) helpers.addClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
+    if (this.elSubmit) helpers.addClass(this.elSubmit, this.actionClassName)
   }
   enableSending () {
     this.allowSending = true
-    if (this.elSubmit) helpers.removeClass(this.elSubmit, 'mkz-c__submit_disabled_yes')
+    if (this.elSubmit) helpers.removeClass(this.elSubmit, this.actionClassName)
   }
   visibleChat () {
     helpers.addClass(this.elContainer, 'mkz-c_display_yes')
@@ -384,6 +390,8 @@ export default class View {
 
     this.renderChatToggle()
     this.renderUnread()
+
+    this.fileAttach = new FileAttach(this, this.app.pusherAttachmentMsg.bind(this.app))
   }
   renderMessages () {
     this.renderWelcomeMsg()

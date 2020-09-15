@@ -4,14 +4,14 @@ const msgDelivered = require('./msgDelivered')
 const View = require('./view').default
 const autoMsg = require('./autoMsg')
 const surveyForm = require('./surveyForm')
+const config = require('./config').default
 
 module.exports = {
 
   // Plugin methods
 
   version: '[AIV]{version}[/AIV]',
-  airbrakeProject: 254408,
-  airbrakeApiKey: '84e2f7b3f257c5fffb9edf2d951f2054',
+  config,
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   previewMode: false,
@@ -22,8 +22,8 @@ module.exports = {
     if (this.libs.notifierInstance) {
       this.notifier = this.libs.notifierInstance(
         this.version,
-        this.airbrakeProject,
-        this.airbrakeApiKey,
+        this.config.airbrake.project,
+        this.config.airbrake.apiKey,
         process.env.NODE_ENV
       )
     } else {
@@ -218,6 +218,9 @@ module.exports = {
       ).map((m) => this.view.renderMessage(m))
     })
   },
+  pusherAttachmentMsg (attachments) {
+    this.pusherNewMsg(null, attachments)
+  },
   pusherTyping (text) {
     if (!text) return
 
@@ -226,16 +229,15 @@ module.exports = {
       text: text
     })
   },
-  pusherNewMsg (text) {
-    if (!text) return
-
+  pusherNewMsg (text, attachments = []) {
     const timestamp = +(new Date)
     const uid = this.store.uid
     const payload = {
       muid: `${uid}:c:${timestamp}`,
-      text: text,
+      text,
       status: 'sent',
-      sent_at: this.getDateTime()
+      sent_at: this.getDateTime(),
+      attachments
     }
 
     const history = msgStory.getHistory()

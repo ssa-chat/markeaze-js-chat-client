@@ -2,6 +2,9 @@ const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
 const helpers = require('./libs/helpers')
 const translations = require('./translations')
 const format = require('dateformat')
+const {
+  sendIcon, downIcon, muteIcon, unmuteIcon, fileIcon
+} = require('./libs/icons')
 
 export default class Template {
   constructor (view) {
@@ -13,8 +16,8 @@ export default class Template {
   safe (str) {
     return helpers.htmlToText(str)
   }
-  t (key) {
-    return translations[this.app.locale][key]
+  t (key, properties) {
+    return this.view.translate.t(key, properties)
   }
   attribute (data) {
     if (!data) return ''
@@ -83,9 +86,7 @@ export default class Template {
       <div class="mkz-c-f__i">
         <a href="${item.url}" target="_blank" class="mkz-c-f__link">
           <span class="mkz-c-f__preview">
-            <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 10H13L9 14L5 10H8V6H10V10ZM12 2H2V18H16V6H12V2ZM0 0.992C0 0.444 0.447 0 0.999 0H13L18 5V18.993C18.0009 19.1243 17.976 19.2545 17.9266 19.3762C17.8772 19.4979 17.8043 19.6087 17.7121 19.7022C17.6199 19.7957 17.5101 19.8701 17.3892 19.9212C17.2682 19.9723 17.1383 19.9991 17.007 20H0.993C0.730378 19.9982 0.479017 19.8931 0.293218 19.7075C0.107418 19.5219 0.00209465 19.2706 0 19.008V0.992Z" fill="currentColor"/>
-            </svg>
+            ${fileIcon}
           </span>
           <span class="mkz-c-f__content">
             <span class="mkz-c-f__text">
@@ -405,21 +406,15 @@ export default class Template {
             </div>
             <div class="mkz-c__head-action">
               <div class="mkz-c__mute mkz-c-js-mute">
-                <svg width="16" height="17" viewBox="0 0 14 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M11.5 6.5C11.5 5.30653 11.0259 4.16193 10.182 3.31802C9.33807 2.47411 8.19347 2 7 2C5.80653 2 4.66193 2.47411 3.81802 3.31802C2.97411 4.16193 2.5 5.30653 2.5 6.5V12.5H11.5V6.5ZM13 13.0002L13.3 13.4C13.3418 13.4557 13.3672 13.522 13.3735 13.5913C13.3797 13.6607 13.3666 13.7304 13.3354 13.7927C13.3043 13.855 13.2564 13.9074 13.1971 13.944C13.1379 13.9806 13.0696 14 13 14H1C0.930358 14 0.862092 13.9806 0.802851 13.944C0.74361 13.9074 0.695735 13.855 0.66459 13.7927C0.633445 13.7304 0.620261 13.6607 0.626515 13.5913C0.63277 13.522 0.658215 13.4557 0.7 13.4L1 13.0002V6.5C1 4.9087 1.63214 3.38258 2.75736 2.25736C3.88258 1.13214 5.4087 0.5 7 0.5C8.5913 0.5 10.1174 1.13214 11.2426 2.25736C12.3679 3.38258 13 4.9087 13 6.5V13.0002ZM5.125 14.75H8.875C8.875 15.2473 8.67746 15.7242 8.32583 16.0758C7.97419 16.4275 7.49728 16.625 7 16.625C6.50272 16.625 6.02581 16.4275 5.67417 16.0758C5.32254 15.7242 5.125 15.2473 5.125 14.75Z" fill="currentColor" />
-                </svg>
+                ${muteIcon}
               </div>
               <div class="mkz-c__unmute mkz-c-js-unmute">
-                <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12.9395 14H2.00005C1.93041 14 1.86214 13.9806 1.8029 13.944C1.74366 13.9074 1.69578 13.855 1.66464 13.7927C1.63349 13.7304 1.62031 13.6607 1.62656 13.5913C1.63282 13.522 1.65826 13.4557 1.70005 13.4L2.00005 13.0002V6.49999C2.00005 5.50249 2.24305 4.56199 2.6743 3.73474L0.0447998 1.10599L1.10605 0.0447388L15.9553 14.8947L14.894 15.9552L12.9395 14ZM3.80605 4.86649C3.60326 5.3872 3.49948 5.94119 3.50005 6.49999V12.5H11.4395L3.80605 4.86649ZM14 10.8395L12.5 9.33949V6.49999C12.5002 5.71074 12.2928 4.93533 11.8986 4.25158C11.5043 3.56782 10.9372 2.99977 10.2541 2.60443C9.57105 2.20908 8.79599 2.00035 8.00674 1.99918C7.2175 1.998 6.44182 2.20443 5.75755 2.59774L4.67005 1.50874C5.5736 0.905901 6.62385 0.559648 7.70876 0.506916C8.79368 0.454183 9.87255 0.69695 10.8303 1.20932C11.7881 1.72169 12.5888 2.48444 13.147 3.4162C13.7052 4.34797 14.0001 5.4138 14 6.49999V10.8395ZM6.12505 14.75H9.87505C9.87505 15.2473 9.67751 15.7242 9.32587 16.0758C8.97424 16.4274 8.49733 16.625 8.00005 16.625C7.50277 16.625 7.02586 16.4274 6.67422 16.0758C6.32259 15.7242 6.12505 15.2473 6.12505 14.75Z" fill="currentColor" />
-                </svg>
+                ${unmuteIcon}
               </div>
             </div>
             <div class="mkz-c__head-action">
               <div class="mkz-c__close mkz-c-js-close">
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M5 3.81846L8.88906 8.56553e-07L10 1.09077L5 6L-5.24496e-07 1.09077L1.11094 1.76568e-07L5 3.81846Z" fill="currentColor" />
-                </svg>
+                ${downIcon}
               </div>
             </div>
           </div>
@@ -452,11 +447,10 @@ export default class Template {
           <div class="mkz-c__footer-msg">
             <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="${this.safe(this.appearance.placeholder || this.t('placeholder'))}"></textarea>
           </div>
-          <div class="mkz-c__footer-btn">
-            <div class="mkz-c__submit mkz-c-js-submit">
-              <svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1.42925 0.290672L18.3527 9.59851C18.4246 9.63807 18.4845 9.6962 18.5263 9.76682C18.568 9.83744 18.59 9.91797 18.59 10C18.59 10.082 18.568 10.1626 18.5263 10.2332C18.4845 10.3038 18.4246 10.3619 18.3527 10.4015L1.42925 19.7093C1.35947 19.7477 1.28089 19.7673 1.20125 19.766C1.12161 19.7648 1.04367 19.7428 0.975112 19.7023C0.906549 19.6618 0.84973 19.6041 0.810256 19.5349C0.770781 19.4657 0.750014 19.3875 0.75 19.3078V0.692172C0.750014 0.612527 0.770781 0.534261 0.810256 0.465086C0.84973 0.395912 0.906549 0.338218 0.975112 0.297691C1.04367 0.257164 1.12161 0.235203 1.20125 0.233972C1.28089 0.232741 1.35947 0.252283 1.42925 0.290672ZM2.58333 10.9167V16.9823L15.2792 10L2.58333 3.01776V9.08334H7.16667V10.9167H2.58333Z" fill="currentColor" />
-              </svg>
+          <div class="mkz-c__footer-actions">
+            <label class="mkz-c__footer-btn mkz-c-attach-js"></label>
+            <div class="mkz-c__footer-btn mkz-c__footer-btn_type_submit mkz-c-js-submit">
+              ${sendIcon}
             </div>
           </div>
         </label>

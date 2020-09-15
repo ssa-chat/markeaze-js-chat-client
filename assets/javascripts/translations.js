@@ -10,7 +10,8 @@ module.exports = {
     new_message: 'New message...',
     dateTime: 'dd.mm.yyyy, HH:MM',
     time: 'HH:MM',
-    paginate: 'из'
+    paginate: 'из',
+    size_limit: '\'%{name}\' file exceeded %{size} Mb limit'
   },
   en: {
     copyright: 'Powered by Markeaze',
@@ -23,6 +24,7 @@ module.exports = {
     new_message: 'Новое сообщение...',
     dateTime: 'mmm dd yyyy, h:MM tt',
     time: 'h:MM tt',
-    paginate: 'of'
+    paginate: 'of',
+    size_limit: '"Файл %{name}" превысил ограничение в %{size} Mb'
   }
 }
