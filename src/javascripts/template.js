@@ -3,7 +3,7 @@ const helpers = require('./libs/helpers')
 const translations = require('./translations')
 const format = require('dateformat')
 const {
-  sendIcon, downIcon, muteIcon, unmuteIcon, fileIcon
+  sendIcon, downIcon, muteIcon, unmuteIcon, fileIcon, attachIcon
 } = require('./libs/icons')
 
 export default class Template {
@@ -448,7 +448,9 @@ export default class Template {
             <textarea class="mkz-c__input mkz-c-js-input" rows="1" placeholder="${this.safe(this.appearance.placeholder || this.t('placeholder'))}"></textarea>
           </div>
           <div class="mkz-c__footer-actions">
-            <label class="mkz-c__footer-btn mkz-c-attach-js"></label>
+            <label class="mkz-c__footer-btn mkz-c-attach-js">
+              ${this.view.previewMode ? attachIcon : ''}
+            </label>
             <div class="mkz-c__footer-btn mkz-c__footer-btn_type_submit mkz-c-js-submit">
               ${sendIcon}
             </div>

@@ -41,7 +41,13 @@ mkz('updateStore', {
   chatEndpoint: '<%= process.env.TRACKER_URL %>:4000',
   chatProtocol: 'ws://',
   plugins: {
-    chat: {url: '/mkz-chat-client.js'}
+    chat: {
+      url: '/mkz-chat-client.js'
+    },
+    chatAttachment: {
+      url: '/mkz-chat-client-attachment.js',
+      enabled: true
+    }
   },
   trackerCustomUrl: 'http://<%= process.env.TRACKER_URL %>:8084/demo_data.html'
 });

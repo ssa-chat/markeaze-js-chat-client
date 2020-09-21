@@ -5,17 +5,16 @@ const View = require('./view').default
 const autoMsg = require('./autoMsg')
 const surveyForm = require('./surveyForm')
 const config = require('./config').default
+const helpers = require('./libs/helpers')
+const icons = require('./libs/icons')
 
 module.exports = {
 
-  // Plugin methods
+  // Plugin interface
 
   version: '[AIV]{version}[/AIV]',
-  config,
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
-  previewMode: false,
-  isMobile: false,
   create (locale, settings) {
     if (!settings || Object.values(settings).length === 0) return
 
@@ -78,14 +77,23 @@ module.exports = {
     }
   },
 
-  // / Plugin methods
+  // / Plugin interface
 
+  icons,
+  helpers,
+  config,
+  previewMode: false,
+  isMobile: false,
   currentAgent: null,
   agents: [],
   agentIsOnline: false,
   sessionsCount: 0,
   settings: {},
   locale: null,
+  getPlugin (name) {
+    const plugin = this.store.plugins[name]
+    return plugin.created && plugin
+  },
   log () {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)
   },

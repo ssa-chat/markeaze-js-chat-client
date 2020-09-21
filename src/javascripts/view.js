@@ -9,7 +9,6 @@ const translations = require('./translations')
 const Sound = require('./sound').default
 const mute = require('./mute')
 const ImagePreview = require('./imagePreview').default
-const FileAttach = require('./fileAttach').default
 const Translate = require('./translate').default
 
 export default class View {
@@ -45,7 +44,8 @@ export default class View {
     this.sound = new Sound(app.settings.appearance.client_sound_path)
   }
   destroy () {
-    if (this.fileAttach) this.fileAttach.remove()
+    const chatAttachmentPlugin = this.app.getPlugin('chatAttachment')
+    if (chatAttachmentPlugin) chatAttachmentPlugin.app.destroy()
 
     if (!this.el || !this.el.parentNode) return
     this.el.parentNode.removeChild(this.el)
@@ -382,6 +382,9 @@ export default class View {
 
       if (!this.previewMode) {
         this.setZoom()
+
+        const chatAttachmentPlugin = this.app.getPlugin('chatAttachment')
+        if (chatAttachmentPlugin) plugin.app.create()
       }
 
       if (this.app.isMobile) helpers.addClass(document.documentElement, this.mobileClassName)
@@ -391,7 +394,6 @@ export default class View {
     this.renderChatToggle()
     this.renderUnread()
 
-    this.fileAttach = new FileAttach(this, this.app.pusherAttachmentMsg.bind(this.app))
   }
   renderMessages () {
     this.renderWelcomeMsg()

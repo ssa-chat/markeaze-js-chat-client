@@ -4,9 +4,12 @@ const Dotenv = require('dotenv-webpack')
 const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
-  entry: './app.js',
+  entry: {
+    'mkz-chat-client': './mkz-chat-client.js',
+    'mkz-chat-client-attachment': './mkz-chat-client-attachment.js'
+  },
   output: {
-    filename: 'mkz-chat-client.js'
+    filename: '[name].js'
   },
   plugins: [
     new Dotenv({

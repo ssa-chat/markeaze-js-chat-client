@@ -7,7 +7,7 @@ export default {
     uploadFileSizeLimitMb: 10,
     accept: [
       'jpg', 'jpeg', 'png', 'bmp', 'webp', 'gif', 'tiff', 'doc', 'docx',
-      'xls', 'xlsx', 'psd', 'eml', 'xml', 'csv', 'mp4', 'avi', 'txt'
+      'xls', 'xlsx', 'psd', 'eml', 'xml', 'csv', 'mp4', 'avi', 'txt', 'pdf'
     ]
   },
   airbrake: {
