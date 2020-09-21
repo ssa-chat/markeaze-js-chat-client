@@ -8,8 +8,9 @@ module.exports = {
     this.cached = false
     this.items = autoMsgStory.getItems()
     this.rendered = false
+    this.timers = {}
 
-    this.libs.eEmit.subscribe('plugin.chat.auto_messages', this.saveItems.bind(this))
+    this.libs.eEmit.subscribe('plugin.chat.auto_messages', this.saveWithTimer.bind(this))
     this.libs.eEmit.subscribe('plugin.chat.channel.entered', () => {
       this.rendered = true
       this.renderNewItems()
@@ -19,12 +20,34 @@ module.exports = {
     this.cached = true
     return this.items.map((item) => item.payload)
   },
-  saveItems (items) {
+  getTime () {
+    return Math.round(+new Date / 1000)
+  },
+  startTimer (item, callback) {
+    const delay = item.display_at - this.getTime()
+    if (!delay || delay < 0) return false
+    this.timers[item.uid] = setTimeout(callback, delay * 1000)
+    return true
+  },
+  stopTimer (item) {
+    if (!this.timers[item.uid]) return
+
+    clearTimeout(this.timers[item.uid])
+    delete this.timers[item.uid]
+  },
+  saveWithTimer (items) {
     if (items.length === 0) return
 
+    const itemsWithoutTimer = items.filter((item) => {
+      return !this.startTimer(item, () => this.save([item]))
+    })
+    if (itemsWithoutTimer.length > 0) this.save(itemsWithoutTimer)
+  },
+  save (items) {
     this.cached = false
     const uid = this.app.store.uid
     this.items = autoMsgStory.addItems(items.map((item) => {
+      this.stopTimer(item)
       const sentAt = this.app.getDateTime()
       const timestamp = +(new Date(sentAt))
       const agent = this.app.getAgent(item.sender_id)
