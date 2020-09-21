@@ -92,7 +92,7 @@ module.exports = {
   locale: null,
   getPlugin (name) {
     const plugin = this.store.plugins[name]
-    return plugin.created && plugin
+    return plugin && plugin.created && plugin
   },
   log () {
     if (this.libs.log) this.libs.log.push('chat', ...arguments)

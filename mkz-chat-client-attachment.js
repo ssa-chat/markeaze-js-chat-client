@@ -31,7 +31,7 @@ const app = {
 
   getPlugin (name) {
     const plugin = this.store.plugins[name]
-    return plugin.created && plugin
+    return plugin && plugin.created && plugin
   }
 
 }
