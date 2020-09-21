@@ -384,7 +384,7 @@ export default class View {
         this.setZoom()
 
         const chatAttachmentPlugin = this.app.getPlugin('chatAttachment')
-        if (chatAttachmentPlugin) plugin.app.create()
+        if (chatAttachmentPlugin) chatAttachmentPlugin.app.create()
       }
 
       if (this.app.isMobile) helpers.addClass(document.documentElement, this.mobileClassName)
