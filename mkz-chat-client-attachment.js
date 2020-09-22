@@ -13,17 +13,31 @@ const app = {
 
     const chatApp = chatPlugin.app
 
-    this.fileAttach = new FileAttach(
-      chatApp.view,
-      chatApp.config.s3,
-      chatApp.pusherAttachmentMsg.bind(chatApp),
-      chatApp.helpers,
-      chatApp.libs.domEvent,
-      chatApp.icons
-    )
+    if (this.libs.notifierInstance) {
+      this.notifier = this.libs.notifierInstance(
+        chatApp.version,
+        chatApp.config.airbrake.project,
+        chatApp.config.airbrake.apiKey,
+        process.env.NODE_ENV
+      )
+    } else {
+      this.notifier = this.libs.notifier
+    }
+
+    this.notifier.call(() => {
+      this.fileAttach = new FileAttach(
+        chatApp.view,
+        chatApp.config.s3,
+        chatApp.pusherAttachmentMsg.bind(chatApp),
+        chatApp.helpers,
+        chatApp.libs.domEvent,
+        chatApp.icons
+      )
+    })
   },
   destroy () {
-    if (!this.fileAttach)
+    if (!this.fileAttach) return
+
     this.fileAttach.remove()
   },
 
