@@ -2,6 +2,7 @@ const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
 const helpers = require('./libs/helpers')
 const translations = require('./translations')
 const format = require('dateformat')
+const themes = require('./themes').default
 const {
   sendIcon, downIcon, muteIcon, unmuteIcon, fileIcon, attachIcon
 } = require('./libs/icons')
@@ -12,6 +13,12 @@ export default class Template {
     this.view = view
     this.appearance = this.app.settings.appearance
     this.behavior = this.app.settings.behavior
+
+    const theme = this.appearance.theme
+    if (theme && themes[theme]) {
+      this.theme = this.appearance.theme
+      this.appearance = { ...this.appearance, ...themes[theme] }
+    }
   }
   safe (str) {
     return helpers.htmlToText(str)
@@ -265,8 +272,15 @@ export default class Template {
   message (msg) {
     const isClientMsg = this.isClientMsg(msg)
     const enable = this.app.settings.appearance.agent_avatar
-    const avatarUrl = msg.sender_avatar_url || this.view.defaultAvatarUrl
-    const htmlAvatar = enable ? `<div class="mkz-c__i-avatar"><img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" /></div>` : ''
+    const avatarUrl = msg.sender_avatar_url
+    const htmlDefaultAvatar = `
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__i-avatar-default mkz-c__avatar-default">
+        <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="currentColor"/>
+        <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" fill="white"/>
+      </svg>
+    `
+    const htmlAgentAvatar = avatarUrl ? `<img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" />` : htmlDefaultAvatar
+    const htmlAvatar = enable ? `<div class="mkz-c__i-avatar">${htmlAgentAvatar}</div>` : ''
     const info = []
     info.push(this.getDate(msg))
     if (!isClientMsg && msg.sender_name) info.push(this.safe(msg.sender_name))
@@ -356,7 +370,7 @@ export default class Template {
       <div class="mkz-c__copy-wrap">
         <a class="mkz-c__copy" href="https://markeaze.com/?utm_source=markeaze&utm_medium=ref&utm_campaign=chatbox" target="_blank">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__copy-logo">
-            <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="#FC6881"/>
+            <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="currentColor"/>
             <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" fill="white"/>
           </svg>
           <span class="mkz-c__copy-text">${this.t('copyright')}</span>
@@ -374,6 +388,38 @@ export default class Template {
   }
   content () {
     const chatPosition = ['l-t', 'l-b', 'l'].indexOf(this.appearance.bar_position) > -1 ? 'left' : 'right'
+    const themeCss = this.theme ? `
+[mkz] .mkz-c__head {
+  border-color: ${this.safe(this.appearance.title_border)};
+}
+
+[mkz] .mkz-c__content {
+  background-color: ${this.safe(this.appearance.list_bg)};
+}
+[mkz] .mkz-f__btn, [mkz] .mkz-c-o__btn {
+  background-color: ${this.safe(this.appearance.btn_bg)};
+  color: ${this.safe(this.appearance.btn_color)};
+}
+[mkz] .mkz-f__btn:hover, [mkz] .mkz-c-o__btn:hover {
+  background-color: ${this.safe(this.appearance.btn_hover_bg)};
+  color: ${this.safe(this.appearance.btn_hover_color)};
+}
+[mkz] .mkz-c__avatar-default {
+  color: ${this.safe(this.appearance.bar_bg)};
+}
+
+[mkz] .mkz-c__footer {
+  color: ${this.safe(this.appearance.form_color)};
+  background-color: ${this.safe(this.appearance.form_bg)};
+  border-color: ${this.safe(this.appearance.form_border)};
+}
+[mkz] .mkz-c__footer-btn {
+  color: ${this.safe(this.appearance.form_action_color)};
+}
+[mkz] .mkz-c__footer-btn_type_submit {
+  color: ${this.safe(this.appearance.form_submit_color)};
+}
+    ` : ''
     return `
 <div mkz>
   <div class="mkz-c mkz-c-js">
@@ -423,6 +469,10 @@ export default class Template {
             <div class="mkz-c__head-state">
               <div class="mkz-c__state-wrap">
                 <img class="mkz-c__m-assign-avatar mkz-c-js-agent-avatar" alt="" />
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__m-assign-avatar-default mkz-c__avatar-default mkz-c-js-agent-avatar-default">
+                  <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="currentColor"/>
+                  <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" fill="white"/>
+                </svg>
                 <div class="mkz-c__state"></div>
               </div>
             </div>
@@ -461,7 +511,7 @@ export default class Template {
     </div>
   </div>
 
-  <style type="text/css">${css}</style>
+  <style type="text/css">${css}${themeCss}</style>
 
 </div>
     `

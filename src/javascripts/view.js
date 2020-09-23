@@ -33,7 +33,6 @@ export default class View {
     this.htmlClassName = 'mkz-c-fixed'
     this.mobileClassName = 'mkz-c-mobile'
     this.actionClassName = 'mkz-c__footer-action_disabled_yes'
-    this.defaultAvatarUrl = 'https://assets-shared.markeaze.com/public/avatars/mini_logo.png'
     this.translate = new Translate(this.app.locale)
 
     this.validationOptions = {
@@ -324,11 +323,20 @@ export default class View {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
     if (this.app.settings.appearance.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
     if (this.app.settings.appearance.agent_avatar) {
-      const avatarUrl = this.app.currentAgent.avatar_url || this.defaultAvatarUrl
-      this.elAgentAvatar.src = avatarUrl
-      this.elAgentAvatar.setAttribute('srcset', helpers.srcset(avatarUrl))
-      this.elAgentAvatar.style.display = 'block'
-    } else this.elAgentAvatar.style.display = 'none'
+      const avatarUrl = this.app.currentAgent.avatar_url
+      if (avatarUrl) {
+        this.elAgentAvatar.src = avatarUrl
+        this.elAgentAvatar.setAttribute('srcset', helpers.srcset(avatarUrl))
+        this.elAgentAvatar.style.display = 'block'
+        this.elAgentAvatarDefault.style.display = 'none'
+      } else {
+        this.elAgentAvatar.style.display = 'none'
+        this.elAgentAvatarDefault.style.display = 'block'
+      }
+    } else {
+      this.elAgentAvatar.style.display = 'none'
+      this.elAgentAvatarDefault.style.display = 'none'
+    }
     helpers.addClass(this.elContainer, 'mkz-c_agent_assign')
   }
   unassignAgent () {
@@ -375,6 +383,7 @@ export default class View {
       this.elAgentName = this.el.querySelector('.mkz-c-js-agent-name')
       this.elAgentPost = this.el.querySelector('.mkz-c-js-agent-post')
       this.elAgentAvatar = this.el.querySelector('.mkz-c-js-agent-avatar')
+      this.elAgentAvatarDefault = this.el.querySelector('.mkz-c-js-agent-avatar-default')
       this.bind()
       this.showBeacon()
       this.toggleNotice()

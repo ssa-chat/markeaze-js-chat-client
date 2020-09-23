@@ -441,6 +441,9 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     visibility: hidden
     transition: opacity 0.2s linear, visibility 0.4s 0s linear
 
+  .mkz-c__avatar-default
+    color: $color_link
+
   .mkz-c__chat
     transition: opacity 0.2s linear, visibility 0.4s 0s linear
     opacity: 0
@@ -474,6 +477,9 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     border-radius: 6px
     z-index: 5
 
+  .mkz-c__cart
+    background-color: #fff
+
   .mkz-c__cart-shadow
     z-index: 0
     box-shadow: 0 0 10px rgba(25, 25, 29, 0.25)
@@ -491,6 +497,16 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
   .mkz-c__content
     flex: 1
     position: relative
+    overflow: hidden
+
+    &:after
+      content: ''
+      position: absolute
+      left: 0
+      top: -1px
+      right: 0
+      height: 1px
+      box-shadow: 0 0 7px rgba(0, 0, 0, 1)
 
   .mkz-c__scroll
     overflow: hidden
@@ -554,6 +570,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     display: inline-block
     vertical-align: middle
     margin-right: 4px
+    color: $color_link
 
   .mkz-c__overflow
     text-overflow: ellipsis
@@ -569,13 +586,17 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     line-height: 15px
     margin-top: 2px
 
-  .mkz-c__m-assign-avatar
+  .mkz-c__m-assign-avatar, .mkz-c__m-assign-avatar-default
     width: 40px
     height: 40px
-    border-radius: 17px 17px 0 17px
-    border: 1px solid #fff
+    border-radius: 45% 45% 0 45%
     background-color: #fff
     overflow: hidden
+    display: none
+    border: 1px solid transparent
+
+  .mkz-c__m-assign-avatar
+    border-color: #fff
 
   .mkz-c__unmute
     display: none
@@ -660,7 +681,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
       font-size: 14px
       line-height: 1.2em
       font-family: $font
-      color: $color_text
+      color: inherit
       border-style: none
       outline-style: none
       background-color: transparent
@@ -727,7 +748,8 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
       background-color: #E7FEEA
 
     .mkz-c__i-msg
-      background-color: #fff
+      color: #FFFFFF
+      background-color: $color_link
       border-radius: 6px 6px 0 6px
 
   .mkz-c__i-content
@@ -736,11 +758,16 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     padding: 5px
     margin: -5px
 
-  .mkz-c__i-avatar-img
+  .mkz-c__i-avatar-img, .mkz-c__i-avatar-default
     width: 32px
     height: 32px
-    border-radius: 11px 11px 0 11px
-    box-shadow: $shadow_box
+    border-radius: 45% 45% 0 45%
+
+  .mkz-c__i-avatar-img
+    border: 1px solid #fff
+
+  .mkz-c__i-avatar-default
+    color: $color_link
 
   .mkz-c__i-msg-block:not(:last-child)
     margin-bottom: 8px
@@ -748,7 +775,8 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
   .mkz-c__i-msg
     display: inline-block
     text-align: left
-    background-color: #E7FEEA
+    color: $color_text
+    background-color: #F5F5F5
     border-radius: 6px 6px 6px 0
     padding: 14px 16px
     font-size: 14px
@@ -890,8 +918,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
 
     &[disabled]
       &, &:hover
-        background-color: desaturate($color_link, 30%)
-        color: #aaa
+        opacity: 0.8
         cursor: default
 
     &:hover
@@ -916,7 +943,8 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
 
   .mkz-c-o__content
     padding: 16px
-    border: 1px solid $color_border
+    box-shadow: $shadow_box
+    background-color: #fff
     border-radius: 6px
 
   .mkz-c-o__preview-link

@@ -91,6 +91,7 @@ module.exports = {
   settings: {},
   locale: null,
   getPlugin (name) {
+    if (!this.store.plugins) return
     const plugin = this.store.plugins[name]
     return plugin && plugin.created && plugin
   },
