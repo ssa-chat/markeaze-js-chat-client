@@ -4,7 +4,7 @@ const translations = require('./translations')
 const format = require('dateformat')
 const themes = require('./themes').default
 const {
-  sendIcon, downIcon, muteIcon, unmuteIcon, fileIcon, attachIcon
+  sendIcon, closeIcon, muteIcon, unmuteIcon, fileIcon, attachIcon
 } = require('./libs/icons')
 
 export default class Template {
@@ -460,7 +460,7 @@ export default class Template {
             </div>
             <div class="mkz-c__head-action">
               <div class="mkz-c__close mkz-c-js-close">
-                ${downIcon}
+                ${closeIcon}
               </div>
             </div>
           </div>
