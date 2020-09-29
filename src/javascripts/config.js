@@ -1,4 +1,5 @@
 export default {
+  name: 'markeaze-js-chat-client',
   s3: {
     albumBucketName: 'markeaze-chat-uploads',
     bucketRegion: 'us-east-1',

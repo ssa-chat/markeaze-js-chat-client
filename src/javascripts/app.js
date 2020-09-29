@@ -233,7 +233,7 @@ module.exports = {
   pusherTyping (text) {
     if (!text) return
 
-    return this.clientChannel.push('client:activity', {
+    return this.pushToChannel(this.clientChannel, 'client:activity', {
       type: 'typing',
       text: text
     })
@@ -262,12 +262,12 @@ module.exports = {
       autoMsg.trackReply(lastMsg.muid)
     }
 
-    return this.clientChannel.push('message:new', payload)
+    return this.pushToChannel(this.clientChannel, 'message:new', payload)
   },
   pusherMsgState (muid, state) {
     if (!muid) return
 
-    this.clientChannel.push('message:status:change', {
+    this.pushToChannel(this.clientChannel, 'message:status:change', {
       muid: muid,
       new_status: state,
       sent_at: this.getDateTime()
@@ -277,12 +277,19 @@ module.exports = {
     const msg = msgStory.findMsg(muid)
     if (!msg) return
 
-    this.clientChannel.push('survey:submit', {
+    this.pushToChannel(this.clientChannel, 'survey:submit', {
       muid: muid,
       title: msg.custom_fields.title
     })
 
     surveyForm.trackSubmit(msg.custom_fields.uid, visitorInfo)
+  },
+  pushToChannel (channel, topic, payload = {}) {
+    payload.source = {
+      name: config.name,
+      version: this.version
+    }
+    return channel.push(topic, payload)
   },
   getWelcomeMsg () {
     return {

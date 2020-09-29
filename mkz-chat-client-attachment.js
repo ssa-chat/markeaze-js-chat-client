@@ -9,7 +9,7 @@ const app = {
   libs: {}, // Libraries from the main app
   create () {
     const chatPlugin = this.getPlugin('chat')
-    if (!chatPlugin || !chatPlugin.app.config) return
+    if (!chatPlugin || !chatPlugin.app || !chatPlugin.app.config) return
 
     const chatApp = chatPlugin.app
 
