@@ -134,23 +134,39 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     opacity: 0
     visibility: hidden
     position: fixed
-    z-index: 20000000
+    z-index: 2147483647
 
   .mkz-c__handler_position_l-t
     left: 0
     top: 0
 
+    .mkz-c__f
+      top: 65px
+      left: 0
+
   .mkz-c__handler_position_r-t
     right: 0
     top: 0
+
+    .mkz-c__f
+      top: 65px
+      right: 0
 
   .mkz-c__handler_position_l-b
     left: 0
     bottom: 0
 
+    .mkz-c__f
+      bottom: 65px
+      left: 0
+
   .mkz-c__handler_position_r-b
     right: 0
     bottom: 0
+
+    .mkz-c__f
+      bottom: 65px
+      right: 0
 
   .mkz-c__handler_type_bubble
 
@@ -345,12 +361,20 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
       top: 0
       margin-top: 0 !important
 
+      .mkz-c__f
+        top: 35px
+        right: 0
+
     &.mkz-c__handler_position_l
       transform: rotate(-90deg) translateX(-100%)
       transform-origin: 0 0
       left: 0
       top: 0
       margin-left: 0 !important
+
+      .mkz-c__f
+        top: 0
+        left: 35px
 
     &.mkz-c__handler_position_r
       transform: rotate(-90deg) translateY(-100%)
@@ -359,10 +383,18 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
       top: 0
       margin-right: 0 !important
 
+      .mkz-c__f
+        top: 0
+        right: 35px
+
     &.mkz-c__handler_position_b
       right: 0
       bottom: 0
       margin-bottom: 0 !important
+
+      .mkz-c__f
+        bottom: 35px
+        right: 0
 
     .mkz-c__tooltip-picture
       display: none
@@ -1097,6 +1129,43 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
       box-shadow: $shadow_box
 
   /* / Images */
+
+  .mkz-c__f
+    position: absolute
+    max-width: 344px
+    min-width: 250px
+    opacity: 0
+    transition: all ease 0.4s, visible ease 0.4s 0.4s
+    transform: translateY(20px)
+    visibility: hidden
+    padding-top: 25px
+
+    .mkz-c__i_type_agent
+      padding-right: 0
+
+    .mkz-c__i-info
+      display: none
+
+    .mkz-c__i-avatar
+      padding-bottom: 0
+
+  .mkz-c__f_fade_in
+    opacity: 1
+    transform: translateY(0)
+    visibility: visible
+
+  .mkz-c__f-list-close
+    position: absolute
+    right: 0
+    top: 0
+    cursor: pointer
+    padding: 10px
+    margin: 0 -12px
+    opacity: 0.7
+    transition: all linear 0.2s
+
+    &:hover
+      opacity: 1
 
   +fileAttach()
   +imagePreview()

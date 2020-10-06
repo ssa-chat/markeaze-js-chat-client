@@ -87,7 +87,8 @@ module.exports = {
 
       item.state = 'sent'
     }
-    this.app.view.showChat()
+    const msgs = this.items.map((i) => { return i.payload })
+    this.app.view.renderFlashMessages(msgs)
 
     autoMsgStory.setItems(this.items)
   },

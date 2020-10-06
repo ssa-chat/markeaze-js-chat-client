@@ -270,7 +270,7 @@ module.exports = {
     this.pushToChannel(this.clientChannel, 'message:status:change', {
       muid: muid,
       new_status: state,
-      sent_at: this.getDateTime()
+      performed_at: this.getDateTime()
     })
   },
   pusherNewSurveyMsg (muid, visitorInfo) {
