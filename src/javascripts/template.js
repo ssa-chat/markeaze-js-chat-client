@@ -17,7 +17,28 @@ export default class Template {
     const theme = this.appearance.theme
     if (theme && themes[theme]) {
       this.theme = this.appearance.theme
-      this.appearance = { ...this.appearance, ...themes[theme] }
+      this.appearance = {
+        ...themes[theme],
+        ...this.appearance
+      }
+    } else {
+      const themeBg = this.appearance.theme_bg
+      const themeColor = this.appearance.theme_color
+      if (themeBg && themeColor) {
+        this.appearance = {
+          ...this.appearance,
+          bar_bg: themeBg,
+          bar_color: themeColor,
+          title_bg: themeBg,
+          title_color: themeColor,
+          title_border: themeBg,
+          client_msg_bg: themeBg,
+          client_msg_color: themeColor,
+          btn_bg: themeBg,
+          btn_color: themeColor,
+          form_submit_color: themeBg
+        }
+      }
     }
   }
   safe (str) {
@@ -276,7 +297,7 @@ export default class Template {
     const htmlDefaultAvatar = `
       <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__i-avatar-default mkz-c__avatar-default">
         <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="currentColor"/>
-        <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" fill="white"/>
+        <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" class="mkz-c__avatar-default-inner" />
       </svg>
     `
     const htmlAgentAvatar = avatarUrl ? `<img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" />` : htmlDefaultAvatar
@@ -388,38 +409,6 @@ export default class Template {
   }
   content () {
     const chatPosition = ['l-t', 'l-b', 'l'].indexOf(this.appearance.bar_position) > -1 ? 'left' : 'right'
-    const themeCss = this.theme ? `
-[mkz] .mkz-c__head {
-  border-color: ${this.safe(this.appearance.title_border)};
-}
-
-[mkz] .mkz-c__content {
-  background-color: ${this.safe(this.appearance.list_bg)};
-}
-[mkz] .mkz-f__btn, [mkz] .mkz-c-o__btn {
-  background-color: ${this.safe(this.appearance.btn_bg)};
-  color: ${this.safe(this.appearance.btn_color)};
-}
-[mkz] .mkz-f__btn:hover, [mkz] .mkz-c-o__btn:hover {
-  background-color: ${this.safe(this.appearance.btn_hover_bg)};
-  color: ${this.safe(this.appearance.btn_hover_color)};
-}
-[mkz] .mkz-c__avatar-default {
-  color: ${this.safe(this.appearance.bar_bg)};
-}
-
-[mkz] .mkz-c__footer {
-  color: ${this.safe(this.appearance.form_color)};
-  background-color: ${this.safe(this.appearance.form_bg)};
-  border-color: ${this.safe(this.appearance.form_border)};
-}
-[mkz] .mkz-c__footer-btn {
-  color: ${this.safe(this.appearance.form_action_color)};
-}
-[mkz] .mkz-c__footer-btn_type_submit {
-  color: ${this.safe(this.appearance.form_submit_color)};
-}
-    ` : ''
     return `
 <div mkz>
   <div class="mkz-c mkz-c-js">
@@ -432,15 +421,15 @@ export default class Template {
         <div class="mkz-c__f-list mkz-c-js-f-history"></div>
       </div>
       ${this.notice()}
-      <div class="mkz-c__btn mkz-c-js-toggle" style="background-color: ${this.appearance.bar_bg}; color: ${this.safe(this.appearance.bar_color)};">
+      <div class="mkz-c__btn mkz-c-js-toggle" style="background-color: ${this.appearance.bar_bg};">
         <div class="mkz-c__btn-text">
           <span class="mkz-c__btn-text-online">${this.safe(this.appearance.bar_text_online)}</span>
           <span class="mkz-c__btn-text-offline">${this.safe(this.appearance.bar_text_offline)}</span>
         </div>
         <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__btn-picture">
-          <rect x="20" y="20" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -12.4091 29.9928)" fill="#FFFFFF" width="20" height="20" fill="currentColor" class="mkz-c__btn-1" />
-          <rect x="20" y="20" fill="#FFFFFF" width="20" height="20" fill="currentColor" class="mkz-c__btn-2" />
-          <rect x="20" y="20" fill="#FFFFFF" width="20" height="20" fill="currentColor" class="mkz-c__btn-3" />
+          <rect x="20" y="20" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -12.4091 29.9928)" fill="${this.safe(this.appearance.bar_color)}" width="20" height="20" fill="currentColor" class="mkz-c__btn-1" />
+          <rect x="20" y="20" fill="${this.safe(this.appearance.bar_color)}" width="20" height="20" fill="currentColor" class="mkz-c__btn-2" />
+          <rect x="20" y="20" fill="${this.safe(this.appearance.bar_color)}" width="20" height="20" fill="currentColor" class="mkz-c__btn-3" />
         </svg>
         <div class="mkz-c__btn-unread mkz-c-js-unread">0</div>
       </div>
@@ -477,7 +466,7 @@ export default class Template {
                 <img class="mkz-c__m-assign-avatar mkz-c-js-agent-avatar" alt="" />
                 <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__m-assign-avatar-default mkz-c__avatar-default mkz-c-js-agent-avatar-default">
                   <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="currentColor"/>
-                  <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" fill="white"/>
+                  <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" class="mkz-c__avatar-default-inner" />
                 </svg>
                 <div class="mkz-c__state"></div>
               </div>
@@ -517,7 +506,35 @@ export default class Template {
     </div>
   </div>
 
-  <style type="text/css">${css}${themeCss}</style>
+  <style type="text/css">
+    ${css}
+[mkz] .mkz-c__head {
+  border-color: ${this.safe(this.appearance.title_border)};
+}
+
+[mkz] .mkz-c__content {
+  background-color: ${this.safe(this.appearance.list_bg)};
+}
+[mkz] .mkz-f__btn, [mkz] .mkz-c-o__btn, [mkz] .mkz-f__btn:hover, [mkz] .mkz-c-o__btn:hover {
+  background-color: ${this.safe(this.appearance.btn_bg)};
+  color: ${this.safe(this.appearance.btn_color)};
+}
+[mkz] .mkz-c__avatar-default {
+  color: ${this.safe(this.appearance.bar_bg)};
+}
+[mkz] .mkz-c__avatar-default-inner {
+  fill: ${this.safe(this.appearance.bar_color)};
+}
+
+[mkz] .mkz-c__footer {
+  color: ${this.safe(this.appearance.form_color)};
+  background-color: ${this.safe(this.appearance.form_bg)};
+  border-color: ${this.safe(this.appearance.form_border)};
+}
+[mkz] .mkz-c__footer-btn {
+  color: ${this.safe(this.appearance.form_action_color)};
+}
+  </style>
 
 </div>
     `

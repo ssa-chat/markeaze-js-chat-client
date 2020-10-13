@@ -222,8 +222,8 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
       width: 60px
       height: 60px
       border-radius: 25px 25px 0 25px
-      background-color: #eee
-      color: #000
+      background-color: $color_link
+      color: #fff
       display: flex
       align-items: center
       justify-content: center
@@ -475,6 +475,10 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
 
   .mkz-c__avatar-default
     color: $color_link
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3)
+
+  .mkz-c__avatar-default-inner
+    fill: #fff
 
   .mkz-c__chat
     transition: opacity 0.2s linear, visibility 0.4s 0s linear
@@ -702,7 +706,6 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
 
   .mkz-c__footer-btn_type_submit
     display: none
-    color: $color_link
 
   .mkz-c__input
     &, &:hover, &:focus
@@ -955,7 +958,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
 
     &:hover
       text-decoration: none
-      background-color: darken($color_link, 10%)
+      filter: brightness(0.93) saturate(1)
 
   .mkz-f__invalid
     &, &::placeholder

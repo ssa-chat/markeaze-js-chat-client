@@ -14,8 +14,6 @@ export default {
     client_msg_color: '#FFFFFF',
     btn_color: '#FFFFFF',
     btn_bg: '#FC6881',
-    btn_hover_color: '#FFFFFF',
-    btn_hover_bg: '#CE445B',
 
     markeaze_link_color: '#8D8D8D',
 
@@ -40,8 +38,6 @@ export default {
     client_msg_color: '#FFFFFF',
     btn_color: '#FFFFFF',
     btn_bg: '#7E42FF',
-    btn_hover_color: '#FFFFFF',
-    btn_hover_bg: '#5B4CDD',
 
     markeaze_link_color: '#8D8D8D',
 
@@ -66,8 +62,6 @@ export default {
     client_msg_color: '#FFFFFF',
     btn_color: '#FFFFFF',
     btn_bg: '#3B3CB6',
-    btn_hover_color: '#FFFFFF',
-    btn_hover_bg: '#28297B',
 
     markeaze_link_color: '#8D8D8D',
 
@@ -92,8 +86,6 @@ export default {
     client_msg_color: '#FFFFFF',
     btn_color: '#FFFFFF',
     btn_bg: '#BE2418',
-    btn_hover_color: '#FFFFFF',
-    btn_hover_bg: '#9C1A0F',
 
     markeaze_link_color: '#8D8D8D',
 
@@ -118,8 +110,6 @@ export default {
     client_msg_color: '#FFFFFF',
     btn_color: '#FFFFFF',
     btn_bg: '#F97C0C',
-    btn_hover_color: '#FFFFFF',
-    btn_hover_bg: '#D56100',
 
     markeaze_link_color: '#8D8D8D',
 
@@ -144,8 +134,6 @@ export default {
     client_msg_color: '#FFFFFF',
     btn_color: '#FFFFFF',
     btn_bg: '#17B055',
-    btn_hover_color: '#FFFFFF',
-    btn_hover_bg: '#0F9344',
 
     markeaze_link_color: '#8D8D8D',
 
@@ -170,8 +158,6 @@ export default {
     client_msg_color: '#FFFFFF',
     btn_color: '#FFFFFF',
     btn_bg: '#FFB800',
-    btn_hover_color: '#FFFFFF',
-    btn_hover_bg: '#DD8500',
 
     markeaze_link_color: '#8D8D8D',
 
@@ -196,8 +182,6 @@ export default {
     client_msg_color: '#FFFFFF',
     btn_color: '#FFFFFF',
     btn_bg: '#333333',
-    btn_hover_color: '#FFFFFF',
-    btn_hover_bg: '#000000',
 
     markeaze_link_color: '#8D8D8D',
 
