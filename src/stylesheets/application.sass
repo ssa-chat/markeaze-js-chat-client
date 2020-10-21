@@ -12,6 +12,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
 @import './markdown.sass'
 @import './fileAttach.sass'
 @import './imagePreview.sass'
+@import './productSlide.sass'
 
 =reset()
   html, body, div, span, applet, object, iframe,
@@ -752,14 +753,15 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     box-sizing: border-box
 
   .mkz-c__i
-    display: flex
     margin: 15px 0
+
+  .mkz-c__i-row
+    display: flex
 
   .mkz-c__i-avatar
     display: flex
     align-items: flex-end
     flex: 0 0 44px
-    padding-bottom: 21px
 
   .mkz-c__i-info
     font-size: 11px
@@ -769,6 +771,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     white-space: nowrap
     text-overflow: ellipsis
     overflow: hidden
+    padding-left: 44px
 
   .mkz-c__i_type_agent
     padding-right: 7px
@@ -965,65 +968,6 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
       color: red !important
       box-shadow: 0 0 1px 1px red !important
 
-  /* Offers */
-
-  .mkz-c-o__i
-    width: 192px
-
-    &:not(:last-child)
-      margin-bottom: 20px
-
-  .mkz-c-o__btn
-    padding: 12px 16px
-
-  .mkz-c-o__content
-    padding: 16px
-    box-shadow: $shadow_box
-    background-color: #fff
-    border-radius: 6px
-
-  .mkz-c-o__preview-link
-    display: flex
-    align-items: center
-    justify-content: center
-    height: 128px
-    margin-bottom: 10px
-
-  .mkz-c-o__preview-img
-    display: block
-    max-width: 100%
-    max-height: 100%
-    color: $color_hint
-
-  .mkz-c-o__name
-    font-size: 14px
-    line-height: 20px
-    margin-bottom: 10px
-
-  .mkz-c-o__name-link
-    color: $color_text
-    text-decoration: none
-    cursor: pointer
-
-    &:hover
-      text-decoration: underline
-
-  .mkz-c-o__info
-    margin-bottom: 20px
-
-  .mkz-c-o__info-price
-    font-weight: 600
-    font-size: 17px
-    line-height: 22px
-
-  .mkz-c-o__counter
-    font-size: 10px
-    line-height: 18px
-    padding: 3px 10px
-    color: $color_hint
-
-  /* / Offers */
-
   /* / Files */
 
   .mkz-c-f__i
@@ -1172,6 +1116,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
 
   +fileAttach()
   +imagePreview()
+  +productSlide()
 
 .mkz-c-mobile
 

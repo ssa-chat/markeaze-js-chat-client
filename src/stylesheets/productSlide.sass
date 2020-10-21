@@ -1,0 +1,146 @@
+=productSlide()
+
+  .mkz-c-o
+    position: relative
+    margin: 12px -24px -4px -16px
+    padding: 4px 0
+    overflow: hidden
+
+  .mkz-c-o_slider_yes
+
+    .mkz-c-o__counter
+      display: block
+
+    .mkz-c-o__navi
+      display: flex
+
+    .mkz-c-o__navi_disable_yes
+      display: none
+
+    .mkz-c-o__i
+      opacity: 0.2
+      cursor: pointer
+
+      &:after
+        content: ''
+        position: absolute
+        left: 0
+        top: 0
+        right: 0
+        bottom: 0
+        z-index: 2
+        user-select: none
+
+      &:hover
+        opacity: 0.4
+
+    .mkz-c-o__i_current_yes
+      opacity: 1
+      cursor: unset
+
+      &:after
+        display: none
+
+      &:hover
+        opacity: 1
+
+  .mkz-c-o__relative
+    position: relative
+    left: 60px
+
+  .mkz-c-o__list
+    position: relative
+    left: 0
+    transition: all ease 0.3s
+
+  .mkz-c-o__counter
+    display: none
+    position: absolute
+    top: 8px
+    right: 9px
+    font-size: 10px
+    line-height: 16px
+    padding: 0 4px
+    color: $color_hint
+    background-color: rgba(255, 255, 255, 0.2)
+    border-radius: 6px
+
+  .mkz-c-o__navi
+    position: absolute
+    top: 97px
+    width: 46px
+    height: 46px
+    display: none
+    align-items: center
+    justify-content: center
+    background-color: #fff
+    cursor: pointer
+    box-shadow: $shadow_box
+    border-radius: 50%
+    transition: all linear 0.2s
+    font-size: 14px
+    z-index: 5
+    user-select: none
+    color: $color_link
+
+  .mkz-c-o__navi_type_prev
+    left: 0
+    margin-left: -38px
+
+  .mkz-c-o__navi_type_next
+    left: 192px
+    margin-left: -8px
+
+  .mkz-c-o__list
+    display: flex
+
+  .mkz-c-o__i
+    position: relative
+    flex: 0 0 192px
+    padding-right: 8px
+    opacity: 1
+    transition: all linear 0.2s
+
+  .mkz-c-o__btn
+    padding: 12px 16px
+
+  .mkz-c-o__content
+    position: relative
+    padding: 16px
+    box-shadow: $shadow_box
+    background-color: #fff
+    border-radius: 6px
+
+  .mkz-c-o__preview-link
+    display: flex
+    align-items: center
+    justify-content: center
+    height: 128px
+    margin-bottom: 10px
+
+  .mkz-c-o__preview-img
+    display: block
+    max-width: 100%
+    max-height: 100%
+    color: $color_hint
+
+  .mkz-c-o__name
+    font-size: 14px
+    line-height: 20px
+    margin-bottom: 10px
+
+  .mkz-c-o__name-link
+    color: $color_text
+    text-decoration: none
+    cursor: pointer
+
+    &:hover
+      text-decoration: underline
+
+  .mkz-c-o__info
+    margin-bottom: 20px
+
+  .mkz-c-o__info-price
+    font-weight: 600
+    font-size: 17px
+    line-height: 22px

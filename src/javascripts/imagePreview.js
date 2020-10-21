@@ -63,12 +63,12 @@ export default class ImagePreview {
   template (src, index, total) {
     const prevHtml = total === 1 ? '' : `
           <div class="mkz-c-preview__prev mkz-c-i-js-prev">
-            ${rightIcon}
+            ${leftIcon}
           </div>
     `
     const nextHtml = total === 1 ? '' : `
           <div class="mkz-c-preview__next mkz-c-i-js-next">
-            ${leftIcon}
+            ${rightIcon}
           </div>
     `
     return `

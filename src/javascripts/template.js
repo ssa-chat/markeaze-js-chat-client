@@ -4,7 +4,7 @@ const translations = require('./translations')
 const format = require('dateformat')
 const themes = require('./themes').default
 const {
-  sendIcon, closeIcon, muteIcon, unmuteIcon, fileIcon, attachIcon
+  sendIcon, closeIcon, muteIcon, unmuteIcon, fileIcon, attachIcon, rightIcon, leftIcon
 } = require('./libs/icons')
 
 export default class Template {
@@ -51,14 +51,21 @@ export default class Template {
     if (!data) return ''
     return String(data).replace(/\"/ig, '&quot;')
   }
-  offers (items) {
-    if (!items) return ''
+  messageProducts (msg) {
+    const products = (msg.attachments || []).filter((i) => i.type === 'product')
+    if (products.length === 0) return ''
     return `
-    <div class="mkz-c-o">
-      ${items.map(this.offer.bind(this)).join("\n")}
+    <div class="mkz-c-o mkz-c-o_slider_${products.length > 1 ? 'yes mkz-c-o-js' : 'no'}">
+      <div class="mkz-c-o__relative">
+        <div class="mkz-c-o__navi mkz-c-o__navi_type_prev mkz-c-o__navi_disable_yes mkz-c-o-js-prev">${leftIcon}</div>
+        <div class="mkz-c-o__navi mkz-c-o__navi_type_next mkz-c-o__navi_disable_yes mkz-c-o-js-next">${rightIcon}</div>
+        <div class="mkz-c-o__list mkz-c-o-js-list">
+          ${products.map(this.product.bind(this)).join('')}
+        </div>
+      </div>
     </div>`
   }
-  offer (item, index, items) {
+  product (item, index, items) {
     const htmlPicture = item.icon ? `
           <img src="${this.safe(item.icon)}" alt="" class="mkz-c-o__preview-img" />
     ` : `
@@ -66,17 +73,15 @@ export default class Template {
             <path fill="currentColor" d="M160 144c0 26.5-21.5 48-48 48s-48-21.5-48-48 21.5-48 48-48 48 21.5 48 48zM416 240v112h-352v-48l80-80 40 40 128-128zM440 64h-400c-4.25 0-8 3.75-8 8v304c0 4.25 3.75 8 8 8h400c4.25 0 8-3.75 8-8v-304c0-4.25-3.75-8-8-8zM480 72v304c0 22-18 40-40 40h-400c-22 0-40-18-40-40v-304c0-22 18-40 40-40h400c22 0 40 18 40 40z"></path>
           </svg>
     `
-    const counterHtml = items.length < 2 ? '' : `
-        <div class="mkz-c-o__counter">
-          ${index+1}/${items.length}
-        </dvi>
-    `
     const callbackLabel = this.t(this.behavior.attachment_cta.product.callback_label_text)
     const label = this.t(this.behavior.attachment_cta.product.label_text)
     return `
-      <div class="mkz-c-o__i">
+      <div class="mkz-c-o__i ${index === 0 ? 'mkz-c-o__i_current_yes' : ''} mkz-c-o-js-i">
         <div class="mkz-c-o__content">
           <a href="${this.safe(item.url)}" class="mkz-c-o__preview-link">
+            <div class="mkz-c-o__counter">
+              ${index+1}/${items.length}
+            </div>
             ${htmlPicture}
           </a>
           <div class="mkz-c-o__name">
@@ -97,7 +102,6 @@ export default class Template {
             </span>
           </div>
         </div>
-        ${counterHtml}
       </div>
     `
   }
@@ -258,21 +262,19 @@ export default class Template {
     `
   }
   attachments (msg) {
-    const attachmentGroups = (msg.attachments || []).reduce((result, item) => {
+    const attachmentGroups = helpers.entries((msg.attachments || []).reduce((result, item) => {
       if (!result[item.type]) result[item.type] = []
       result[item.type].push(item)
       return result
-    }, {})
-    return helpers.entries(attachmentGroups).map(([key, group]) => {
+    }, {}))
+    return attachmentGroups.map(([key, group]) => {
       switch(key) {
-        case 'product':
-          return this.offers(group)
         case 'file':
           return this.files(group)
         case 'image':
           return this.images(group)
       }
-    })
+    }).filter((i) => i)
   }
   isClientMsg (msg) {
     return msg.sender_type === 'client'
@@ -290,6 +292,15 @@ export default class Template {
     const dateWithTz = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
     return format(dateWithTz, this.t(isToday(dateWithTz) ? 'time' : 'dateTime'))
   }
+  messageInfo (msg) {
+    const isClientMsg = this.isClientMsg(msg)
+    const info = []
+    info.push(this.getDate(msg))
+    if (!isClientMsg && msg.sender_name) info.push(this.safe(msg.sender_name))
+    return `<div class="mkz-c__i-info">
+      ${info.join(', ')}
+    </div>`
+  }
   message (msg) {
     const isClientMsg = this.isClientMsg(msg)
     const enable = this.app.settings.appearance.agent_avatar
@@ -302,20 +313,18 @@ export default class Template {
     `
     const htmlAgentAvatar = avatarUrl ? `<img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" />` : htmlDefaultAvatar
     const htmlAvatar = enable ? `<div class="mkz-c__i-avatar">${htmlAgentAvatar}</div>` : ''
-    const info = []
-    info.push(this.getDate(msg))
-    if (!isClientMsg && msg.sender_name) info.push(this.safe(msg.sender_name))
     return `
           <div class="mkz-c__i mkz-c__i_type_${isClientMsg ? 'client' : 'agent'}" data-id="${msg.muid}">
-            ${htmlAvatar}
-            <div class="mkz-c__i-content">
-              <div class="mkz-c__i-blocks">
-                ${this.messageContent(msg)}
-              </div>
-              <div class="mkz-c__i-info">
-                ${info.join(', ')}
+            <div class="mkz-c__i-row">
+              ${htmlAvatar}
+              <div class="mkz-c__i-content">
+                <div class="mkz-c__i-blocks">
+                  ${this.messageContent(msg)}
+                </div>
               </div>
             </div>
+            ${this.messageProducts(msg)}
+            ${this.messageInfo(msg)}
           </div>`
   }
   messageBlockWrap (html) {

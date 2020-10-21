@@ -9,6 +9,7 @@ const translations = require('./translations')
 const Sound = require('./sound').default
 const mute = require('./mute')
 const ImagePreview = require('./imagePreview').default
+const ProductSlide = require('./productSlide').default
 const Translate = require('./translate').default
 
 export default class View {
@@ -36,6 +37,7 @@ export default class View {
     this.actionClassName = 'mkz-c__footer-action_disabled_yes'
     this.flashListFadeInClassName = 'mkz-c__f_fade_in'
     this.translate = new Translate(this.app.locale)
+    this.productSlide
 
     this.validationOptions = {
       invalidClassName: 'mkz-f__invalid',
@@ -104,6 +106,8 @@ export default class View {
     for (const elImage of elImages) {
       domEvent.add(elImage, 'click', (e) => this.renderPreviewImages(e, elImage, elImages))
     }
+
+    new ProductSlide(elMessage)
   }
   renderPreviewImages (e, elImage, elImages) {
     e.preventDefault()
