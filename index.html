@@ -37,9 +37,8 @@ mkz(function() {
 
 mkz('debug', true);
 mkz('updateStore', {
-  trackerEndpoint: '<%= process.env.TRACKER_URL %>:5000',
-  chatEndpoint: '<%= process.env.TRACKER_URL %>:4000',
-  chatProtocol: 'ws://',
+  trackerUrl: '<%= process.env.TRACKER_URL %>',
+  chatUrl: '<%= process.env.CHAT_URL %>',
   plugins: {
     chat: {
       url: '/mkz-chat-client.js'
@@ -48,18 +47,19 @@ mkz('updateStore', {
       url: '/mkz-chat-client-attachment.js',
       enabled: true
     }
-  },
-  trackerCustomUrl: 'http://<%= process.env.TRACKER_URL %>:8084/demo_data.html'
+  }
+});
+
+mkz('watch', 'url.change', () => {
+  mkz('trackPageView', {
+    page: {
+      url: 'http://eqsol.ru/',
+      title: 'Test page'
+    }
+  });
 });
 
 mkz('appKey', '<%= process.env.APP_KEY %>');
-
-mkz('trackPageView', {
-  page: {
-    url: 'http://eqsol.ru/',
-    title: 'Test page'
-  }
-});
 
     </script>
     <!-- /Markeaze -->

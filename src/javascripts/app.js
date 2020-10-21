@@ -105,7 +105,7 @@ module.exports = {
     this.notifier.call(() => {
       this.view.render()
 
-      this.socket = new Socket(`${this.store.chatProtocol || 'wss://'}${this.store.chatEndpoint}/socket`)
+      this.socket = new Socket(this.store.chatUrl || `wss://${this.store.chatEndpoint}/socket`)
 
       this.socket.onOpen(this.handlerConnected.bind(this))
       this.socket.onClose(this.handlerDisconnected.bind(this))
