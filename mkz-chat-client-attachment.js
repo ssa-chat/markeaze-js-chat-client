@@ -4,18 +4,18 @@ const app = {
 
   // Plugin interface
 
-  version: '1.0.0',
+  version: '1.0.1',
   store: {}, // Store from the main app
   libs: {}, // Libraries from the main app
   create () {
     const chatPlugin = this.getPlugin('chat')
-    if (!chatPlugin || !chatPlugin.app || !chatPlugin.app.config) return
+    if (!chatPlugin || !chatPlugin.app || !chatPlugin.app.view) return
 
     const chatApp = chatPlugin.app
 
     if (this.libs.notifierInstance) {
       this.notifier = this.libs.notifierInstance(
-        chatApp.version,
+        this.version,
         chatApp.config.airbrake.project,
         chatApp.config.airbrake.apiKey,
         process.env.NODE_ENV

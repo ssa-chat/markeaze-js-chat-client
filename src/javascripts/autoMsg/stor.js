@@ -6,7 +6,7 @@ module.exports = {
       const index = items.findIndex((item) => item.payload.custom_fields.uid === newItem.payload.custom_fields.uid)
       if (index === -1) items.push(newItem)
       else {
-        items[index].payload.custom_fields = newItem.payload.custom_fields
+        items[index] = newItem
       }
     }
     this.setItems(items)

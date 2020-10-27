@@ -1,4 +1,4 @@
-const autoMsg = require('./autoMsg')
+const autoMsg = require('./autoMsg/app')
 
 module.exports = {
   name: 'mkz_c_msg_history',

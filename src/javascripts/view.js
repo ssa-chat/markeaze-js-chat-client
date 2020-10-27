@@ -25,7 +25,6 @@ export default class View {
     this.typingTimeout = 1000
     this.noticeShowTimeout = 1000
     this.noticeHideTimeout = 10000
-    this.flashMessagesDelay = 5000
     this.width = null
     this.focusOnHistory = false
     this.template = new Template(this)
@@ -35,9 +34,7 @@ export default class View {
     this.htmlClassName = 'mkz-c-fixed'
     this.mobileClassName = 'mkz-c-mobile'
     this.actionClassName = 'mkz-c__footer-action_disabled_yes'
-    this.flashListFadeInClassName = 'mkz-c__f_fade_in'
     this.translate = new Translate(this.app.locale)
-    this.productSlide
 
     this.validationOptions = {
       invalidClassName: 'mkz-f__invalid',
@@ -75,8 +72,6 @@ export default class View {
     domEvent.add(window, 'resize', this.setZoom.bind(this))
 
     domEvent.add(this.elSubmit, 'click', this.sendMsg.bind(this))
-
-    domEvent.add(this.elFClose, 'click', this.destroyFlashMessages.bind(this))
 
     domEvent.add(this.elInput, 'keydown', (e) => {
       if (e.keyCode == 13 && !e.shiftKey) {
@@ -222,11 +217,16 @@ export default class View {
     if (this.app.settings.beaconState === 'disabled') return
     this.collapsed = false
     this.renderChatToggle()
+
+    if (this.previewMode) return
+    this.libs.eEmit.emit('plugin.chat.showed')
   }
   hideChat () {
     this.collapsed = true
     this.renderChatToggle()
-    this.destroyFlashMessages()
+
+    if (this.previewMode) return
+    this.libs.eEmit.emit('plugin.chat.hid')
   }
   notifyNewMsg (msg) {
     if (this.app.settings.beaconState === 'disabled') return
@@ -387,9 +387,6 @@ export default class View {
       this.elUnread = this.el.querySelector('.mkz-c-js-unread')
       this.elClose = this.el.querySelector('.mkz-c-js-close')
       this.elToggle = this.el.querySelector('.mkz-c-js-toggle')
-      this.elF = this.el.querySelector('.mkz-c-js-f')
-      this.elFClose = this.el.querySelector('.mkz-c-js-f-close')
-      this.elFHistory = this.el.querySelector('.mkz-c-js-f-history')
       this.elHistory = this.el.querySelector('.mkz-c-js-history')
       this.elScroll = this.el.querySelector('.mkz-c-js-scroll')
       this.elAgentName = this.el.querySelector('.mkz-c-js-agent-name')
@@ -421,22 +418,6 @@ export default class View {
 
     const history = this.history || msgStory.getHistory()
     for (const msg of history) this.renderMessage(msg)
-  }
-  renderFlashMessages (msgs) {
-    this.elFHistory.innerHTML = ''
-    for (const msg of msgs) {
-      const html = this.template.message(msg)
-      const msgEl = helpers.appendHTML(this.elFHistory, html)
-      this.bindMessage(msgEl)
-    }
-    helpers.addClass(this.elF, this.flashListFadeInClassName)
-    clearTimeout(this.flashMessagesTimer)
-    this.flashMessagesTimer = setTimeout(() => {
-      this.destroyFlashMessages()
-    }, this.flashMessagesDelay)
-  }
-  destroyFlashMessages () {
-    helpers.removeClass(this.elF, this.flashListFadeInClassName)
   }
   renderMessage (msg, nextMsg) {
     const html = this.template.message(msg)
