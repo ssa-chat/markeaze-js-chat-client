@@ -7,11 +7,11 @@ module.exports = {
     added_to_cart: 'Добавлен в корзину',
     true: 'Да',
     false: 'Нет',
-    new_message: 'New message...',
+    new_message: 'Новое сообщение...',
     dateTime: 'dd.mm.yyyy, HH:MM',
     time: 'HH:MM',
     paginate: 'из',
-    size_limit: '\'%{name}\' file exceeded %{size} Mb limit'
+    size_limit: '"Файл %{name}" превысил ограничение в %{size} Mb'
   },
   en: {
     copyright: 'Powered by Markeaze',
@@ -21,10 +21,10 @@ module.exports = {
     added_to_cart: 'Added to Cart!',
     true: 'True',
     false: 'False',
-    new_message: 'Новое сообщение...',
+    new_message: 'New message...',
     dateTime: 'mmm dd yyyy, h:MM tt',
     time: 'h:MM tt',
     paginate: 'of',
-    size_limit: '"Файл %{name}" превысил ограничение в %{size} Mb'
+    size_limit: '\'%{name}\' file exceeded %{size} Mb limit'
   }
 }
