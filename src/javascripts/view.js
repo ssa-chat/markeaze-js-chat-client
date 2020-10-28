@@ -228,14 +228,14 @@ export default class View {
     if (this.previewMode) return
     this.libs.eEmit.emit('plugin.chat.hid')
   }
-  notifyNewMsg (msg) {
+  notifyNewMsg (msg, ignoreCollapsed = false) {
     if (this.app.settings.beaconState === 'disabled') return
 
     if (!this.windowFocus) {
       startBlink( translations[this.app.locale]['new_message'] )
     }
 
-    if (!mute.getState() && (this.collapsed || !this.windowFocus)) {
+    if (!mute.getState() && (this.collapsed || ignoreCollapsed || !this.windowFocus)) {
       this.sound.play()
     }
   }

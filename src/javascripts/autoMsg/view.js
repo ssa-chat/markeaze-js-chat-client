@@ -43,6 +43,8 @@ module.exports = {
     this.view.bindMessage(msgEl)
     helpers.addClass(this.el, this.fadedClassName)
     this.bind()
+
+    this.view.notifyNewMsg(item.payload, true)
   },
   destroy () {
     if (!this.el) return
