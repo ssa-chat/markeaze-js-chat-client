@@ -3,6 +3,8 @@ const msgStory = require('./msgStory')
 const msgDelivered = require('./msgDelivered')
 const View = require('./view').default
 const autoMsg = require('./autoMsg/app')
+const autoMsgStory = require('./autoMsg/story')
+const autoMsgTrackReply = require('./autoMsg/track').trackReply
 const surveyForm = require('./surveyForm')
 const config = require('./config').default
 const helpers = require('./libs/helpers')
@@ -259,8 +261,8 @@ module.exports = {
         custom_fields: {}
       })
       delete payload.prev_auto_message.exclude
-      autoMsg.removeItem(lastMsg.muid)
-      autoMsg.trackReply(lastMsg.muid)
+      autoMsgStory.removeItem(lastMsg.muid)
+      autoMsgTrackReply(lastMsg)
     }
 
     return this.pushToChannel(this.clientChannel, 'message:new', payload)

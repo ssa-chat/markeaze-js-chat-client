@@ -118,11 +118,31 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
         opacity: 1
         visibility: visible
 
+  .mkz-c_avatar_show
+
+    .mkz-c__head-state
+      display: block
+
+    .mkz-c__state
+      bottom: 0
+
+    .mkz-c__i-avatar
+      display: flex
+
+    .mkz-c__i_type_client
+
+      .mkz-c__i-avatar
+        display: none
+
   .mkz-c_agent_online
+
+    .mkz-c__head-state
+      display: block
 
     .mkz-c__state
       background-color: #0EC52C
       display: block
+      bottom: -4px
 
     .mkz-c__btn-text-online
       display: block
@@ -576,6 +596,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     white-space: nowrap
 
   .mkz-c__head-state
+    display: none
     flex: 0
     padding-right: 14px
 
@@ -759,7 +780,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     display: flex
 
   .mkz-c__i-avatar
-    display: flex
+    display: none
     align-items: flex-end
     flex: 0 0 44px
 

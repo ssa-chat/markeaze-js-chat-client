@@ -303,7 +303,6 @@ export default class Template {
   }
   message (msg) {
     const isClientMsg = this.isClientMsg(msg)
-    const enable = this.app.settings.appearance.agent_avatar
     const avatarUrl = msg.sender_avatar_url
     const htmlDefaultAvatar = `
       <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__i-avatar-default mkz-c__avatar-default">
@@ -312,11 +311,10 @@ export default class Template {
       </svg>
     `
     const htmlAgentAvatar = avatarUrl ? `<img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" />` : htmlDefaultAvatar
-    const htmlAvatar = enable ? `<div class="mkz-c__i-avatar">${htmlAgentAvatar}</div>` : ''
     return `
           <div class="mkz-c__i mkz-c__i_type_${isClientMsg ? 'client' : 'agent'}" data-id="${msg.muid}">
             <div class="mkz-c__i-row">
-              ${htmlAvatar}
+              <div class="mkz-c__i-avatar">${htmlAgentAvatar}</div>
               <div class="mkz-c__i-content">
                 <div class="mkz-c__i-blocks">
                   ${this.messageContent(msg)}
@@ -354,7 +352,7 @@ export default class Template {
         const customFields = msg.custom_fields
         const submitted = customFields.submitted
         const elements = customFields.elements.map((e) => {
-          if (e.type === 'select' && !e.value) e.value = customFields.values && customFields.values[e.field]
+          if (e.type === 'select' && !e.value) e.value = customFields.values?.[e.field]
           if (submitted) e.disabled = true
           return e
         })
@@ -408,7 +406,7 @@ export default class Template {
       </div>`
   }
   notice () {
-    return this.appearance.notice_text && this.appearance.notice_text.trim() ? `
+    return this.appearance.notice_text?.trim() ? `
       <div class="mkz-c__tooltip mkz-c__tooltip_picture_yes" style="color: ${this.safe(this.appearance.notice_color)}; background-color: ${this.safe(this.appearance.notice_bg)}">
         <img src="${this.safe(this.appearance.notice_icon_url)}" class="mkz-c__tooltip-picture" alt="" />
         <div class="mkz-c__tooltip-text">
@@ -420,7 +418,7 @@ export default class Template {
     const chatPosition = ['l-t', 'l-b', 'l'].indexOf(this.appearance.bar_position) > -1 ? 'left' : 'right'
     return `
 <div mkz>
-  <div class="mkz-c mkz-c-js">
+  <div class="mkz-c mkz-c_avatar_show mkz-c-js">
 
     <div class="mkz-c__handler mkz-c__handler_type_${this.safe(this.appearance.bar_type)} mkz-c__handler_position_${this.safe(this.appearance.bar_position)} ${this.appearance.bar_bouncing ? 'mkz-c__handler_bouncing_yes' : ''}" style="margin: ${this.safe(this.appearance.bar_padding_y)}px ${this.safe(this.appearance.bar_padding_x)}px">
       <div class="mkz-c__f mkz-c-js-f">

@@ -23,8 +23,8 @@ module.exports = {
 
     if ( event.pageX == null && event.clientX != null ) {
         var html = document.documentElement, body = document.body;
-        event.pageX = event.clientX + (html && html.scrollLeft || body && body.scrollLeft || 0) - (html.clientLeft || 0);
-        event.pageY = event.clientY + (html && html.scrollTop || body && body.scrollTop || 0) - (html.clientTop || 0);
+        event.pageX = event.clientX + (html?.scrollLeft || body?.scrollLeft || 0) - (html.clientLeft || 0);
+        event.pageY = event.clientY + (html?.scrollTop || body?.scrollTop || 0) - (html.clientTop || 0);
     }
 
     if ( !event.which && event.button ) {

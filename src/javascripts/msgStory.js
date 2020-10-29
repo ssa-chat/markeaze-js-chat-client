@@ -1,11 +1,12 @@
 const autoMsg = require('./autoMsg/app')
+const AutoMsgStory = require('./autoMsg/story')
 
 module.exports = {
   name: 'mkz_c_msg_history',
   cached: false,
   history: [],
   getHistory () {
-    if (this.cached && autoMsg.cached) return this.history
+    if (this.cached && AutoMsgStory.cached) return this.history
 
     this.cached = true
 
@@ -14,7 +15,7 @@ module.exports = {
     try {
       history = JSON.parse(json) || []
     } catch (e) {}
-    this.history = this.sortHistory(history.concat(autoMsg.getHistory()))
+    this.history = this.sortHistory(history.concat(AutoMsgStory.getHistory()))
 
     return this.history
   },
@@ -48,7 +49,7 @@ module.exports = {
   getNextMsg (muid) {
     const index = this.findMsgIndex(muid)
     const history = this.getHistory()
-    if (!history[index + 1]) return
+    if (index === -1 || !history[index + 1]) return
 
     return history[index + 1]
   },

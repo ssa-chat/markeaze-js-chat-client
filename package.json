@@ -1,19 +1,23 @@
 {
   "name": "markeaze-js-tracker",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "",
   "main": "./dist/mkz.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --colors",
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development --open"
   },
   "author": "markeaze",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.12.1",
     "@babel/polyfill": "^7.8.7",
     "@babel/preset-env": "^7.9.5",
     "babel-loader": "^8.1.0",
@@ -27,10 +31,10 @@
     "webpack": "^4.42.1",
     "webpack-auto-inject-version": "^1.2.2",
     "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.11.0"
-  },
-  "devDependencies": {
+    "webpack-dev-server": "^3.11.0",
     "html-webpack-plugin": "^3.2.0",
-    "terser-webpack-plugin": "^3.0.5"
+    "terser-webpack-plugin": "^3.0.5",
+    "babel-jest": "^26.6.1",
+    "jest": "^26.6.1"
   }
 }

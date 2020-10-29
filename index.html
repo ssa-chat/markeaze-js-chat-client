@@ -74,7 +74,10 @@ mkz('appKey', '<%= process.env.APP_KEY %>');
     </p>
     <a href="/preview.html">Go to preview mode</a>
     <hr />
-    <button onclick="mkz('emitPlugin', 'chat', 'show')">Show</button>
-    <button onclick="mkz('emitPlugin', 'chat', 'hide')">Hide</button>
+    <p>
+      Chat toggle:
+      <button onclick="mkz('emitPlugin', 'chat', 'show')">Show</button>
+      <button onclick="mkz('emitPlugin', 'chat', 'hide')">Hide</button>
+    </p>
   </body>
 </html>

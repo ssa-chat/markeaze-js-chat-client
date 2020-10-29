@@ -1,4 +1,4 @@
-const css = require('raw-loader!sass-loader!./../stylesheets/application.sass')
+const css = require('./css')
 const msgDelivered = require('./msgDelivered')
 const helpers = require('./libs/helpers')
 const domEvent = require('./libs/domEvent')
@@ -29,6 +29,7 @@ export default class View {
     this.focusOnHistory = false
     this.template = new Template(this)
     this.containerBeaconClassName = 'mkz-c_beacon_show'
+    this.containerAvatarClassName = 'mkz-c_avatar_show'
     this.containerChatClassName = 'mkz-c_chat_show'
     this.containerValidMessageClassName = 'mkz-c_valid-message_yes'
     this.htmlClassName = 'mkz-c-fixed'
@@ -342,9 +343,11 @@ export default class View {
         this.elAgentAvatar.style.display = 'none'
         this.elAgentAvatarDefault.style.display = 'block'
       }
+      helpers.addClass(this.elContainer, this.containerAvatarClassName)
     } else {
       this.elAgentAvatar.style.display = 'none'
       this.elAgentAvatarDefault.style.display = 'none'
+      helpers.removeClass(this.elContainer, this.containerAvatarClassName)
     }
     helpers.addClass(this.elContainer, 'mkz-c_agent_assign')
   }

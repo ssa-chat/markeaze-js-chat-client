@@ -27,7 +27,7 @@ module.exports = {
   },
   getFirstChild (el) {
     let firstChild = el.firstChild
-    while(firstChild != null && firstChild.nodeType == 3) firstChild = firstChild.nextSibling
+    while(firstChild?.nodeType == 3) firstChild = firstChild.nextSibling
     return firstChild
   },
   htmlToText (str) {
@@ -85,7 +85,7 @@ module.exports = {
     return /iPad|iPhone|iPod/.test(navigator.platform)
   },
   getOrientation () {
-    const angle = window.orientation ? window.orientation : window.screen && window.screen.orientation && window.screen.orientation.angle
+    const angle = window.orientation ? window.orientation : window.screen?.orientation?.angle
     switch (angle) {
       case -90:
       case 90:

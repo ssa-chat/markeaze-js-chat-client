@@ -1,138 +1,107 @@
-const AutoMsgStor = require('./stor')
-const AutoMsgView = require('./view')
+const autoMsgStory = require('./story')
+const autoMsgView = require('./view')
+const {trackShow} = require('./track')
 
 module.exports = {
   init (app) {
     this.app = app
     this.view = app.view
     this.libs = app.libs
-    this.cached = false
-    this.items = AutoMsgStor.getItems()
+    this.pendingItems = []
     this.rendered = false
-    this.timers = {}
+    this.timer = null
+    this.flashedItem = null
 
-    this.libs.eEmit.subscribe('plugin.chat.auto_messages', this.saveWithTimer.bind(this))
-    this.libs.eEmit.subscribe('plugin.chat.channel.entered', () => {
-      this.rendered = true
-      this.renderItems()
-    })
-    this.libs.eEmit.subscribe('plugin.chat.showed', () => {
-      this.renderItems()
-    })
+    this.libs.eEmit.subscribe('track.before', (data) => this.onUrlChange(data))
+    this.libs.eEmit.subscribe('plugin.chat.channel.entered', () => this.onEnter())
+    this.libs.eEmit.subscribe('plugin.chat.showed', () => this.onSelectFlash())
+    this.libs.eEmit.subscribe('plugin.chat.auto_messages', (items) => this.onAdd(items))
   },
-  getHistory () {
-    this.cached = true
-    return this.items
-      .filter((item) => item.added)
-      .map((item) => item.payload)
+  onUrlChange (data) {
+    if (data.type !== 'page_view') return
+    this.stopTimer()
+    this.pendingItems = []
+    if (!this.rendered) return
+    this.onCloseFlash()
+    autoMsgView.destroy()
   },
-  getTime () {
-    return Math.round(+new Date / 1000)
+  onAdd (items) {
+    this.pendingItems = this.pendingItems.concat(items)
+    if (!this.rendered) return
+    this.renderPending()
   },
-  startTimer (item, callback) {
-    const delay = item.display_at - this.getTime()
-    if (!delay || delay < 0) return false
-    this.timers[item.uid] = setTimeout(callback, delay * 1000)
-    return true
+  onEnter () {
+    this.rendered = true
+    autoMsgView.render(this)
+    this.renderPending()
   },
-  stopTimer (item) {
-    if (!this.timers[item.uid]) return
-
-    clearTimeout(this.timers[item.uid])
-    delete this.timers[item.uid]
+  onSelectFlash () {
+    if (this.flashedItem) this.renderHistory(this.flashedItem)
   },
-  saveWithTimer (items) {
-    if (items.length === 0) return
-
-    const itemsWithoutTimer = items.filter((item) => {
-      return !this.startTimer(item, () => this.save([item]))
-    })
-    if (itemsWithoutTimer.length > 0) this.save(itemsWithoutTimer)
+  onCloseFlash () {
+    this.flashedItem = null
   },
-  save (items) {
-    const uid = this.app.store.uid
-    this.items = AutoMsgStor.addItems(items.map((item) => {
-      this.stopTimer(item)
-      const sentAt = this.app.getDateTime()
-      const timestamp = +(new Date(sentAt))
-      const agent = this.app.getAgent(item.sender_id)
-      return {
-        payload: {
-          auto_message_uid: item.uid,
-          agent_id: item.sender_id,
-          attachments: [],
-          muid: `${uid}:a:${timestamp}`,
-          msg_type: 'message:auto',
-          sender_type: item.sender_type,
-          sender_avatar_url: agent ? agent.avatar_url : null,
-          sender_name: agent ? agent.name : null,
-          sent_at: sentAt,
-          text: item.text,
-          exclude: true,
-          custom_fields: item
-        },
-        added: false,
-        tracked: false,
-        flashed: false,
-        sent_at: sentAt
-      }
-    }))
-
-    this.cached = false
-
-    if (this.rendered) this.renderItems()
+  getDelay (displayAt) {
+    return displayAt - Math.round(+new Date / 1000)
   },
-  renderItems () {
-    AutoMsgView.init(this.view, this)
-
-    const collapsed = this.view.collapsed
-    const newItems = this.items.filter((item) => !item.added)
-    if (newItems.length === 0) return
-
-    for (const item of newItems) {
-      if (!item.tracked) {
-        this.trackShow(item.payload.custom_fields.uid)
-        item.tracked = true
-      }
-
-      if (collapsed && !item.flashed) {
-        item.flashed = true
-        AutoMsgView.render(item)
-        break
+  renderPending () {
+    this.stopTimer()
+    this.pendingItems.forEach((item) => {
+      const delay = this.getDelay(item.display_at)
+      if (delay <= 0) {
+        this.render(item)
       } else {
-        this.renderItem(item)
+        this.timer = setTimeout(() => {
+          item.delayed = false
+          this.render(item)
+        }, delay * 1000)
       }
+    })
+    this.pendingItems = []
+  },
+  stopTimer () {
+    clearTimeout(this.timer)
+  },
+  getMsg (item) {
+    const agent = this.app.getAgent(item.sender_id)
+    const sentAt = this.app.getDateTime()
+    const timestamp = +(new Date(sentAt))
+    const delayed = this.getDelay(item.display_at) > 0
+
+    return {
+      auto_message_uid: item.uid,
+      agent_id: item.sender_id,
+      attachments: [],
+      muid: `${this.app.store.uid}:a:${timestamp}`,
+      msg_type: 'message:auto',
+      sender_type: item.sender_type,
+      sender_avatar_url: agent ? agent.avatar_url : null,
+      sender_name: agent ? agent.name : null,
+      sent_at: sentAt,
+      text: item.text,
+      exclude: true,
+      custom_fields: item
     }
-
-    AutoMsgStor.setItems(this.items)
   },
-  renderItem (item) {
-    item.added = true
+  render (item) {
+    const msg = this.getMsg(item)
+    trackShow(msg)
+    this.view.notifyNewMsg(msg, true)
 
-    if (item.payload.agent_id) this.app.setCurrentAgent(item.payload.agent_id)
-    this.app.addMsg(item.payload)
-
-    this.cached = false
+    if (this.view.collapsed) {
+      this.renderFlash(msg)
+    } else {
+      this.renderHistory(msg)
+    }
   },
-  removeItem (muid) {
-    this.items = AutoMsgStor.removeItem(muid)
-
-    this.cached = false
+  renderFlash (msg) {
+    this.flashedItem = msg
+    autoMsgView.addMsg(msg)
   },
-  trackShow (uid) {
-    mkz('trackAutoMessageShow', {
-      auto_message_uid: uid
-    })
-  },
-  trackReply (muid) {
-    const item = this.items.find((item) => item.payload.muid === muid)
-    if (!item) return
-
-    const customFields = item.payload.custom_fields
-    mkz('trackAutoMessageReply', {
-      auto_message_uid: customFields.uid,
-      reply_text: customFields.text,
-      reply_once: customFields.reply_once
-    })
+  renderHistory (msg) {
+    this.onCloseFlash()
+    this.app.setCurrentAgent(msg.agent_id)
+    this.app.addMsg(msg)
+    autoMsgStory.addItems([msg])
   }
 }

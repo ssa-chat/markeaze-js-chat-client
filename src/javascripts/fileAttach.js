@@ -129,7 +129,7 @@ export default class FileAttach {
       })
     ).catch(() => {})
     this.showSelector()
-    if (attachmentItems && attachmentItems.length > 0) this.complete(attachmentItems)
+    if (attachmentItems?.length > 0) this.complete(attachmentItems)
   }
   onCancel (e) {
     if (!this.loader) return
