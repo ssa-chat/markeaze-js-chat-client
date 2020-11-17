@@ -7,6 +7,6 @@ module.exports = {
   trackSubmit (uid, visitorInfo) {
     mkz('trackSurveyFormSubmit', {
       survey_form_uid: uid
-    }, null, visitorInfo)
+    }, visitorInfo)
   }
 }

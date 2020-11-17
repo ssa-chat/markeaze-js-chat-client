@@ -40,6 +40,7 @@ class FaviconBlink {
     if (this.interval) return
     const updateLinks = () => {
       this.links.map((link) => {
+        if (!link.el) return
         link.el.href = this.sprites[(this.step % this.sprites.length)]
         link.el.type = 'image/png'
       })
@@ -55,6 +56,7 @@ class FaviconBlink {
     clearInterval(this.interval)
     this.interval = null
     this.links.map((link) => {
+      if (!link.el) return
       link.el.href = link.originalUrl
       link.el.type = link.originalType
     })
