@@ -257,8 +257,10 @@ module.exports = {
         auto_message_uid: lastMsg.auto_message_uid,
         status: 'read',
         device_uid: uid,
-        custom_fields: {}
+        custom_fields: {},
+        sent_at_diff_ms: (new Date(lastMsg.sent_at)) - (new Date())
       })
+      delete payload.prev_auto_message.sent_at
       delete payload.prev_auto_message.exclude
       autoMsgStory.removeItem(lastMsg.muid)
       autoMsgTrackReply(lastMsg)
