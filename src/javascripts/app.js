@@ -247,7 +247,6 @@ module.exports = {
       muid: `${uid}:c:${timestamp}`,
       text,
       status: 'sent',
-      sent_at: this.getDateTime(),
       attachments
     }
 
