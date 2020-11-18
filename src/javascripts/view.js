@@ -328,6 +328,7 @@ export default class View {
   }
   visibleChat () {
     helpers.addClass(this.elContainer, 'mkz-c_display_yes')
+    this.scrollBottom()
   }
   assignAgent () {
     this.elAgentName.innerText = this.app.currentAgent.name || ''
@@ -417,12 +418,13 @@ export default class View {
 
   }
   renderMessages () {
+    this.scrollBottom()
     this.renderWelcomeMsg()
 
     const history = this.history || msgStory.getHistory()
-    for (const msg of history) this.renderMessage(msg)
+    for (const msg of history) this.renderMessageItem(msg)
   }
-  renderMessage (msg, nextMsg) {
+  renderMessageItem (msg, nextMsg) {
     const html = this.template.message(msg)
     let msgEl = this.findMsg(msg.muid)
     if (msgEl) {
@@ -435,6 +437,10 @@ export default class View {
     this.bindMessage(msgEl)
 
     this.removeWelcomeMsg()
+  }
+  renderMessage (msg, nextMsg) {
+    this.scrollBottom()
+    this.renderMessageItem(msg, nextMsg)
   }
   renderWelcomeMsg () {
     const msg = this.app.getWelcomeMsg()
@@ -464,7 +470,7 @@ export default class View {
     else this.offlineAgents()
   }
   scrollBottom () {
-    if (this.focusOnHistory) return
+    if (this.focusOnHistory && this.elScroll.scrollTop !== this.elScroll.scrollHeight - this.elScroll.clientHeight) return
 
     setTimeout(() => {
       this.elScroll.scrollTop = this.elScroll.scrollHeight

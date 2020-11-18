@@ -144,7 +144,6 @@ module.exports = {
   handlerJoined () {
     this.notifier.call(() => {
       this.view.visibleChat()
-      this.view.scrollBottom()
       this.view.enableSending()
       this.log('chat', 'joined')
     })
@@ -183,7 +182,6 @@ module.exports = {
     this.notifier.call(() => {
       msg = this.addMsg(msg)
       this.stateChangeMsg(msg)
-      this.view.scrollBottom()
       this.log('chat', 'Msg', msg)
     })
   },
@@ -191,7 +189,6 @@ module.exports = {
     this.notifier.call(() => {
       msg = this.addMsg(msg)
       this.stateChangeMsg(msg)
-      this.view.scrollBottom()
       this.setCurrentAgent(msg.current_agent_id)
       this.log('chat', 'Resend', msg)
     })
