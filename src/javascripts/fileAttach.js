@@ -20,7 +20,8 @@ export default class FileAttach {
     this.render()
   }
   render () {
-    this.elContainer = this.view.elCart.querySelector('.mkz-c-attach-js')
+    if (!this.view.elCard) return
+    this.elContainer = this.view.elCard.querySelector('.mkz-c-attach-js')
     this.helpers.appendHTML(this.elContainer, this.template())
     this.elBlock = this.elContainer.querySelector('.mkz-c-attach-js-block')
     this.elInput = this.elContainer.querySelector('.mkz-c-attach-js-input')

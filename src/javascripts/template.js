@@ -444,7 +444,7 @@ export default class Template {
 
     <div class="mkz-c__chat mkz-c__chat_position_${chatPosition}" style="${this.view.width ? `max-width: ${this.view.width}px;` : '' }">
       <div class="mkz-c__cart-shadow"></div>
-      <div class="mkz-c__cart mkz-c-js-cart">
+      <div class="mkz-c__cart mkz-c-js-card">
 
         <div class="mkz-c__head" style="color: ${this.safe(this.appearance.title_color)}; background-color: ${this.safe(this.appearance.title_bg)};">
 

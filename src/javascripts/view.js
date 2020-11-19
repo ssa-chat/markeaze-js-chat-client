@@ -385,7 +385,7 @@ export default class View {
     if (!this.el) {
       this.el = helpers.appendHTML(document.body, this.template.content())
       this.elContainer = this.el.querySelector('.mkz-c-js')
-      this.elCart = this.el.querySelector('.mkz-c-js-cart')
+      this.elCard = this.el.querySelector('.mkz-c-js-card')
       this.elInput = this.el.querySelector('.mkz-c-js-input')
       this.elSubmit = this.el.querySelector('.mkz-c-js-submit')
       this.elUnread = this.el.querySelector('.mkz-c-js-unread')

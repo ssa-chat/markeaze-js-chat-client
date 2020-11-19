@@ -20,12 +20,12 @@ export default class ImagePreview {
     if (this.elContainer) this.remove()
 
     const src = this.elImages.item(this.index).href
-    helpers.appendHTML(this.view.elCart, this.template(src, this.index, this.total))
+    helpers.appendHTML(this.view.elCard, this.template(src, this.index, this.total))
 
-    this.elContainer = this.view.elCart.querySelector('.mkz-c-i-js-container')
-    this.elClose = this.view.elCart.querySelector('.mkz-c-i-js-close')
-    this.elPrev = this.view.elCart.querySelector('.mkz-c-i-js-prev')
-    this.elNext = this.view.elCart.querySelector('.mkz-c-i-js-next')
+    this.elContainer = this.view.elCard.querySelector('.mkz-c-i-js-container')
+    this.elClose = this.view.elCard.querySelector('.mkz-c-i-js-close')
+    this.elPrev = this.view.elCard.querySelector('.mkz-c-i-js-prev')
+    this.elNext = this.view.elCard.querySelector('.mkz-c-i-js-next')
 
     this.bind()
   }
