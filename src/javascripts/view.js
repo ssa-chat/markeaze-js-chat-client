@@ -10,7 +10,7 @@ const Sound = require('./sound').default
 const mute = require('./mute')
 const ImagePreview = require('./imagePreview').default
 const ProductSlide = require('./productSlide').default
-const Translate = require('./translate').default
+const { Translate } = require('./translate')
 
 export default class View {
   constructor (app) {

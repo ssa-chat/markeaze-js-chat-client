@@ -1,10 +1,11 @@
 export default class Sound {
-  constructor (path) {
+  protected audio: any
+  protected onload: boolean = false
+  protected onplay: boolean = false
+
+  constructor (path: string) {
     this.audio = new Audio() || document.createElement('video')
     if (!this.audio || !path) return
-
-    this.onload = false
-    this.onplay = false
 
     this.audio.autoplay = false
     this.audio.load()
@@ -23,13 +24,13 @@ export default class Sound {
     }
   }
 
-  play () {
+  public play (): void {
     if (!this.audio) return
     if (this.onload) this.playAction()
     else this.onplay = true
   }
 
-  playAction () {
+  protected playAction (): void {
     this.audio.currentTime = 0
     const playPromise = this.audio.play()
     if (playPromise) playPromise.catch((e) => {})

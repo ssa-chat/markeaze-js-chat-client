@@ -9,8 +9,8 @@ export default {
       markeaze_link: true,
       title_bg: '#FC6881',
       title_text: 'Leave your message',
-      welcome_message: 'Hello there! How can I help you today?'
-      theme: 'markeaze'
+      welcome_message: 'Hello there! How can I help you today?',
+      theme: 'markeaze',
       bar_padding_x: '20',
       bar_padding_y: '20',
       bar_position: 'r-b',

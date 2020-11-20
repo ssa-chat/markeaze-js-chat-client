@@ -4,8 +4,10 @@ const translations = require('./translations')
 const format = require('dateformat')
 const themes = require('./themes').default
 const {
-  sendIcon, closeIcon, muteIcon, unmuteIcon, fileIcon, attachIcon, rightIcon, leftIcon
+  sendIcon, closeIcon, muteIcon, unmuteIcon, fileIcon, attachIcon,
+  rightIcon, leftIcon, botIcon, typingIcon
 } = require('./libs/icons')
+const { senderTypeClient, senderTypeAgent, senderTypeSsa } = require('./constants')
 
 export default class Template {
   constructor (view) {
@@ -277,7 +279,7 @@ export default class Template {
     }).filter((i) => i)
   }
   isClientMsg (msg) {
-    return msg.sender_type === 'client'
+    return msg.sender_type === senderTypeClient
   }
   getDate (msg) {
     const isToday = (date) => {
@@ -303,16 +305,21 @@ export default class Template {
   }
   message (msg) {
     const isClientMsg = this.isClientMsg(msg)
-    const avatarUrl = msg.sender_avatar_url
-    const htmlDefaultAvatar = `
-      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__i-avatar-default mkz-c__avatar-default">
-        <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="currentColor"/>
-        <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" class="mkz-c__avatar-default-inner" />
-      </svg>
-    `
-    const htmlAgentAvatar = avatarUrl ? `<img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" />` : htmlDefaultAvatar
+    let htmlAgentAvatar
+    if (msg.sender_type === senderTypeSsa) {
+      htmlAgentAvatar = botIcon
+    } else {
+      const avatarUrl = msg.sender_avatar_url
+      const htmlDefaultAvatar = `
+        <svg viewBox="0 0 16 16" class="mkz-c__i-avatar-default mkz-c__avatar-default">
+          <rect x="0" y="0" width="16" height="16" fill="currentColor"/>
+          <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" class="mkz-c__avatar-default-inner" />
+        </svg>
+      `
+      htmlAgentAvatar = avatarUrl ? `<img src="${this.safe(avatarUrl)}" srcset="${helpers.srcset(avatarUrl)}" class="mkz-c__i-avatar-img" alt="" title="${this.safe(msg.sender_name)}" />` : htmlDefaultAvatar
+    }
     return `
-          <div class="mkz-c__i mkz-c__i_type_${isClientMsg ? 'client' : 'agent'}" data-id="${msg.muid}">
+          <div class="mkz-c__i mkz-c__i_type_${isClientMsg ? senderTypeClient : senderTypeAgent} ${msg.animate ? 'mkz-c__i_animate_yes' : ''}" data-id="${msg.muid}">
             <div class="mkz-c__i-row">
               <div class="mkz-c__i-avatar">${htmlAgentAvatar}</div>
               <div class="mkz-c__i-content">
@@ -339,6 +346,7 @@ export default class Template {
 
     const msgWrap = (html) => `
         <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
+          ${msg.sender_type === senderTypeSsa ? typingIcon : ''}
           <div class="mkz-c__i-msg-overflow">
             ${html}
           </div>

@@ -776,6 +776,41 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
   .mkz-c__i
     margin: 15px 0
 
+  .mkz-c__bx
+    transform: rotate(45deg)
+    transform-origin: center center
+
+  .mkz-c__typing
+    display: none
+
+  .mkz-c__i_animate_yes
+
+    .mkz-c__cl, .mkz-c__cc, .mkz-c__cr, .mkz-c__cr, .mkz-c__cb
+      visibility: visible
+
+    .mkz-c__cl
+      animation: mkzCl 4s forwards
+
+    .mkz-c__cr
+      animation: mkzCr 4s forwards
+
+    .mkz-c__cb
+      animation: mkzCb 4s forwards
+      transform-origin: center center
+
+    .mkz-c__bx
+      animation: mkzBx 4s forwards
+
+    .mkz-c__typing
+      display: block
+      position: absolute
+      left: 20px
+      top: 18px
+      animation: mkzTyping 4s forwards
+
+    .mkz-c__i-msg-overflow
+      animation: mkzText 4s normal
+
   .mkz-c__i-row
     display: flex
 
@@ -842,6 +877,8 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     line-height: 20px
     max-width: 100%
     box-sizing: border-box
+    position: relative
+    min-height: 48px
 
     +markdown()
 
@@ -1242,3 +1279,100 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     transform: scale(1.05)
   100%
     transform: scale(1)
+
+@keyframes mkzCl
+  0%
+    cx: 110
+  20%
+    cx: 110
+  25%
+    cx: 69
+  40%
+    cx: 69
+  45%
+    cx: 110
+  50%
+    cx: 110
+  100%
+    cx: 110
+
+@keyframes mkzCr
+  0%
+    cx: 110
+  20%
+    cx: 110
+  25%
+    cx: 151
+  45%
+    cx: 151
+  50%
+    cx: 110
+  100%
+    cx: 110
+
+@keyframes mkzCb
+  0%
+    transform: scale(0.8)
+    cx: 110
+  20%
+    transform: scale(0.8)
+  25%
+    transform: scale(1)
+    cx: 110
+  30%
+    cx: 110
+  35%
+    cx: 139
+  40%
+    cx: 81
+  45%
+    cx: 139
+    transform: scale(1)
+  50%
+    cx: 110
+    transform: scale(0.8)
+  100%
+    cx: 110
+    transform: scale(0.8)
+
+@keyframes mkzBx
+  0%
+    transform: rotate(45deg) scale(1)
+    rx: 0
+    ry: 0
+  20%
+    transform: rotate(0deg) scale(0.2)
+    rx: 100
+    ry: 100
+  45%
+    transform: rotate(0deg) scale(0.2)
+    rx: 100
+    ry: 100
+  50%
+    transform: rotate(45deg) scale(1)
+    rx: 0
+    ry: 0
+  100%
+    transform: rotate(45deg) scale(1)
+    rx: 0
+    ry: 0
+
+@keyframes mkzTyping
+  0%
+    opacity: 1
+  49%
+    opacity: 1
+  50%
+    opacity: 0
+  100%
+    opacity: 0
+
+@keyframes mkzText
+  0%
+    max-height: 0
+  49%
+    max-height: 0
+  50%
+    max-height: 200px
+  100%
+    max-height: 200px
