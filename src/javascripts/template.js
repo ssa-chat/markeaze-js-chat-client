@@ -5,7 +5,7 @@ const format = require('dateformat')
 const themes = require('./themes').default
 const {
   sendIcon, closeIcon, muteIcon, unmuteIcon, fileIcon, attachIcon,
-  rightIcon, leftIcon, botIcon, typingIcon
+  rightIcon, leftIcon, botIcon, typingIcon, linkIcon
 } = require('./libs/icons')
 const { senderTypeClient, senderTypeAgent, senderTypeSsa } = require('./constants')
 
@@ -151,6 +151,71 @@ export default class Template {
         ></a>
       </div>`
   }
+  orders (orders) {
+    return `
+      <div class="mkz-c-orders">
+        ${orders.map(this.order.bind(this)).join("\n")}
+      </div>
+    `
+  }
+  order (item, index, items) {
+    const htmlFulfillmentStatus = item.fulfillment_status ? `
+        <div class="mkz-c-orders__field">
+          <span class="mkz-c-orders__field-label">${this.t('order_fulfillment_status')}</span>
+          <span class="mkz-c-orders__field-value">${this.safe(item.fulfillment_status)}</span>
+        </div>` : ''
+    const htmlFinancialStatus = item.payment_method ? `
+        <div class="mkz-c-orders__field">
+          <span class="mkz-c-orders__field-label">${this.t('order_payment_method')}</span>
+          <span class="mkz-c-orders__field-value">${this.safe(item.payment_method)}</span>
+        </div>`: ''
+    const htmlPaymentMethod = item.financial_status ? `
+        <div class="mkz-c-orders__field">
+          <span class="mkz-c-orders__field-label">${this.t('order_financial_status')}</span>
+          <span class="mkz-c-orders__field-value">${this.safe(item.financial_status)}</span>
+        </div>`: ''
+    const htmlDisplayTotal = item.display_total ? `
+        <div class="mkz-c-orders__field">
+          <span class="mkz-c-orders__field-label">${this.t('order_total')}</span>
+          <span class="mkz-c-orders__field-value">${this.safe(item.display_total)}</span>
+        </div>` : ''
+    const htmlShippingCarrier = item.shipping_carrier ? `
+        <div class="mkz-c-orders__field">
+          <span class="mkz-c-orders__field-label">${this.t('order_shipping_carrier')}</span>
+          <span class="mkz-c-orders__field-value">${this.safe(item.shipping_carrier)}</span>
+        </div>` : ''
+    const htmlTrackingLink = item.tracking_link ? `<a href="${this.safe(item.tracking_link)}" target="_blank">${this.safe(item.tracking_number)}<span class="mkz-c-orders__link-icon">${linkIcon}</span></a>` : this.safe(item.tracking_number)
+    const htmlTrackingNumber = item.tracking_number ? `
+        <div class="mkz-c-orders__field">
+          <span class="mkz-c-orders__field-label">${this.t('order_tracking_number')}</span>
+          <span class="mkz-c-orders__field-value">${htmlTrackingLink}</span>
+        </div>` : ''
+    const defaultofferPictureUrl = 'https://themes.markeaze.com/default/web-client/picture.svg'
+    const htmlOffers = item.items.map((offer) => {
+      return `<a class="mkz-c-orders__offer" href="${this.safe(offer.url)}" target="_blank" style="background-image: url(${this.safe(offer.main_image_url || defaultofferPictureUrl)})"></a>`
+    })
+    return `
+      <div class="mkz-c-orders__i mkz-c__i-msg">
+        <div class="mkz-c-orders__section">
+          <div class="mkz-c-orders__number">
+            ${this.safe(this.t('order_number', { value: item.uid }))}
+          </div>
+        </div>
+        <div class="mkz-c-orders__section">
+          ${htmlFulfillmentStatus}
+          ${htmlPaymentMethod}
+          ${htmlFinancialStatus}
+          ${htmlDisplayTotal}
+          <div class="mkz-c-orders__offers">
+            ${htmlOffers.join('')}
+          </div>
+        </div>
+        <div class="mkz-c-orders__section">
+          ${htmlShippingCarrier}
+          ${htmlTrackingNumber}
+        </div>
+      </div>`
+  }
   form (fields, uid) {
     const html =  fields.map((item) => {
       switch(item.display_type) {
@@ -275,6 +340,8 @@ export default class Template {
           return this.files(group)
         case 'image':
           return this.images(group)
+        case 'order':
+          return this.orders(group)
       }
     }).filter((i) => i)
   }
@@ -305,9 +372,13 @@ export default class Template {
   }
   message (msg) {
     const isClientMsg = this.isClientMsg(msg)
-    let htmlAgentAvatar
+    let htmlAgentAvatar = ''
+    let htmlTyping = ''
     if (msg.sender_type === senderTypeSsa) {
       htmlAgentAvatar = botIcon
+      htmlTyping = `<div class="mkz-c__i-typing">
+        <div class="mkz-c__i-msg">${typingIcon}</div>
+      </div>`
     } else {
       const avatarUrl = msg.sender_avatar_url
       const htmlDefaultAvatar = `
@@ -326,6 +397,7 @@ export default class Template {
                 <div class="mkz-c__i-blocks">
                   ${this.messageContent(msg)}
                 </div>
+                ${htmlTyping}
               </div>
             </div>
             ${this.messageProducts(msg)}
@@ -346,7 +418,6 @@ export default class Template {
 
     const msgWrap = (html) => `
         <div class="mkz-c__i-msg" style="background-color: ${this.safe(bg)}; color: ${this.safe(color)}">
-          ${msg.sender_type === senderTypeSsa ? typingIcon : ''}
           <div class="mkz-c__i-msg-overflow">
             ${html}
           </div>

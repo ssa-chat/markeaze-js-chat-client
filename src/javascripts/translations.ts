@@ -1,4 +1,5 @@
 module.exports = {
+/*
   ru: {
     copyright: 'Сделано в Markeaze',
     placeholder: 'Напишите ваше сообщение...',
@@ -11,8 +12,16 @@ module.exports = {
     dateTime: 'dd.mm.yyyy, HH:MM',
     time: 'HH:MM',
     paginate: 'из',
-    size_limit: '"Файл %{name}" превысил ограничение в %{size} Mb'
+    size_limit: '"Файл %{name}" превысил ограничение в %{size} Mb',
+    order_number: 'Заказ #%{value}',
+    order_fulfillment_status: 'Статус:',
+    order_shipping_carrier: 'Способ доставки:',
+    order_financial_status: 'Статус оплаты:',
+    order_payment_method: 'Способ оплаты:',
+    order_total: 'Итого:',
+    order_tracking_number: 'Трек-номер:'
   },
+*/
   en: {
     copyright: 'Powered by Markeaze',
     placeholder: 'Type your message here...',
@@ -25,6 +34,13 @@ module.exports = {
     dateTime: 'mmm dd yyyy, h:MM tt',
     time: 'h:MM tt',
     paginate: 'of',
-    size_limit: '\'%{name}\' file exceeded %{size} Mb limit'
+    size_limit: '\'%{name}\' file exceeded %{size} Mb limit',
+    order_number: 'Order #%{value}',
+    order_fulfillment_status: 'Fulfillment status:',
+    order_shipping_carrier: 'Shipping carrier:',
+    order_financial_status: 'Payment status:',
+    order_payment_method: 'Payment method:',
+    order_total: 'Total:',
+    order_tracking_number: 'Tracking:'
   }
 }

@@ -49,7 +49,7 @@ module.exports = {
     <circle class="mkz-c__cb mkz-c__avatar-default-inner" r="24.4" cx="110" cy="110"/>
   </g>
 </svg>`,
-  typingIcon: `<svg width="41" height="13" viewBox="0 0 44.5 13" class="mkz-c__typing">
+  typingIcon: `<svg width="41" height="13" viewBox="0 0 44.5 13" class="mkz-c__i-typing-img">
 <g>
   <g transform="translate(-15.4, 0)">
     <polygon class="st0" points="17.6,6.3 22.4,11.2 27.2,6.5 22.4,1.6" fill="#BDC1C6" transform-origin="center">
@@ -91,5 +91,10 @@ module.exports = {
     </polygon>
   </g>
 </g>
+</svg>`,
+  linkIcon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+<path d="M11.4286 8.5714V12C11.4286 12.3031 11.3082 12.5938 11.0939 12.8081C10.8795 13.0224 10.5889 13.1428 10.2857 13.1428H4.00003C3.69693 13.1428 3.40624 13.0224 3.19191 12.8081C2.97759 12.5938 2.85718 12.3031 2.85718 12V5.71426C2.85718 5.41116 2.97759 5.12047 3.19191 4.90614C3.40624 4.69181 3.69693 4.5714 4.00003 4.5714H7.42861" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.71436 2.85712H13.1429V6.28569" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.85718 9.14283L13.1429 2.85712" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`
 }

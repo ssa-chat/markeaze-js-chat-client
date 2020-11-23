@@ -1,4 +1,28 @@
 /*
+      ru: {
+        copyright: 'Сделано в Markeaze',
+        placeholder: 'Напишите ваше сообщение...',
+        view_product: 'Посмотреть товар',
+        add_to_cart: 'Добавить в корзину',
+        added_to_cart: 'Добавлен в корзину',
+        true: 'Да',
+        false: 'Нет',
+        new_message: 'Новое сообщение...',
+        dateTime: 'dd.mm.yyyy, HH:MM',
+        time: 'HH:MM',
+        paginate: 'из',
+        size_limit: '"Файл %{name}" превысил ограничение в %{size} Mb',
+        order_number: 'Заказ #%{value}',
+        order_fulfillment_status: 'Статус:',
+        order_shipping_carrier: 'Способ доставки:',
+        order_financial_status: 'Статус оплаты:',
+        order_payment_method: 'Способ оплаты:',
+        order_total: 'Итого:',
+        order_tracking_number: 'Трек-номер:'
+      },
+    */
+
+/*
  * Date Format 1.2.3
  * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
  * MIT license
