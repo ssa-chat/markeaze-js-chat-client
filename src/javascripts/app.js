@@ -9,7 +9,7 @@ const surveyForm = require('./surveyForm')
 const config = require('./config').default
 const helpers = require('./libs/helpers')
 const icons = require('./libs/icons')
-const { senderTypeClient, senderTypeSsa } = require('./constants')
+const { senderTypeAgent, senderTypeSsa } = require('./constants')
 
 module.exports = {
 
@@ -311,7 +311,7 @@ module.exports = {
     return (new Date).toISOString().replace('Z', '000Z')
   },
   stateChangeMsg (msg) {
-    if (msg.sender_type === senderTypeClient || msg.sender_type === senderTypeSsa) {
+    if (msg.sender_type === senderTypeAgent || msg.sender_type === senderTypeSsa) {
       // Status changes only for agent messages
       if (this.view.collapsed === false) this.pusherMsgState(msg.muid, 'read')
       else {

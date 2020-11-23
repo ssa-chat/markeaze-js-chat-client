@@ -1,25 +1,23 @@
 jest.mock('./../src/javascripts/view', () => {
-  const View = class View () {
+  const View = class View {
     constructor () {}
-    render () => jest.fn()
-    showChat () => jest.fn()
-    hideChat () => jest.fn()
-    visibleChat () => jest.fn()
-    showNotice () => jest.fn()
-    assignAgent () => jest.fn()
-    unassignAgent () => jest.fn()
-    renderAgentState () => jest.fn()
-    connected () => jest.fn()
-    disconnected () => jest.fn()
-    visibleChat () => jest.fn()
-    scrollBottom () => jest.fn()
-    enableSending () => jest.fn()
-    scrollBottom () => jest.fn()
-    renderUnread () => jest.fn()
-    renderMessage () => jest.fn()
-    showBeacon () => jest.fn()
+    render () { return jest.fn() }
+    showChat () { return jest.fn() }
+    hideChat () { return jest.fn() }
+    visibleChat () { return jest.fn() }
+    showNotice () { return jest.fn() }
+    assignAgent () { return jest.fn() }
+    unassignAgent () { return jest.fn() }
+    renderAgentState (){ return jest.fn() }
+    connected () { return jest.fn() }
+    disconnected () { return jest.fn() }
+    visibleChat () { return jest.fn() }
+    scrollBottom () { return jest.fn() }
+    enableSending () { return jest.fn() }
+    scrollBottom () { return jest.fn() }
+    renderUnread () { return jest.fn() }
+    renderMessage () { return jest.fn() }
+    showBeacon () { return jest.fn() }
   }
-  return {
-    default: View
-  }
+  return View
 })
