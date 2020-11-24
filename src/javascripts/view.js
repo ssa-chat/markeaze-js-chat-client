@@ -3,7 +3,6 @@ const msgDelivered = require('./msgDelivered')
 const helpers = require('./libs/helpers')
 const domEvent = require('./libs/domEvent')
 const { startBlink, stopBlink } = require('./libs/faviconBlink')
-const Template = require('./template').default
 const msgStory = require('./msgStory')
 const translations = require('./translations')
 const Sound = require('./sound').default
@@ -11,6 +10,7 @@ const mute = require('./mute')
 const ImagePreview = require('./imagePreview').default
 const ProductSlide = require('./productSlide').default
 const { Translate } = require('./translate')
+import App from './components/App.svelte'
 
 export default class View {
   constructor (app) {
@@ -27,7 +27,6 @@ export default class View {
     this.noticeHideTimeout = 10000
     this.width = null
     this.focusOnHistory = false
-    this.template = new Template(this)
     this.containerBeaconClassName = 'mkz-c_beacon_show'
     this.containerAvatarClassName = 'mkz-c_avatar_show'
     this.containerChatClassName = 'mkz-c_chat_show'
@@ -381,6 +380,22 @@ export default class View {
     helpers.removeClass(this.elContainer, 'mkz-c_tooltip_yes')
   }
   render () {
+    this.App = new App({
+      target: document.body,
+      props: {
+        settings: this.app.settings,
+        previewMode: this.previewMode,
+        width: this.width,
+        t (key, properties) {
+          return this.translate.t(key, properties)
+        },
+        docs () {},
+        copy () {},
+        notice () {}
+      }
+    })
+
+    /*
     // Can be called multiple times on one page
     if (!this.el) {
       this.el = helpers.appendHTML(document.body, this.template.content())
@@ -415,7 +430,7 @@ export default class View {
 
     this.renderChatToggle()
     this.renderUnread()
-
+    */
   }
   renderMessages () {
     this.scrollBottom()

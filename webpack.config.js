@@ -2,6 +2,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WebpackAutoInject = require('webpack-auto-inject-version')
 const Dotenv = require('dotenv-webpack')
 const TerserPlugin = require('terser-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const path = require('path')
+const mode = process.env.NODE_ENV || 'development'
+const prod = mode === 'production'
 
 module.exports = {
   entry: {
@@ -68,11 +72,36 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'source-map-loader'
+      },
+      {
+        test: /\.svelte$/,
+        use: {
+          loader: 'svelte-loader',
+          options: {
+            emitCss: true,
+            hotReload: true
+          }
+        }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          /**
+           * MiniCssExtractPlugin doesn't support HMR.
+           * For developing, use 'style-loader' instead.
+           * */
+          prod ? MiniCssExtractPlugin.loader : 'style-loader',
+          'css-loader'
+        ]
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ['.ts', '.tsx', '.js', '.svelte'],
+    alias: {
+      svelte: path.resolve('node_modules', 'svelte')
+    },
+    mainFields: ['svelte', 'browser', 'module', 'main']
   },
   optimization: {
     minimize: true,

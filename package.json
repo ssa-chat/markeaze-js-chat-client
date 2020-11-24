@@ -2,7 +2,7 @@
   "name": "markeaze-js-tracker",
   "version": "1.8.6",
   "description": "",
-  "main": "./dist/mkz.js",
+  "main": "./dist/mkz-chat-client.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -15,7 +15,11 @@
   "license": "ISC",
   "dependencies": {
     "@babel/preset-typescript": "^7.12.1",
+    "css-loader": "^5.0.1",
+    "mini-css-extract-plugin": "^1.3.1",
     "source-map-loader": "^1.1.2",
+    "svelte": "^3.29.7",
+    "svelte-loader": "^2.13.6",
     "ts-loader": "^8.0.11",
     "typescript": "^4.1.2"
   },
