@@ -223,10 +223,27 @@ let options = {
     }
   ],
   currentAgent: {
+    id: 1,
     isOnline: false,
     name: 'Buffalo Bill',
-    job_title: 'Real killer',
+    job_title: 'Manager',
     avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png'
+  },
+  agents: {
+    1: {
+      id: 1,
+      isOnline: false,
+      name: 'Buffalo Bill',
+      job_title: 'Manager',
+      avatar_url: 'https://themes.markeaze.com/default/livechat/avatar.png'
+    },
+    2: {
+      id: 2,
+      isOnline: false,
+      name: 'Elon Musk',
+      job_title: 'Manager',
+      avatar_url: 'https://assets-shared.markeaze.com/public/avatars/elon_musk.jpg'
+    }
   }
 }
 let settings = {
@@ -261,7 +278,7 @@ let settings = {
     */
     welcome_message: 'Hello there! How can I help you today?',
     placeholder: 'Input any message here...',
-    agent_avatar: false,
+    agent_avatar: true,
     agent_post: true,
     markeaze_link: true,
     client_sound_path: 'https://themes.markeaze.com/default/livechat/sounds/new_message',

@@ -331,35 +331,43 @@ export default class View {
     this.scrollBottom()
   }
   assignAgent () {
-    this.elAgentName.innerText = this.app.currentAgent.name || ''
-    if (this.app.settings.appearance.agent_post) this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
-    if (this.app.settings.appearance.agent_avatar) {
-      const avatarUrl = this.app.currentAgent.avatar_url
-      if (avatarUrl) {
-        this.elAgentAvatar.src = avatarUrl
-        this.elAgentAvatar.setAttribute('srcset', helpers.srcset(avatarUrl))
-        this.elAgentAvatar.style.display = 'block'
-        this.elAgentAvatarDefault.style.display = 'none'
-      } else {
-        this.elAgentAvatar.style.display = 'none'
-        this.elAgentAvatarDefault.style.display = 'block'
-      }
-      helpers.addClass(this.elContainer, this.containerAvatarClassName)
-    } else {
-      this.elAgentAvatar.style.display = 'none'
-      this.elAgentAvatarDefault.style.display = 'none'
-      helpers.removeClass(this.elContainer, this.containerAvatarClassName)
-    }
     helpers.addClass(this.elContainer, 'mkz-c_agent_assign')
+    this.renderAgents()
   }
   unassignAgent () {
     helpers.removeClass(this.elContainer, 'mkz-c_agent_assign')
+    this.renderAgents()
+  }
+  renderAgents () {
+    if (this.app.currentAgent) {
+      this.elAgentName.innerText = this.app.currentAgent.name || ''
+      if (this.app.settings.appearance.agent_post) {
+        this.elAgentPost.innerText = this.app.currentAgent.job_title || ''
+      }
+    }
+    const avatars = []
+    if (this.app.settings.appearance.agent_avatar) {
+      if (!this.app.agentIsOnline) {
+        const agents = Object.values(this.app.agents).filter((a) => a.id !== this.app.currentAgent.id)
+        const limit = 2
+        for (let i = 1; i <= limit && i <= agents.length; i++) {
+          avatars.push(agents[i - 1].avatar_url)
+        }
+      }
+      if (this.app.currentAgent) avatars.push(this.app.currentAgent.avatar_url)
+      helpers.addClass(this.elContainer, this.containerAvatarClassName)
+    } else {
+      helpers.removeClass(this.elContainer, this.containerAvatarClassName)
+    }
+    this.elAgentAvatar.innerHTML = this.template.avatars(avatars)
   }
   onlineAgents () {
     helpers.addClass(this.elContainer, 'mkz-c_agent_online')
+    this.renderAgents()
   }
   offlineAgents () {
     helpers.removeClass(this.elContainer, 'mkz-c_agent_online')
+    this.renderAgents()
   }
   toggleNotice () {
     if (this.previewMode) return
@@ -396,7 +404,6 @@ export default class View {
       this.elAgentName = this.el.querySelector('.mkz-c-js-agent-name')
       this.elAgentPost = this.el.querySelector('.mkz-c-js-agent-post')
       this.elAgentAvatar = this.el.querySelector('.mkz-c-js-agent-avatar')
-      this.elAgentAvatarDefault = this.el.querySelector('.mkz-c-js-agent-avatar-default')
       this.bind()
       this.showBeacon()
       this.toggleNotice()

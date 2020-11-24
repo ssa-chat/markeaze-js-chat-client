@@ -512,7 +512,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     max-width: 376px + 25
     max-height: 688px + 25 + 25
     height: 100vh
-    z-index: 20000000
+    z-index: 2147483647
 
   .mkz-c__chat_position_left
     left: 0
@@ -644,17 +644,21 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
     line-height: 15px
     margin-top: 2px
 
-  .mkz-c__m-assign-avatar, .mkz-c__m-assign-avatar-default
+  .mkz-c__m-assign-avatars
+    white-space: nowrap
+
+  .mkz-c__m-assign-avatar-img
+    display: inline-block
     width: 40px
     height: 40px
     border-radius: 45% 45% 0 45%
     background-color: #fff
     overflow: hidden
-    display: none
     border: 1px solid transparent
-
-  .mkz-c__m-assign-avatar
     border-color: #fff
+
+    &:not(:first-child)
+      margin-left: -20px
 
   .mkz-c__unmute
     display: none
@@ -744,7 +748,7 @@ $shadow_box: 0px 0px 6px rgba(120, 120, 120, 0.25), 0px 0px 1px rgba(120, 120, 1
       background-color: transparent
       overflow: hidden
       max-height: 50vh
-      min-height: 20px
+      min-height: 22px
       height: 0
       -webkit-appearance: none
       box-shadow: none

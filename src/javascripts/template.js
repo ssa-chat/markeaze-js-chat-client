@@ -493,6 +493,16 @@ export default class Template {
         </div>
       </div>` : ''
   }
+  avatars (avatars) {
+    const html = avatars.map((avatar) => {
+      if (avatar) return `<img class="mkz-c__m-assign-avatar-img" src="${this.safe(avatar)}" srcset="${this.safe(helpers.srcset(avatar))}" alt="" />`
+      else return `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__m-assign-avatar-img mkz-c__avatar-default">
+                  <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="currentColor"/>
+                  <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" class="mkz-c__avatar-default-inner" />
+                </svg>`
+    })
+    return html.join('')
+  }
   content () {
     const chatPosition = ['l-t', 'l-b', 'l'].indexOf(this.appearance.bar_position) > -1 ? 'left' : 'right'
     return `
@@ -549,11 +559,7 @@ export default class Template {
           <div class="mkz-c__head-row">
             <div class="mkz-c__head-state">
               <div class="mkz-c__state-wrap">
-                <img class="mkz-c__m-assign-avatar mkz-c-js-agent-avatar" alt="" />
-                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mkz-c__m-assign-avatar-default mkz-c__avatar-default mkz-c-js-agent-avatar-default">
-                  <path d="M0 8C0 6.76133 0 6.14198 0.0820778 5.62378C0.533889 2.77116 2.77116 0.533889 5.62378 0.0820778C6.14198 0 6.76133 0 8 0C9.23867 0 9.85802 0 10.3762 0.0820778C13.2288 0.533889 15.4661 2.77116 15.9179 5.62378C16 6.14198 16 6.76133 16 8V16H8C6.76133 16 6.14198 16 5.62378 15.9179C2.77116 15.4661 0.533889 13.2288 0.0820778 10.3762C0 9.85802 0 9.23867 0 8Z" fill="currentColor"/>
-                  <rect x="8" y="4.22223" width="5.33333" height="5.33333" transform="rotate(45 8 4.22223)" class="mkz-c__avatar-default-inner" />
-                </svg>
+                <div class="mkz-c__m-assign-avatars mkz-c-js-agent-avatar"></div>
                 <div class="mkz-c__state"></div>
               </div>
             </div>

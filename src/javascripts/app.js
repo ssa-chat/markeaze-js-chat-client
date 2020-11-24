@@ -66,6 +66,7 @@ module.exports = {
     this.locale = locale
     this.view = new View(this)
     this.view.history = (options.history || [])
+    this.agents = (options.agents || {})
     this.view.width = options.width || null
     this.view.render()
     this.view.visibleChat()
@@ -88,7 +89,7 @@ module.exports = {
   previewMode: false,
   isMobile: false,
   currentAgent: null,
-  agents: [],
+  agents: {},
   agentIsOnline: false,
   sessionsCount: 0,
   settings: {},
