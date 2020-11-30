@@ -168,7 +168,7 @@ module.exports = {
     this.notifier.call(() => {
       this.setAgents(msg.agents)
       this.sessionsCount = msg.sessionsCount
-      this.setCurrentAgent(msg.current_agent_id)
+      this.setCurrentAgent(msg.conversation_agent_id)
       this.updateAgentState()
       if (this.libs.eEmit) this.libs.eEmit.emit('plugin.chat.channel.entered')
       this.log('chat', 'ClientEntered', msg)
@@ -192,7 +192,7 @@ module.exports = {
     this.notifier.call(() => {
       msg = this.addMsg(msg)
       this.stateChangeMsg(msg)
-      this.setCurrentAgent(msg.current_agent_id)
+      this.setCurrentAgent(msg.conversation_agent_id)
       this.log('chat', 'Resend', msg)
     })
   },
